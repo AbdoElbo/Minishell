@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 12:52:56 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/11/28 17:13:34 by hkonstan         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -28,7 +17,6 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		printf("%s\n", line);
 		//PARSING
-		esrtterer
 		//EXECUTION
 		free(line);
 	}
