@@ -6,7 +6,7 @@
 #    By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/06 14:04:06 by hariskon          #+#    #+#              #
-#    Updated: 2025/11/28 17:05:17 by aelbouaz         ###   ########.fr        #
+#    Updated: 2025/11/28 17:39:47 by aelbouaz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:= src/minishell.c
+SRCS	:= src/minishell.c src/helper_func_1.c
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
