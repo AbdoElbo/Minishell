@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 13:15:03 by hariskon          #+#    #+#             */
-/*   Updated: 2025/11/25 15:02:20 by hkonstan         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:13:49 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <errno.h>
+
+int	find_parameter(const char *s1, const char *s2, size_t size);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 12:52:56 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/11/28 13:46:24 by hkonstan         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:31:03 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		printf("%s\n", line);
 		//PARSING
-		ablud_split(line);
 		//EXECUTION
 		free(line);
 	}
