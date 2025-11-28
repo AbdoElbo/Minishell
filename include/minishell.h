@@ -14,17 +14,15 @@
 # define MINISHELL_H
 
 # include "../libft/libft.h"
-# include <string.h> 
+# include <string.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <errno.h>
-
-int	main(int argc, char **argv, char **envp);
 
 #endif
