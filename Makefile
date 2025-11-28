@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+         #
+#    By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/06 14:04:06 by hariskon          #+#    #+#              #
-#    Updated: 2025/11/25 17:56:19 by hkonstan         ###   ########.fr        #
+#    Updated: 2025/11/28 16:57:22 by aelbouaz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:= src/minishell.c
+SRCS	:= src/abdo_test_main.c src/ft_split_pipe.c
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
@@ -25,7 +25,7 @@ all: libft $(NAME)
 
 %.o: %.c Makefile
 	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
-	
+
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(OBJS) $(LIBFT) $(HEADERS) -lreadline -o $(NAME)
 
