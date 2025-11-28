@@ -6,7 +6,7 @@
 #    By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/06 14:04:06 by hariskon          #+#    #+#              #
-#    Updated: 2025/11/28 16:57:22 by aelbouaz         ###   ########.fr        #
+#    Updated: 2025/11/28 17:05:17 by aelbouaz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:= src/abdo_test_main.c src/ft_split_pipe.c
+SRCS	:= src/minishell.c
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
