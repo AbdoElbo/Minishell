@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 12:52:56 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/11/28 16:31:03 by hkonstan         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:34:44 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		printf("%s\n", line);
 		//PARSING
+		
 		//EXECUTION
 		free(line);
 	}
