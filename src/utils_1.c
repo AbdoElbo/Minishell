@@ -8,30 +8,6 @@ int is_operator(char c)
 	return (0);
 }
 
-//DEFINITELY DELETING THEM LATER//
-// static int single_quote(char *line, int *i)
-// {
-//     (*i)++;
-//     while (line[*i] && line[*i] != '\'')
-// 	{
-//     	(*i)++;
-// 	}
-// 	if (line[*i] != '\'')
-// 		return (write(2, "Single quotes open", 18), 0);
-//     return (1);
-// }
-// static int double_quote(char *line, int *i)
-// {
-//     (*i)++;
-//     while (line[*i] && line[*i] != '"')
-// 	{
-//     	(*i)++;
-// 	}
-// 	if (line[*i] != '"')
-//         return(write(2, "Double quotes open", 18), 0);
-//     return (1);
-// }
-
 static int quote_handler (char *line, int *i)
 {
 	if (line[*i] == '"')
