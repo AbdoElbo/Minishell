@@ -4,7 +4,7 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:= src/minishell.c src/helper_func_1.c
+SRCS	:= src/minishell.c src/helper_func_1.c src/utils_1.c src/utils_2.c src/utils_3.c  
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
