@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 13:51:32 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/05/14 17:22:25 by hkonstan         ###   ########.fr       */
+/*   Updated: 2025/12/05 16:42:27 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,22 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		else
 		{
 			temp = ft_lstlast(*lst);
+			temp->next = new;
+		}
+	}
+}
+
+void	ft_lstadd_back_2(t_token **lst, t_token *new)
+{
+	t_token	*temp;
+
+	if (lst != NULL)
+	{
+		if (*lst == NULL)
+			*lst = new;
+		else
+		{
+			temp = ft_lstlast_2(*lst);
 			temp->next = new;
 		}
 	}

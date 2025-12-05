@@ -1,31 +1,6 @@
 
 #include "minishell.h"
 
-t_token	*ft_lstlast_2(t_token *lst)
-{
-	if (lst == NULL)
-		return (NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
-
-void	ft_lstadd_back_2(t_token **lst, t_token *new)
-{
-	t_token	*temp;
-
-	if (lst != NULL)
-	{
-		if (*lst == NULL)
-			*lst = new;
-		else
-		{
-			temp = ft_lstlast_2(*lst);
-			temp->next = new;
-		}
-	}
-}
-
 t_token	*new_node(char *str, int len)
 {
 	t_token *new_node;
@@ -69,5 +44,3 @@ void	print_lst(t_token *lst)
 		lst = lst->next;
 	}
 }
-
-

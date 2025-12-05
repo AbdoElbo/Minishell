@@ -95,11 +95,11 @@ t_token *parse_input(char *line)
 	{
 		str = get_next_word(line, &i);
 		if (!str)
-			return (NULL); // free lst func here later
+			return (ft_lstclear_2(&lst), NULL); // free lst func here later
 		node = new_node(str, ft_strlen(str));
 		free (str);
 		if (!node)
-			return (write(2, "NEW_NODE failed", 15), NULL); // free lst func here later
+			return (write(2, "NEW_NODE failed", 15), ft_lstclear_2(&lst), NULL); // free lst func here later
 		ft_lstadd_back_2(&lst, node);
 		w_count++;
 	}
