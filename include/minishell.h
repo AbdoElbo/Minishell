@@ -2,6 +2,10 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# ifndef _DEFAULT_SOURCE
+#  define _DEFAULT_SOURCE
+# endif
+
 # include "../libft/libft.h"
 # include <string.h>
 # include <stdio.h>
@@ -13,6 +17,8 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include <signal.h>
+
 
 typedef enum e_type
 {
@@ -30,7 +36,7 @@ typedef struct  s_token {
     struct  s_token *next;
 }   t_token;
 
-int 	    main(int argc, char **argv, char **envp);
+void		sig_handler(int sig, siginfo_t *info, void *ucontext);
 int	        find_parameter(const char *s1, const char *s2, size_t size);
 t_token     *parse_input(char *line);
 t_token	    *ft_lstlast_2(t_token *lst);

@@ -31,7 +31,7 @@ static int quote_handler (char *line, int *i)
 
 static int handler(char *line, int *i)
 {
-    if (line[*i] == '|')  
+    if (line[*i] == '|')
         return((*i)++, 1);
     else if (line[*i] == '<')
     {
@@ -91,20 +91,17 @@ t_token *parse_input(char *line)
 	i = 0;
 	lst = NULL;
 	w_count = 0;
-	// if (!lst)
-	//     return (write(2, "ERROR LST DOESN'T EXIST\n", 24), 0);
 	while (line[i])
 	{
-		//new_node(get_next_word(line, &i));
-		// printf("%s\n", get_next_word(line, &i));
 		str = get_next_word(line, &i);
+		if (!str)
+			return (NULL); // free lst func here later
 		node = new_node(str, ft_strlen(str));
-		printf("%i\n", ft_strlen(str));
+		free (str);
 		if (!node)
-			return (write(2, "NEW_NODE failed", 15), NULL);
+			return (write(2, "NEW_NODE failed", 15), NULL); // free lst func here later
 		ft_lstadd_back_2(&lst, node);
 		w_count++;
-		free (str);
 	}
 	print_lst(lst);
 	return (lst);
