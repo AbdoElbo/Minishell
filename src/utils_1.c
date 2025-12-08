@@ -1,14 +1,14 @@
 
 #include "minishell.h"
 
-int is_operator(char c)
+int	is_operator(char c)
 {
 	if (c == '|' || c == '>' || c == '<')
 		return (1);
 	return (0);
 }
 
-static int quote_handler (char *line, int *i)
+static int	quote_handler(char *line, int *i)
 {
 	if (line[*i] == '"')
 	{
@@ -16,7 +16,7 @@ static int quote_handler (char *line, int *i)
 		while (line[*i] && line[*i] != '"')
 			(*i)++;
 		if (line[*i] != '"')
-			return(write(2, "Double quotes open", 18), 0);
+			return (write(2, "Double quotes open", 18), 0);
 	}
 	else if (line[*i] == '\'')
 	{
@@ -29,28 +29,28 @@ static int quote_handler (char *line, int *i)
 	return (1);
 }
 
-static int handler(char *line, int *i)
+static int	handler(char *line, int *i)
 {
-    if (line[*i] == '|')
-        return((*i)++, 1);
-    else if (line[*i] == '<')
-    {
-        if (line[(*i) + 1] == '<')
-            (*i)+= 2;
-        else
-            (*i)++;
-    }
-    else if (line[*i] == '>')
-    {
-        if (line[(*i) + 1] == '>')
-            (*i)+= 2;
-        else
-            (*i)++;
-    }
+	if (line[*i] == '|')
+		return ((*i)++, 1);
+	else if (line[*i] == '<')
+	{
+		if (line[(*i) + 1] == '<')
+			(*i) += 2;
+		else
+			(*i)++;
+	}
+	else if (line[*i] == '>')
+	{
+		if (line[(*i) + 1] == '>')
+			(*i) += 2;
+		else
+			(*i)++;
+	}
 	return (1);
 }
 
-static char *get_next_word (char *line, int *i)
+static char	*get_next_word(char *line, int *i)
 {
 	char	*word;
 	int		start;
@@ -60,11 +60,7 @@ static char *get_next_word (char *line, int *i)
 		(*i)++;
 	start = *i;
 	if (line[*i] && is_operator(line[*i]))
-		{
-			handler(line, i);
-			word = ft_substr(line, start, *i - start);
-				return (word);
-		}
+		handler(line, i);
 	else
 	{
 		while (line[*i] && !is_operator(line[*i]))
@@ -75,12 +71,12 @@ static char *get_next_word (char *line, int *i)
 			(*i)++;
 		}
 	}
-	if ((i - start) > 0)
+	if ((*i - start) > 0)
 		word = ft_substr(line, start, *i - start);
 	return (word);
 }
 
-t_token *parse_input(char *line)
+t_token	*parse_input(char *line)
 {
 	int		i;
 	int		w_count;

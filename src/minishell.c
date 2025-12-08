@@ -36,6 +36,8 @@ int	main(void)
 			break ;
 		if (*line != '\0')
 			add_history(line);
+		if (!ft_strncmp(line, "exit", 5))
+			return (free(line), ft_lstclear_2(&lst), 0);
 		lst = parse_input(line);
 		if (!lst)
 			return (0);

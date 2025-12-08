@@ -3,7 +3,8 @@
 
 t_token	*new_node(char *str, int len)
 {
-	t_token *new_node;
+	t_token	*new_node;
+
 	new_node = ft_calloc(1, sizeof(t_token));
 	if (new_node == NULL)
 		return (NULL);
