@@ -41,6 +41,7 @@ int	main(void)
 		lst = parse_input(line);
 		if (!lst)
 			return (0);
+		get_cmds(lst);
 		free(line);
 	}
 	return (0);

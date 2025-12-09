@@ -19,6 +19,10 @@
 # include <errno.h>
 # include <signal.h>
 
+typedef struct  s_cmds {
+    char            *cmd;
+    t_type          type;
+}   t_cmds;
 
 void        sig_handler(int sig, siginfo_t *info, void *ucontext);
 int	        find_parameter(const char *s1, const char *s2, size_t size);
@@ -28,5 +32,7 @@ void	    ft_lstadd_back_2(t_token **lst, t_token *new);
 t_token     *new_node(char *str, int len);
 void        print_lst(t_token *lst);
 int         is_operator(char c);
+
+t_cmds      **get_cmds(t_token *lst);
 
 #endif
