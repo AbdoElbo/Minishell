@@ -99,6 +99,8 @@ t_token	*parse_input(char *line)
 		ft_lstadd_back_2(&lst, node);
 		w_count++;
 	}
+	if (!check_lst_syntax(lst))
+		return (NULL);
 	print_lst(lst);
 	return (lst);
 }

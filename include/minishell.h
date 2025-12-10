@@ -20,8 +20,9 @@
 # include <signal.h>
 
 typedef struct  s_cmds {
-    char            *cmd;
-    t_type          type;
+    char            **cmd;
+    t_type          *type;
+    char            **redir_file;
 }   t_cmds;
 
 void        sig_handler(int sig, siginfo_t *info, void *ucontext);
@@ -34,5 +35,6 @@ void        print_lst(t_token *lst);
 int         is_operator(char c);
 
 t_cmds      **get_cmds(t_token *lst);
+int		    check_lst_syntax(t_token *lst);
 
 #endif

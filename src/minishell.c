@@ -37,10 +37,10 @@ int	main(void)
 		if (*line != '\0')
 			add_history(line);
 		if (!ft_strncmp(line, "exit", 5))
-			return (free(line), ft_lstclear_2(&lst), 0);
+			return (free(line), 0);
 		lst = parse_input(line);
 		if (!lst)
-			return (0);
+			return (free(line), 0);
 		get_cmds(lst);
 		free(line);
 	}
