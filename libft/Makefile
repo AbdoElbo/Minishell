@@ -41,17 +41,22 @@ RM          := rm -f
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	ar rcsUu $(NAME) $(OBJS)
+MSG:
+	@printf "Compiling Libft"
+
+$(NAME): MSG $(OBJS)
+	@ar rcsUu $(NAME) $(OBJS)
+	@printf "\n"
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(LIBFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(LIBFLAGS) -c $< -o $@
+	@printf "."
 
 clean:
-	$(RM) $(OBJS)
+	@$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
 
 re: fclean all
 
