@@ -3,43 +3,42 @@
 
 // valgrind -s --leak-check=full --show-leak-kinds=definite --track-fds=yes --log-file="valgrind-%p.log" ./minishell
 
-void	sig_handler(int sig, siginfo_t *info, void *ucontext)
-{
-	(void)ucontext;
-	(void)info;
-	if (sig == SIGINT)
-	{
-		write(1, "\nhello\n", 8);
-		exit(EXIT_SUCCESS);
-	}
-	// else if (sig == CTRL+D)
-	// {
-	// 	write(1, "\nexit\n", 6);
-	// }
-}
+volatile sig_atomic_t	g_signal;
 
 int	main(void)
 {
-	struct sigaction	sa;
-	char				*line;
-	t_token				*lst;
 
-	sigemptyset(&sa.sa_mask);
-	sa.sa_sigaction = sig_handler;
-	sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGINT, &sa, NULL);
+	char	*line;
+	t_token	*lst;
+
 	lst = NULL;
+	signal_setup();
 	while (1)
 	{
+		g_signal = 0;
 		line = readline("Ourminishell>");
-		if (line == NULL)
+		if (!line)
 			break ;
+		if (line[0] == '\0')
+		{
+			free(line);
+			continue;
+		}
+		if (g_signal)
+		{
+			free(line);
+			continue;
+		}
 		if (*line != '\0')
 			add_history(line);
 		lst = parse_input(line);
 		if (!lst)
-			return (0);
+			return (free(line), 0);
+		/*
+		EXECUTION HERE
+		*/
 		free(line);
+		free_lst(&lst);
 	}
 	return (0);
 }

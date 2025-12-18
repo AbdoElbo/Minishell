@@ -44,3 +44,18 @@ void	print_lst(t_token *lst)
 		lst = lst->next;
 	}
 }
+
+void free_lst(t_token **lst) 
+{
+	t_token *tmp;
+
+	tmp = *lst;
+	while (tmp) {
+		*lst = tmp->next;
+		free(tmp->value);
+		tmp->value = NULL;
+		free(tmp);
+		tmp = *lst;
+	}
+	*lst = NULL;
+}
