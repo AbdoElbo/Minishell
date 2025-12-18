@@ -46,6 +46,31 @@ void	print_lst(t_token *lst)
 	}
 }
 
+void	print_cmds(t_cmds *lst)
+{
+	int i;
+	int j;
+
+	i = 0;
+	if (!lst)
+		return ;
+	while (lst)
+	{
+		printf("\nCommand block %i:\n", i);
+		printf("Command is : %s\n", lst->argv[0]);
+		j = 0;
+		while (lst->redir)
+		{
+			printf("Redir block %i:\n", j);
+			printf("type: %u, file: %s\n", lst->redir->type, lst->redir->file);
+			lst->redir = lst->redir->next;
+		}
+		printf("\n");
+		lst = lst->next;
+		i++;
+	}
+}
+
 int	check_lst_syntax(t_token *lst)
 {
 	t_type	prev_type;

@@ -23,6 +23,7 @@ int	main(void)
 	struct sigaction	sa;
 	char				*line;
 	t_token				*lst;
+	t_cmds				*cmds;
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_sigaction = sig_handler;
@@ -41,8 +42,11 @@ int	main(void)
 		lst = parse_input(line);
 		if (!lst)
 			return (free(line), 0);
-		get_cmds(lst);
+		cmds = get_cmds(lst);
 		free(line);
+		if (!cmds)
+			return (printf("fail cmd"), 1);
+		print_cmds(cmds);
 	}
 	return (0);
 }
