@@ -37,10 +37,10 @@ static int	add_argv(char **node_argv, char *new_argv)
 {
 	char    *temp;
 
-	temp = *node_argv;
+	temp = node_argv[0];
 	node_argv[0] = ft_strjoin(node_argv[0], new_argv);
 	free(temp);
-	if (!(*node_argv))
+	if (!node_argv[0])
 		return (write(2, "str_join in add_argv failed", 27), 0);
 	return (1);
 }
@@ -89,7 +89,7 @@ static int	add_redir(t_redir **redir, t_type redir_type, char *redir_file, char 
 	if (!add_argv(node_argv, &redir_file[i]))
 		return (write(2, "Mem alloc in add_redir strdup failed", 36), 0);
 	new_redir->type = redir_type;
-	ft_lstadd_back_3(redir, new_redir);
+	ft_redir_addback(redir, new_redir);
 	return (1);
 }
 
@@ -118,13 +118,13 @@ t_cmds	*get_cmds(t_token *lst)
 		}
 		else if (lst->type == PIPE)
 		{
-			ft_lstadd_back_4(&cmds, new_node);
+			ft_cmds_addback(&cmds, new_node);
 			new_node = create_newcmds();
 			if (!new_node)
 				return (NULL); //free everything with total free function.
 		}
 		lst = lst->next;
 	}
-	ft_lstadd_back_4(&cmds, new_node);
+	ft_cmds_addback(&cmds, new_node);
 	return (cmds);
 }

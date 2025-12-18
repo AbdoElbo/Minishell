@@ -91,12 +91,12 @@ t_token	*parse_input(char *line)
 	{
 		str = get_next_word(line, &i);
 		if (!str)
-			return (ft_lstclear_2(&lst), NULL); // free lst func here later
+			return (ft_token_clear(&lst), NULL); // free lst func here later
 		node = new_node(str, ft_strlen(str));
 		free (str);
 		if (!node)
-			return (write(2, "NEW_NODE failed", 15), ft_lstclear_2(&lst), NULL); // free lst func here later
-		ft_lstadd_back_2(&lst, node);
+			return (write(2, "NEW_NODE failed", 15), ft_token_clear(&lst), NULL); // free lst func here later
+		ft_token_addback(&lst, node);
 		w_count++;
 	}
 	if (!check_lst_syntax(lst))
