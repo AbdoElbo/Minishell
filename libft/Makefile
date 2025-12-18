@@ -17,6 +17,11 @@ OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 CC := cc
 
+GREEN = \033[0;32m
+BLUE = \033[0;34m
+RESET = \033[0m
+
+
 CFLAGS := -Wall -Wextra -Werror -g
 
 # -I is not neccassary since by default it checks the root directory but i use it.
@@ -42,7 +47,7 @@ RM          := rm -f
 all: $(NAME)
 
 MSG:
-	@printf "Compiling Libft"
+	@printf "$(GREEN)Compiling Libft"
 
 $(NAME): MSG $(OBJS)
 	@ar rcsUu $(NAME) $(OBJS)

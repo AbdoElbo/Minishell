@@ -26,7 +26,7 @@ libft:
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
 
 clean:
-	@echo "Cleaned Up!"
+	@printf "$(BLUE)Cleaned Up$(BLUE)\n"
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 	@rm -rf $(OBJS)
 
