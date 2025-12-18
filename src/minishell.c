@@ -32,10 +32,10 @@ int	main(void)
 	while (1)
 	{
 		line = readline("Ourminishell>");
-		if (line == NULL)
-			break ;
 		if (*line != '\0')
 			add_history(line);
+		else
+			continue ;
 		if (!ft_strncmp(line, "exit", 5))
 			return (free(line), 0);
 		lst = parse_input(line);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:20:16 by hariskon          #+#    #+#             */
-/*   Updated: 2025/12/05 16:42:47 by hkonstan         ###   ########.fr       */
+/*   Updated: 2025/12/17 16:00:10 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,22 @@ typedef struct s_list
 
 typedef enum e_type
 {
-    PIPE,
-    REDIR_OUT, // >
-    REDIR_APPEND, // >>
-    REDIR_IN, // <
-    REDIR_HEREDOC, // <<
-    WORD
-}   t_type;
+	PIPE,
+	REDIR_OUT, // >
+	REDIR_APPEND, // >>
+	REDIR_IN, // <
+	REDIR_HEREDOC, // <<
+	WORD
+}	t_type;
 
-typedef struct  s_token {
-    char            *value;
-    t_type          type;
-    struct  s_token *next;
-}   t_token;
+typedef struct s_token
+{
+	char			*value;
+	t_type			type;
+	struct s_token	*next;
+}	t_token;
 
-int 	ft_isspace(char c);
+int		ft_isspace(char c);
 int		ft_isalpha(int a);
 int		ft_isdigit(int a);
 int		ft_isalnum(int a);

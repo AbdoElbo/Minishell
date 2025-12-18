@@ -45,3 +45,23 @@ void	print_lst(t_token *lst)
 		lst = lst->next;
 	}
 }
+
+int	check_lst_syntax(t_token *lst)
+{
+	t_type	prev_type;
+	t_type	curr_type;
+
+	while (lst->next)
+	{
+		prev_type = lst->type;
+		curr_type = lst->next->type;
+		if (curr_type == prev_type)
+			return (printf("SYNTAX ERROR\n"), 0);
+		else if (prev_type == REDIR_OUT && curr_type == REDIR_IN)
+			return (printf("SYNTAX ERROR\n"), 0);
+		else if (prev_type == REDIR_IN && curr_type == REDIR_OUT)
+			return (printf("SYNTAX ERROR\n"), 0);
+		lst = lst->next;
+	}
+	return (1);
+}
