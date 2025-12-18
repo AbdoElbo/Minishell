@@ -4,7 +4,8 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:= src/minishell.c src/helper_func_1.c src/utils_1.c src/utils_2.c src/utils_3.c  
+SRCS	:= src/minishell.c src/helper_func_1.c src/utils_1.c src/utils_2.c \
+			src/utils_3.c src/abdo_signals.c
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
@@ -12,21 +13,26 @@ LIBFT  := $(LIBFT_DIR)/libft.a
 
 all: libft $(NAME)
 
-%.o: %.c Makefile
-	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+MSG:
+	@printf "Compiling Minishell"
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(OBJS) $(LIBFT) $(HEADERS) -lreadline -o $(NAME)
+%.o: %.c Makefile
+	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+	@printf "."
+
+$(NAME): MSG $(OBJS) $(LIBFT)
+	@$(CC) $(OBJS) $(LIBFT) $(HEADERS) -lreadline -o $(NAME)
 
 libft:
-	$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
 
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
+	@printf "$(BLUE)Cleaned Up$(BLUE)\n"
+	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 	@rm -rf $(OBJS)
 
 fclean: clean
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
 	@rm -rf $(NAME)
 
 re: fclean all

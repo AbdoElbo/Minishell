@@ -18,6 +18,7 @@
 # include <sys/wait.h>
 # include <errno.h>
 # include <signal.h>
+# include "abdo.h"
 
 typedef struct s_redir
 {
