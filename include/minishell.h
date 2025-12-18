@@ -18,6 +18,7 @@
 # include <sys/wait.h>
 # include <errno.h>
 # include <signal.h>
+# include "abdo.h"
 
 
 void	    sig_handler(int sig);
