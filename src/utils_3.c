@@ -71,8 +71,6 @@ int	return_i(char *redir_file)
 	return (i);
 }
 
-// <infile grep "text.txt"
-
 static int	add_redir(t_redir **redir, t_type redir_type, char *redir_file, char **node_argv)
 {
 	t_redir *new_redir;
