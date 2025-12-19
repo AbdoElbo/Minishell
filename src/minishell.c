@@ -44,7 +44,7 @@ int	main(void)
 		if (*line != '\0')
 			add_history(line);
 		if (!ft_strncmp(line, "exit", 5))
-			return (free(line), 0);
+			return (free(line), free(total), 0);
 		total->token = parse_input(line);
 		if (!total->token)
 			return (free(line), 0);
