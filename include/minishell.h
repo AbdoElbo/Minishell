@@ -22,8 +22,6 @@
 # include "haris.h"
 # include "lists.h"
 
-typedef enum e_type t_type ;
-
 int			find_parameter(const char *s1, const char *s2, size_t size);
 t_token		*parse_input(char *line);
 t_token		*new_node(char *str, int len);
@@ -33,7 +31,5 @@ int			is_operator(char c);
 t_cmds		*get_cmds(t_token *lst);
 void		print_cmds(t_cmds *lst);
 int			check_lst_syntax(t_token *lst);
-
-
 
 #endif

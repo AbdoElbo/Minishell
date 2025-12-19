@@ -19,4 +19,3 @@ void	signal_setup(void)
 	sigaction(SIGINT, &sa, NULL);
 	rl_catch_signals = 0;
 }
-
