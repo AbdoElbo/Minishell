@@ -47,7 +47,7 @@ int	main(void)
 			return (free(line), 0);
 		total->token = parse_input(line);
 		if (!total->token)
-			return (free(line), 0);
+			return (free(line), free(total), 0);
 		total->cmds = get_cmds(total->token);
 		if (!total->cmds)
 			return (printf("fail cmd"), 1);
