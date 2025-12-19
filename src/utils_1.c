@@ -50,7 +50,7 @@ static int	handler(char *line, int *i)
 	return (1);
 }
 
-static char	*get_next_word(char *line, int *i)
+static char *get_next_word(char *line, int *i)
 {
 	char	*word;
 	int		start;
