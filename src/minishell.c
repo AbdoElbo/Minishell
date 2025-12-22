@@ -14,19 +14,23 @@ static t_total_info	*init_total(void)
 		return (write(2, "Mem alloc in init total failed", 30), NULL);
 	total->cmds = NULL;
 	total->token = NULL;
+	total->our_envp = NULL;
 	return (total);
 }
-int	main(void)
+
+int	main(int argc, char **argv, char **envp)
 {
 	t_total_info	*total;
 	char			*line;
 
+	(void)argv;
+	(void)argc;
 	signal_setup();
 	while (1)
 	{
 		total = init_total();
 		if (!total)
-			return (1);
+			return (free_all(&total), 1);
 		g_signal = 0;
 		line = readline("Ourminishell>");
 		if (!line)
@@ -44,16 +48,17 @@ int	main(void)
 		if (*line != '\0')
 			add_history(line);
 		if (!ft_strncmp(line, "exit", 5))
-			return (free(line), free(total), 0);
+			return (free(line), free_all(&total), 0);
 		total->token = parse_input(line);
 		if (!total->token)
-			return (free(line), 0);
-		total->cmds = get_cmds(total->token);
-		if (!total->cmds)
-			return (printf("fail cmd"), 1);
+			return (free(line), free_all(&total), 0);
+		if (!expand(total, envp))
+			return (free(line), free_all(&total), 0);
+		if (!get_cmds(total, total->token))
+			return (free_all(&total), free(line), 1);
 		free(line);
-		// print_lst(total->token);
-		// print_cmds(total->cmds);
+		print_lst(total->token);
+		print_cmds(total->cmds);
 		free_all(&total);
 	}
 	return (0);

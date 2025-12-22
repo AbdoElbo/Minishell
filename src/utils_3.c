@@ -37,7 +37,7 @@ static int	add_argv(char **node_argv, char *new_argv)
 {
 	char	*temp;
 
-	temp = ft_strjoin(node_argv[0], new_argv);
+	temp = ft_strjoin_arg(node_argv[0], new_argv);
 	free(node_argv[0]);
 	node_argv[0] = temp;
 	if (!node_argv[0])
@@ -71,7 +71,8 @@ int	return_i(char *redir_file)
 	return (i);
 }
 
-static int	add_redir(t_cmds *node, t_type redir_type, char *redir_file)
+static int	add_redir(t_token **lst, t_cmds *node, t_type redir_type,
+	char *redir_file)
 {
 	t_redir	*new_redir;
 	int		i;
@@ -90,40 +91,44 @@ static int	add_redir(t_cmds *node, t_type redir_type, char *redir_file)
 		return (write(2, "Mem alloc in add_redir strdup failed", 36), 0);
 	new_redir->type = redir_type;
 	ft_redir_addback(&node->redir, new_redir);
+	*lst = (*lst)->next;
 	return (1);
 }
 
-t_cmds	*get_cmds(t_token *lst)
+int	add_node(t_cmds **cmds, t_cmds **new_node)
 {
-	t_cmds	*cmds;
+	ft_cmds_addback(cmds, *new_node);
+	*new_node = create_newcmds();
+	if (!*new_node)
+		return (0);
+	return (1);
+}
+
+int	get_cmds(t_total_info *total, t_token *lst)
+{
 	t_cmds	*new_node;
 
-	cmds = NULL;
 	new_node = create_newcmds();
 	if (!new_node)
-		return (NULL);
+		return (0);
 	while (lst)
 	{
 		if (lst->type == WORD)
 		{
 			if (!add_argv(new_node->argv, lst->value))
-				return (NULL);
+				return (0);
 		}
 		else if (lst->type != WORD && lst->type != PIPE)
 		{
-			if (!add_redir(new_node, lst->type, lst->next->value))
-				return (NULL);
-			lst = lst->next;
+			if (!add_redir(&lst, new_node, lst->type, lst->next->value))
+				return (0);
 		}
 		else if (lst->type == PIPE)
 		{
-			ft_cmds_addback(&cmds, new_node);
-			new_node = create_newcmds();
-			if (!new_node)
-				return (NULL);
+			if (!add_node(&total->cmds, &new_node))
+				return (0);
 		}
 		lst = lst->next;
 	}
-	ft_cmds_addback(&cmds, new_node);
-	return (cmds);
+	return (ft_cmds_addback(&total->cmds, new_node), 1);
 }

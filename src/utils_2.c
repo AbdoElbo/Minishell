@@ -48,25 +48,29 @@ void	print_lst(t_token *lst)
 
 void	print_cmds(t_cmds *lst)
 {
-	int i;
-	int j;
+	int		i;
+	int		j;
+	t_cmds	*temp;
+	t_redir *temp2;
 
+	temp = lst;
 	i = 0;
-	if (!lst)
+	if (!temp)
 		return ;
-	while (lst)
+	while (temp)
 	{
 		printf("\nCommand block %i:\n", i);
-		printf("Command is : %s\n", lst->argv[0]);
+		printf("Command is : %s\n", temp->argv[0]);
 		j = 0;
-		while (lst->redir)
+		temp2 = temp->redir;
+		while (temp2)
 		{
 			printf("Redir block %i:\n", j);
-			printf("type: %u, file: %s\n", lst->redir->type, lst->redir->file);
-			lst->redir = lst->redir->next;
+			printf("type: %u, fil: %s\n", temp2->type, temp2->file);
+			temp2 = temp2->next;
 		}
 		printf("\n");
-		lst = lst->next;
+		temp = temp->next;
 		i++;
 	}
 }

@@ -6,7 +6,7 @@ HEADERS	:= -I ./include
 
 SRCS	:= src/minishell.c src/__path_helper.c src/utils_1.c src/utils_2.c \
 			src/utils_3.c src/abdo_signals.c src/helper_cmds.c src/helper_redir.c \
-			src/helper_token.c src/free_functions.c
+			src/helper_token.c src/free_functions.c src/expand.c
 			
 OBJS 	:= $(SRCS:.c=.o)
 

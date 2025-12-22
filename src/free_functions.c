@@ -14,6 +14,10 @@ void	free_all(t_total_info **total)
 			ft_cmds_clear(&(*total)->cmds);
 			(*total)->cmds = NULL;
 		}
+		if ((*total)->our_envp)
+		{
+			free((*total)->our_envp);
+		}
 		free(*total);
 	}
 }
