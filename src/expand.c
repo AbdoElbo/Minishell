@@ -19,64 +19,103 @@ static int	copy_envp(t_total_info *total, char **envp)
 	{
 		total->our_envp[i] = ft_strdup(envp[i]);
 		if (!(total->our_envp[i]))
-			return(write(2, "Mem alloc in expand in strdup fail", 34), 0); 
+			return (write(2, "Mem alloc in expand in strdup fail", 34), 0);
 		i++;
 	}
 	return (1);
 }
 
-static int	find_parameter(const char *s1, const char *s2, size_t size)
+// static int	find_parameter(const char *s1, const char *s2, size_t size)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	while ((s1[i] || s2[i]) && i < size)
+// 	{
+// 		if (s1[i] != s2[i])
+// 			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+// 		i++;
+// 	}
+// 	if ((unsigned char)s1[i] != '=')
+// 		return (1);
+// 	return (0);
+// }
+
+int	handle_s_quote(char **string)
 {
-	size_t	i;
+	int		i;
+	int		j;
+	int		len;
+	char	*new_string;
 
 	i = 0;
-	while ((s1[i] || s2[i]) && i < size)
+	j = 0;
+	len = ft_strlen(*string) - 2;
+	new_string = ft_calloc(len + 1, sizeof(char));
+	if (!new_string)
+		return (0);
+	i = 0;
+	while ((*string)[i + j])
 	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
+		if ((*string)[i + j] != '\'')
+		{
+			new_string[i] = (*string)[i + j];
+			i++;
+		}
+		else
+			j++;
 	}
-	if ((unsigned char)s1[i] != '=')
-		return (1);
+	free((*string));
+	(*string) = new_string;
+	return (1);
+}
+
+static int	find_quotes(t_token *lst)
+{
+	int		i;
+	t_token	*list;
+
+	list = lst;
+	i = 0;
+	if (list && list->type == WORD)
+	{
+		while (list->value[i])
+		{
+			// if (list->value[i] == '"')
+			// {
+			// 	if (!handle_d_quote(&(list->value)))
+			// 		return (0);
+			// 	return (1);
+			// }
+			if (list->value[i] == '\'')
+			{
+				if (!handle_s_quote(&(list->value)))
+					return (0);
+				return (1);
+			}
+			i++;
+		}
+	}
 	return (0);
 }
 
-static int	find_d_quotes(t_token *lst)
-{
-	int i;
-	
-	while (lst)
-	{
-		i = 0;
-		if (lst->type == WORD)
-		{
-			while (lst->value[i])
-			{
-				if (lst->value[i++] == '"')
-					printf("hello");
-			}
-		}
-	}
-	return (1);
-}
 int	expand(t_total_info *total, char **envp)
 {
-	int	i;
-	char abc[4] = "abc";
-	t_token		*lst;
+	int		i;
+	t_token	*lst;
 
 	lst = total->token;
 	i = 0;
 	if (!copy_envp(total, envp))
 		return (0);
-	while (find_d_quotes(lst))
+	printf("\nline %i: %s\n", i + 1, total->our_envp[i]);
+	while (lst)
 	{
-		while (total->our_envp[i])
+		while (find_quotes(lst))
 		{
-		// printf("\nline %i: %s\n", i + 1, total->our_envp[i]);
-		if (find_parameter(total->our_envp[i], abc, ft_strlen(abc)))
-			write(1, "found one \n", 11);
+			print_lst(lst);
 		}
+		lst = lst->next;
 	}
 	return (1);
 }
