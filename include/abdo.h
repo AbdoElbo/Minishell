@@ -3,6 +3,7 @@
 # define ABDO_H
 
 #include "minishell.h"
+#include <stdarg.h>
 
 
 void	sig_handler(int sig);
