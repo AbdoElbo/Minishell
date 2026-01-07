@@ -2,10 +2,15 @@
 NAME	:= minishell
 CFLAGS	:= -Wextra -Wall -Werror -g
 
+GREEN = \033[1;32m
+BLUE = \033[1;34m
+RESET = \033[0m
+
 HEADERS	:= -I ./include
 
 SRCS	:= src/minishell.c src/helper_func_1.c src/utils_1.c src/utils_2.c \
-			src/utils_3.c src/abdo_signals.c
+			src/utils_3.c src/abdo_signals.c src/abdo_builtins_1.c \
+			src/abdo_builtins_2.c
 OBJS 	:= $(SRCS:.c=.o)
 
 LIBFT_DIR  := ./libft
@@ -27,7 +32,7 @@ libft:
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
 
 clean:
-	@printf "$(BLUE)Cleaned Up$(BLUE)\n"
+	@printf "$(BLUE)Cleaned Up$(RESET)\n"
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 	@rm -rf $(OBJS)
 

@@ -17,8 +17,8 @@ OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 CC := cc
 
-GREEN = \033[0;32m
-BLUE = \033[0;34m
+GREEN = \033[1;32m
+BLUE = \033[1;34m
 RESET = \033[0m
 
 
