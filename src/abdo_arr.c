@@ -49,3 +49,19 @@ char	**change_to_arr(t_env *env)
 	arr[i] = NULL;
 	return (arr);
 }
+
+int	word_count(char const *s)
+{
+	int	i;
+	int	words;
+
+	i = 0;
+	words = 0;
+	while (s[i])
+	{
+		if ((!is_space(s[i])) && (i == 0 || is_space(s[i - 1])))
+			words++;
+		i++;
+	}
+	return (words);
+}

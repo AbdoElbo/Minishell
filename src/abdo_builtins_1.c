@@ -1,29 +1,70 @@
 # include "abdo.h"
 
+int	change_old_path(t_env **env)
+{
+	t_env	*temp;
 
-// int		builtin_cd(t_env **env)
-// {
-// 	if (!*env)
-// 		return (0);
-// 	while (env)
-// 	{
-// 		if ()
-// 	}
-// }
+	if (!*env)
+		return (EXIT_FAILURE);
+	temp = *env;
+	while (temp)
+	{
+		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0) // ft_strncmp return 0 if there's no differnece between the two strings
+		{
 
-// int		builtin_pwd(t_env **env)
-// {
-// 	char	**arr;
+		}
+		temp = temp->next;
+	}
+}
 
-// 	if (!*env)
-// 		return (0);
-// 	arr = change_to_arr(env);
-// 	if (!arr)
-// 		return (0);
-// 	execve("bin/pwd", )
+int	update_new_path(t_env **env)
+{
+	t_env	*temp;
 
-// 	return (1);
-// }
+	if (!*env)
+		return (EXIT_FAILURE);
+	temp = *env;
+	while (temp)
+	{
+		if (ft_strncmp("PWD=", temp->string, 4) == 0) // ftstrncmp retunr 0 if there's no differnece between the two strings
+		{
+
+		}
+		temp = temp->next;
+	}
+}
+
+int		builtin_cd(t_env **env, char *new_path)
+{
+	if (!*env)
+		return (EXIT_FAILURE);
+	if (!new_path)
+	{
+		new_path = getenv("HOME");
+		if (!new_path)
+			return (printf("cd: HOME not set\n"), EXIT_FAILURE);
+	}
+	change_old_path(env);
+	if (chdir(new_path) != 0)
+	{
+		printf("cd: %s: No such file or directory\n", new_path);
+		return (EXIT_FAILURE);
+	}
+	update_new_path(env);
+	return (EXIT_SUCCESS);
+}
+
+int		builtin_pwd(void)
+{
+	char	*working_dir;
+
+	working_dir = getcwd(NULL, 0);
+	if (!working_dir)
+		return (EXIT_FAILURE);
+	printf("%s\n", working_dir);
+	free(working_dir);
+	return (EXIT_SUCCESS);
+}
 
 // int		builtin_env(t_env **env)
 // {

@@ -7,8 +7,7 @@ volatile sig_atomic_t	g_signal;
 
 int	main(void)
 {
-	t_cmds *cmds;
-	
+	// t_cmds *cmds;
 	char	*line;
 	t_token	*lst;
 
@@ -36,14 +35,14 @@ int	main(void)
 			continue ;
 		if (!ft_strncmp(line, "exit", 5))
 			return (free(line), 0);
-		lst = parse_input(line);
-		if (!lst)
-			return (free(line), 0);
-		cmds = get_cmds(lst);
-		free(line);
-		if (!cmds)
-			return (printf("fail cmd"), 1);
-		print_cmds(cmds);
+		// lst = parse_input(line);
+		// if (!lst)
+		// 	return (free(line), 0);
+		// cmds = get_cmds(lst);
+		// free(line);
+		// if (!cmds)
+		// 	return (printf("fail cmd"), 1);
+		// print_cmds(cmds);
 	}
 	return (0);
 }
