@@ -51,7 +51,7 @@ void	print_cmds(t_cmds *lst)
 	int		i;
 	int		j;
 	t_cmds	*temp;
-	t_redir *temp2;
+	t_redir	*temp2;
 
 	temp = lst;
 	i = 0;

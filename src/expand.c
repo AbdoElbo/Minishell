@@ -41,7 +41,36 @@ static int	copy_envp(t_total_info *total, char **envp)
 // 	return (0);
 // }
 
-int	handle_s_quote(char **string)
+// static int	handle_d_quote(char **string)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		len;
+// 	char	*new_string;
+
+// 	i = 0;
+// 	j = 0;
+// 	while ((*string)[i + j])
+// 	{
+// 		j = 0;
+// 		if ((*string)[i + j] != '$')
+// 			while (!isspace((*string)[i + j]))
+// 				j++;
+// 		if (j > 0)
+// 		{
+// 			find_parameter(total);
+// 		}
+// 	}
+// 	len = ft_strlen(*string) - 2;
+// 	new_string = ft_calloc(len + 1, sizeof(char));
+// 	if (!new_string)
+// 		return (0);
+// 	free((*string));
+// 	(*string) = new_string;
+// 	return (1);
+// }
+
+static int	handle_s_quote(char **string)
 {
 	int		i;
 	int		j;
@@ -81,12 +110,12 @@ static int	find_quotes(t_token *lst)
 	{
 		while (list->value[i])
 		{
-			// if (list->value[i] == '"')
-			// {
-			// 	if (!handle_d_quote(&(list->value)))
-			// 		return (0);
-			// 	return (1);
-			// }
+		// 	if (list->value[i] == '"')
+		// 	{
+		// 		if (!handle_d_quote(&(list->value)))
+		// 			return (0);
+		// 		return (1);
+		// 	}
 			if (list->value[i] == '\'')
 			{
 				if (!handle_s_quote(&(list->value)))
@@ -101,20 +130,15 @@ static int	find_quotes(t_token *lst)
 
 int	expand(t_total_info *total, char **envp)
 {
-	int		i;
 	t_token	*lst;
 
 	lst = total->token;
-	i = 0;
 	if (!copy_envp(total, envp))
 		return (0);
-	printf("\nline %i: %s\n", i + 1, total->our_envp[i]);
-	while (lst)
+	while (total->cmds)
 	{
 		while (find_quotes(lst))
-		{
-			print_lst(lst);
-		}
+			;
 		lst = lst->next;
 	}
 	return (1);
