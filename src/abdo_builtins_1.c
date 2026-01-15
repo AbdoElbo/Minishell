@@ -1,8 +1,9 @@
 #include "abdo.h"
 
-int	is_valid_identifier(char *str)
+int	is_unset_valid_identifier(char *str)
 {
-	int i;
+	int	i;
+	
 	if (!str || !str[0])
 		return (0);
 	if (!(ft_isalpha(str[0]) || str[0] == '_'))
@@ -29,7 +30,7 @@ static void	delete_node(t_env **env, t_env *prev, t_env *curr)
 	free(curr);
 }
 
-int	builtin_unset(t_env **env, char *str)
+static int	unset_each_var(t_env **env, char *str)
 {
 	t_env *prev;
 	t_env *curr;
@@ -37,7 +38,7 @@ int	builtin_unset(t_env **env, char *str)
 
 	if (!env || !*env || !str)
 		return (EXIT_SUCCESS);
-	if (!is_valid_identifier(str))
+	if (!is_unset_valid_identifier(str))
 	{
 		printf("unset: `%s': not a valid identifier\n", str);
 		return (EXIT_FAILURE);
@@ -53,6 +54,22 @@ int	builtin_unset(t_env **env, char *str)
 		curr = curr->next;
 	}
 	return (EXIT_SUCCESS);
+}
+
+int	builtin_unset(t_env **env, int argc, char **argv)
+{
+	int	i;
+	int	state;
+
+	i = 1;
+	state = EXIT_SUCCESS;
+	while (i < argc)
+	{
+		if (unset_each_var(env, argv[i]) == EXIT_FAILURE)
+			state = EXIT_FAILURE;
+		i++;
+	}
+	return (state);
 }
 
 int	builtin_pwd(void)
