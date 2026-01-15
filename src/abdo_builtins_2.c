@@ -22,7 +22,7 @@ char	*get_env_value(t_env *env, char *str)
 	return (NULL);
 }
 
-int	change_old_path(t_env **env, char *current_pwd)
+static int	change_old_path(t_env **env, char *current_pwd)
 {
 	t_env	*temp;
 
@@ -44,7 +44,7 @@ int	change_old_path(t_env **env, char *current_pwd)
 	return (EXIT_FAILURE);
 }
 
-int	update_new_path(t_env **env)
+static int	update_new_path(t_env **env)
 {
 	t_env	*temp;
 	char	*new_path;
@@ -71,7 +71,7 @@ int	update_new_path(t_env **env)
 	return (free(new_path), EXIT_FAILURE);
 }
 
-int	rollback_env(t_env **env, char **old, char **pwd)
+static int	rollback_env(t_env **env, char **old, char **pwd)
 {
 	t_env	*temp;
 
@@ -99,7 +99,7 @@ int	rollback_env(t_env **env, char **old, char **pwd)
 	return (free(*old), free(*pwd), EXIT_SUCCESS);
 }
 
-int		builtin_cd(t_env **env, char *new_path)
+int	builtin_cd(t_env **env, char *new_path)
 {
 	char	*copy_old;
 	char	*copy_pwd;
@@ -110,10 +110,10 @@ int		builtin_cd(t_env **env, char *new_path)
 		new_path = getenv("HOME");
 	if (!new_path)
 		return (printf("cd: HOME not set\n"), EXIT_FAILURE);
-	copy_old = get_env_value(env, "OLDPWD=");
+	copy_old = get_env_value(*env, "OLDPWD=");
 	if (!copy_old)
 		return (EXIT_FAILURE);
-	copy_pwd = get_env_value(env, "PWD=");
+	copy_pwd = get_env_value(*env, "PWD=");
 	if (!copy_pwd)
 		return (free(copy_old), EXIT_FAILURE);
 	if (change_old_path(env, copy_pwd) == EXIT_FAILURE)
@@ -127,3 +127,4 @@ int		builtin_cd(t_env **env, char *new_path)
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	return (free(copy_old), free(copy_pwd), EXIT_SUCCESS);
 }
+
