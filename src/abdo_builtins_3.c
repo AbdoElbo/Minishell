@@ -2,16 +2,21 @@
 
 int	is_export_valid_identifier(char *str)
 {
-	int i;
+	int	i;
+	int	counter;
+
 	if (!str || !str[0])
 		return (0);
 	if (!(ft_isalpha(str[0]) || str[0] == '_' ))
 		return (0);
 	i = 1;
+	counter = 0;
 	while (str[i])
 	{
 		if (!(ft_isalnum(str[i]) || str[i] == '_' || str[i] == '='))
 			return (0);
+		if (str[i] == '=')
+			break ;
 		i++;
 	}
 	return (1);
@@ -23,8 +28,12 @@ static int	export_each_var(t_env **env, char *str)
 	int len;
 	int updated;
 
-	if (!env || !*env || !str)
+	if (!env)
 		return (EXIT_SUCCESS);
+	if (!*env)
+		return (add_node(env, temp, str), EXIT_SUCCESS);
+	if (!str)
+		//printf the whole env with the eport format
 	if (!is_export_valid_identifier(str))
 	{
 		printf("export: `%s': not a valid identifier\n", str);
@@ -61,10 +70,20 @@ int	builtin_export(t_env **env, int argc, char **argv)
 }
 
 
-// int	builtin_echo(const char *env, int argc, char )
-// {
+int	builtin_echo(char *env, int argc, char **argv)
+{
+	int	i;
+	int	new_line;
 
-// }
+	i = 1;
+	new_line = 0;
+	while (i < argc)
+	{
+
+		i++;
+	}
+	return (EXIT_SUCCESS);
+}
 
 
 
