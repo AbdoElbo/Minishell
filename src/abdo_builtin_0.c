@@ -2,7 +2,7 @@
 
 #include "abdo.h"
 
-static int	get_identifier_and_value(char *str, char **identifier,
+int	get_identifier_and_value(char *str, char **identifier,
 				char **value, int *has_value)
 {
 	int	i;

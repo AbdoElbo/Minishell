@@ -36,8 +36,8 @@ static t_env	*find_env(t_env *env, char *identifier)
 static int	export_each_var(t_env **env, char *str)
 {
 	t_env	*temp;
-	char	*identifier;
-	char	*value;
+	char	*str_iden;
+	char	*str_value;
 	int		has_value;
 
 	if (!is_export_valid_identifier(str))
@@ -45,14 +45,30 @@ static int	export_each_var(t_env **env, char *str)
 		printf("export: `%s': not a valid identifier\n", str);
 		return (EXIT_FAILURE);
 	}
-	temp = find_env(env, identifier);
+	if (!get_identifier_and_value(str, &str_iden, &str_value, &has_value))
+		return (free(str_iden), free(str_value), EXIT_FAILURE);
+	temp = find_env(*env, str_iden);
 	if (temp)
 	{
 		if (temp->has_value)
 		{
 			free(temp->value);
-
+			temp->value = str_value;
+			temp->has_value = 1;
 		}
+		else
+			free(temp->value);
+	}
+	else
+	{
+		temp = malloc(sizeof(t_env));
+		if (!temp)
+			return (free(str_iden), free(str_value), EXIT_FAILURE);
+		temp->identifier = str_iden;
+		temp->value = str_value;
+		temp->has_value = has_value;
+		temp->next = *env;
+		*env = temp;
 	}
 	return (EXIT_SUCCESS);
 }
