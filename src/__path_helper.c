@@ -16,7 +16,8 @@ char	*ft_strjoin_arg(char const *s1, char const *s2)
 	if (s1)
 		while (*s1)
 			new_string[i++] = *s1++;
-	new_string[i++] = ' ';
+	if (i != 0)
+		new_string[i++] = ' ';
 	if (s2)
 		while (*s2)
 			new_string[i++] = *s2++;

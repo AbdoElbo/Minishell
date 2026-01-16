@@ -29,6 +29,7 @@ void		print_lst(t_token *lst);
 int			is_operator(char c);
 
 int			get_cmds(t_total_info *total, t_token *lst);
+void		check_our_envp(t_envp *our_envp, char **envp);
 void		print_cmds(t_cmds *lst);
 int			check_lst_syntax(t_token *lst);
 

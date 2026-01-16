@@ -1,29 +1,33 @@
 
 #include "minishell.h"
 
-static int	copy_envp(t_total_info *total, char **envp)
-{
-	int	i;
+// static char	**get_envp(t_total_info *total)
+// {
+// 	t_envp	*temp;
+// 	char	**s_envp;
+// 	int		i;
 
-	(void)total;
-	i = 0;
-	if (!envp)
-		return (0);
-	while (envp[i])
-		i++;
-	total->our_envp = ft_calloc(i + 1, sizeof(char *));
-	if (!total->our_envp)
-		return (write(2, "Mem alloc in expand failed", 26), 0);
-	i = 0;
-	while (envp[i])
-	{
-		total->our_envp[i] = ft_strdup(envp[i]);
-		if (!(total->our_envp[i]))
-			return (write(2, "Mem alloc in expand in strdup fail", 34), 0);
-		i++;
-	}
-	return (1);
-}
+// 	i = 0;
+// 	temp = total->our_envp;
+// 	s_envp = ft_calloc((ft_t_envp_size(total->our_envp) + 1), sizeof(char *));
+// 	if (!s_envp)
+// 		return (write(2, "Memalloc 1 in expand failed", 30), NULL);
+// 	while (temp)
+// 	{
+// 		s_envp[i] = ft_strdup(temp->string);
+// 		if (!s_envp[i])
+// 		{
+// 			i--;
+// 			while (i >= 0)
+// 				free(s_envp[i--]);
+// 			free(s_envp);
+// 			return (write(2, "Memalloc 2 in expand in strdup fail", 34), NULL);
+// 		}
+// 		i++;
+// 		temp = temp->next;
+// 	}
+// 	return (s_envp);
+// }
 
 // static int	find_parameter(const char *s1, const char *s2, size_t size)
 // {
@@ -41,105 +45,204 @@ static int	copy_envp(t_total_info *total, char **envp)
 // 	return (0);
 // }
 
-// static int	handle_d_quote(char **string)
+// static int	expand_var()
 // {
-// 	int		i;
-// 	int		j;
-// 	int		len;
-// 	char	*new_string;
-
-// 	i = 0;
-// 	j = 0;
-// 	while ((*string)[i + j])
-// 	{
-// 		j = 0;
-// 		if ((*string)[i + j] != '$')
-// 			while (!isspace((*string)[i + j]))
-// 				j++;
-// 		if (j > 0)
-// 		{
-// 			find_parameter(total);
-// 		}
-// 	}
-// 	len = ft_strlen(*string) - 2;
-// 	new_string = ft_calloc(len + 1, sizeof(char));
-// 	if (!new_string)
-// 		return (0);
-// 	free((*string));
-// 	(*string) = new_string;
-// 	return (1);
+// 	//iterares until it finds an '"' or '\0' or ' ' and searched our envp to find the value of that var and appends it to cmds[i]
 // }
 
-static int	handle_s_quote(char **string)
+static int	finish_argv(int *arg_index, t_cmds *cmds, char *temp)
 {
+	char	**temp1;
 	int		i;
-	int		j;
-	int		len;
-	char	*new_string;
 
+	*arg_index = *arg_index + 1;
+	temp1 = ft_calloc(*arg_index + 1, sizeof(char *));
 	i = 0;
-	j = 0;
-	len = ft_strlen(*string) - 2;
-	new_string = ft_calloc(len + 1, sizeof(char));
-	if (!new_string)
-		return (0);
-	i = 0;
-	while ((*string)[i + j])
+	while (cmds->argv && cmds->argv[i])
 	{
-		if ((*string)[i + j] != '\'')
-		{
-			new_string[i] = (*string)[i + j];
-			i++;
-		}
-		else
-			j++;
+		temp1[i] = ft_strdup(cmds->argv[i]);
+		if (!temp1[i])
+			return (free_arr(temp1), 0);
+		i++;
 	}
-	free((*string));
-	(*string) = new_string;
+	temp1[i] = ft_strdup(temp);
+	if (!temp1[i])
+		return (free_arr(temp1), 0);
+	free_arr(cmds->argv);
+	cmds->argv = temp1;
+	free(temp); // not sure if it's actually freed or not,, check !!!
 	return (1);
 }
 
-static int	find_quotes(t_token *lst)
+static void	char_append(char *temp, char c)
 {
-	int		i;
-	t_token	*list;
+	int	size;
 
-	list = lst;
-	i = 0;
-	if (list && list->type == WORD)
-	{
-		while (list->value[i])
-		{
-		// 	if (list->value[i] == '"')
-		// 	{
-		// 		if (!handle_d_quote(&(list->value)))
-		// 			return (0);
-		// 		return (1);
-		// 	}
-			if (list->value[i] == '\'')
-			{
-				if (!handle_s_quote(&(list->value)))
-					return (0);
-				return (1);
-			}
-			i++;
-		}
-	}
-	return (0);
+	size = ft_strlen(temp);
+	printf("\n%i\n", size);
+	temp[size] = c;
 }
 
-int	expand(t_total_info *total, char **envp)
+int	increase_temp_size(char **temp, int *size)
 {
-	t_token	*lst;
+	char	*new_temp;
 
-	lst = total->token;
-	if (!copy_envp(total, envp))
+	(*size) *= 2;
+	new_temp = ft_calloc(*size, sizeof(char));
+	if (!new_temp)
 		return (0);
-	while (total->cmds)
+	ft_strlcpy(new_temp, *temp, (*size) / 2);
+	return (1);
+}
+
+static int	expand_one_cmd(t_cmds *cmds, enum e_state state)
+{
+	char	*str;
+	int		arg_index;
+	char	*temp;
+	int		str_size;
+	int		i;
+
+	i = 0;
+	arg_index = 0;
+	str = cmds->whole_cmd;
+	str_size = ft_strlen(str) * 2;
+	temp = ft_calloc(str_size, sizeof(char));
+	if (!temp)
+		return (write(2, "memalloc 2 fail in expand_one_cmd", 33), 0);
+	while (str[i])
 	{
-		while (find_quotes(lst))
-			;
-		lst = lst->next;
+		if (ft_strlen(temp) == str_size - 2) // the 2 here is a bit random, we just indicate that we are starting to reach the end of the string
+		{
+			if (!increase_temp_size(&temp, &str_size))
+				return (0);
+		}
+		if (state == NORMAL)
+		{
+			if (str[i] == '"')
+				state = DQUOTE;
+			else if (str[i] == '\'')
+				state = SQUOTE;
+			// else if (str[i] == '$')
+			// 	expand_var();
+			else if (ft_isspace(str[i]) || str[i + 1] == '\0')
+			{
+				if (!ft_isspace(str[i]))
+					char_append(temp, str[i]);
+				if (!finish_argv(&arg_index, cmds, temp))
+					return (free(temp), 0);
+				temp = ft_calloc(str_size, sizeof(char));
+				if (!temp)
+					return (write(2, "memalloc 2 fail in expand_one_cmd", 33), 0);
+			}
+			else
+				char_append(temp, str[i]);
+		}
+		else if (state == SQUOTE)
+		{
+			if (str[i] == '\'')
+				state = NORMAL;
+			else
+				char_append(temp, str[i]);
+		}
+		else
+		{
+			if (str[i] == '"')
+				state = NORMAL;
+			// else if (str[i] == '$')
+			// 	expand_var();
+			else
+				char_append(temp, str[i]);
+		}
+		i++;
+	}
+	return (free(temp), 1);
+}
+
+void	is_quote(int *space_c, int *i, t_cmds *cmds, char *temp)
+{
+	char	*str;
+
+	str = cmds->whole_cmd;
+	if ((str)[(*i)] == '\'')
+	{
+		temp[*i] = str[(*i) + *space_c];
+		*i = *i +1;
+		while (((str)[*i] != '\''))
+		{
+			printf("%s\n", temp);
+			printf("%s\n", str);
+			printf("%c\n", str[(*i) + *space_c]);
+			printf("%c\n", temp[*i]);
+			temp[*i] = str[(*i) + *space_c];
+			*i = *i +1;
+			printf("--------------------\n");
+			printf("%s\n", temp);
+			printf("%s\n", str);
+			printf("%c\n", str[(*i) + *space_c]);
+			printf("%c\n", temp[*i - 1]);
+		}
+	}
+	if ((str)[(*i)] == '"')
+	{
+		temp[*i] = str[(*i) + *space_c];
+		*i = *i +1;
+		while (((str)[*i] != '"'))
+		{
+			temp[*i] = (str)[*i + *space_c];
+			*i = *i +1;
+		}
+	}
+	if (ft_isspace((str)[(*i) + *space_c]))
+	{
+		temp[*i] = (str)[*i + *space_c];
+		*i = *i +1;
+		*space_c = *space_c + 1;
+	}
+}
+
+int	fix_whole_command(t_cmds *cmds)
+{
+	char	*temp;
+	int		i;
+	int		space_c;
+	char	*str;
+
+	str = cmds->whole_cmd;
+	temp = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!temp)
+		return (free(temp), 0);
+	i = 0;
+	space_c = 0;
+	while ((str)[i + space_c])
+	{
+		if (((str)[i] == '\'') || ((str)[i] == '"') || ft_isspace((str)[i + space_c]))
+			is_quote(&space_c, &i, cmds, temp);
+		while ((str)[i + space_c] && ft_isspace((str)[i + space_c]))
+			space_c++;
+		temp[i] = (str)[i + space_c];
+		i++;
+	}
+	free((str));
+	str = ft_strdup(temp);
+	if (!(str))
+		return (free(temp), 0);
+	return (free(temp), 1);
+}
+
+int	expand(t_total_info *total)
+{
+	t_cmds			*cmds;
+	enum e_state	state;
+
+	cmds = total->cmds;
+	while (cmds)
+	{
+		state = NORMAL;
+		if (!fix_whole_command(cmds))
+			return (0);
+		expand_one_cmd(cmds, state);
+		cmds = cmds->next;
 	}
 	return (1);
 }

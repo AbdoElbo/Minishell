@@ -5,20 +5,34 @@
 
 volatile sig_atomic_t	g_signal;
 
-static t_envp	*copy_envp(t_total_info *total, char **envp)
+t_envp	*new_envp_node(char *str)
+{
+	t_envp	*new_envp;
+
+	new_envp = ft_calloc(1, sizeof(t_envp));
+	if (!new_envp)
+		return (write(2, "Memaloc 2 fail new_envp", 28), NULL);
+	new_envp->string = ft_strdup(str);
+	if (!new_envp->string)
+		return (write(2, "Memaloc 2 fail new_envp", 28), free(new_envp), NULL);
+	new_envp->next = NULL;
+	return (new_envp);
+}
+
+static int	copy_envp(t_total_info *total, char **envp)
 {
 	int		i;
-	t_envp	*temp_envp;
+	t_envp	*new_envp;
 
 	i = 0;
 	if (!envp)
-		return (NULL);
-	i = 0;
+		return (0);
 	while (envp[i])
 	{
-		ft_t_envp_addback = ft_strdup(envp[i]);
-		if (!(total->our_envp[i]))
-			return (write(2, "Mem alloc in expand in strdup fail", 34), 0);
+		new_envp = new_envp_node(envp[i]);
+		if (!new_envp)
+			return (0);
+		ft_t_envp_addback(&total->our_envp, new_envp);
 		i++;
 	}
 	return (1);
@@ -33,8 +47,7 @@ static t_total_info	*init_total(char **envp)
 		return (write(2, "1st Mem alloc in init total failed", 30), NULL);
 	total->cmds = NULL;
 	total->token = NULL;
-	total->our_envp = copy_envp(total, envp);
-	if (!total->our_envp)
+	if (!copy_envp(total, envp))
 		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
 	return (total);
 }
@@ -71,15 +84,16 @@ int	main(int argc, char **argv, char **envp)
 		if (!ft_strncmp(line, "exit", 5))
 			return (free(line), free_all(&total), 0);
 		total->token = parse_input(line);
-		print_lst(total->token);
+
 		if (!total->token)
 			return (free(line), free_all(&total), 0);
 		if (!get_cmds(total, total->token))
 			return (free_all(&total), free(line), 1);
-		if (!expand(total, envp))
-			return (free(line), free_all(&total), 0);
+		// if (!expand(total))
+		// 	return (free(line), free_all(&total), 0);
 		free(line);
-		print_lst(total->token);
+		// check_our_envp(total->our_envp, envp);
+		// print_lst(total->token);
 		print_cmds(total->cmds);
 		free_all(&total);
 	}

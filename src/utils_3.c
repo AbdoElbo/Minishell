@@ -14,6 +14,7 @@ static t_cmds	*create_newcmds(void)
 	*new_node->argv = NULL;
 	new_node->next = NULL;
 	new_node->redir = NULL;
+	new_node->whole_cmd = NULL;
 	return (new_node);
 }
 
@@ -33,15 +34,18 @@ static t_cmds	*create_newcmds(void)
 // 	return (i);
 // }
 
-static int	add_argv(char **node_argv, char *new_argv)
+static int	add_argv(t_cmds *new_node, char *new_argv)
 {
 	char	*temp;
 
-	temp = ft_strjoin_arg(node_argv[0], new_argv);
-	free(node_argv[0]);
-	node_argv[0] = temp;
-	if (!node_argv[0])
+	temp = ft_strjoin_arg(new_node->whole_cmd, new_argv);
+	if (!(temp))
 		return (write(2, "str_join in add_argv failed", 27), 0);
+	free(new_node->whole_cmd);
+	new_node->whole_cmd = ft_strdup(temp);
+	free(temp);
+	if (!(new_node->whole_cmd))
+		return (write(2, "ft_strdup in add_argv failed", 28), 0);
 	return (1);
 }
 
@@ -87,7 +91,7 @@ static int	add_redir(t_token **lst, t_cmds *node, t_type redir_type,
 		return (write(2, "Mem alloc in add_redir ft_substr failed", 39), 0);
 	while (redir_file[i] && ft_isspace(redir_file[i]))
 		i++;
-	if (!add_argv(node->argv, &redir_file[i]))
+	if (!add_argv(node, &redir_file[i]))
 		return (write(2, "Mem alloc in add_redir strdup failed", 36), 0);
 	new_redir->type = redir_type;
 	ft_redir_addback(&node->redir, new_redir);
@@ -115,7 +119,7 @@ int	get_cmds(t_total_info *total, t_token *lst)
 	{
 		if (lst->type == WORD)
 		{
-			if (!add_argv(new_node->argv, lst->value))
+			if (!add_argv(new_node, lst->value))
 				return (0);
 		}
 		else if (lst->type != WORD && lst->type != PIPE)
