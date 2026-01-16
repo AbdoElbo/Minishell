@@ -9,6 +9,9 @@
 typedef struct s_env
 {
 	char			*string;
+	char			*identifier;
+	char			*value;
+	int				has_value;
 	struct s_env	*next;
 }	t_env;
 
@@ -20,7 +23,6 @@ void	free_arr(char **arr, int i);
 char	**change_to_arr(t_env *env);
 int		word_count(char const *s);
 
-int		is_valid_identifier(char *str);
 char	*get_env_value(t_env *env, char *str);
 
 int		builtin_unset(t_env **env, char *str);
