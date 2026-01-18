@@ -50,6 +50,7 @@ int	update_env(t_env **env)
 		temp->identifier = identifier;
 		temp->value = value;
 		temp->has_value = has_value;
+		temp->exported = 1;
 		temp = temp->next;
 	}
 	return (EXIT_SUCCESS);

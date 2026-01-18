@@ -18,7 +18,7 @@ static int	is_unset_valid_identifier(char *str)
 	return (1);
 }
 
-static void	delete_node(t_env **env, t_env *prev, t_env *curr)
+void	delete_node(t_env **env, t_env *prev, t_env *curr)
 {
 	if (!env || !curr)
 		return;
@@ -93,8 +93,8 @@ int	builtin_env(t_env *env)
 		return (EXIT_SUCCESS); // apparently, bash retuns 0 (SUCCESS) even if env is empty
 	while (env)
 	{
-		if (env->string)
-			printf("%s\n", env->string);
+		if (env->exported && env->has_value)
+			printf("%s=%s\n", env->identifier, env->value);
 		env = env->next;
 	}
 	return (EXIT_SUCCESS);

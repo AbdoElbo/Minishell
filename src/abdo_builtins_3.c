@@ -50,6 +50,7 @@ static int	export_each_var(t_env **env, char *str)
 	temp = find_env(*env, str_iden);
 	if (temp)
 	{
+		temp->exported = 1;
 		if (temp->has_value)
 		{
 			free(temp->value);
@@ -58,6 +59,7 @@ static int	export_each_var(t_env **env, char *str)
 		}
 		else
 			free(temp->value);
+		free(temp->identifier);
 	}
 	else
 	{
@@ -67,12 +69,37 @@ static int	export_each_var(t_env **env, char *str)
 		temp->identifier = str_iden;
 		temp->value = str_value;
 		temp->has_value = has_value;
+		temp->exported = 1;
 		temp->next = *env;
 		*env = temp;
 	}
 	return (EXIT_SUCCESS);
 }
 
+static int	print_export_format(t_env *env)
+{
+	t_env	*sorted;
+
+	sorted = NULL;
+	if (!env)
+		return (EXIT_FAILURE);
+	sorted = create_sorted_env(env);
+	if (!sorted)
+		return (EXIT_FAILURE);
+	while (sorted)
+	{
+		if (sorted->exported)
+		{
+			if (!sorted->has_value)
+				printf("declare -x %s\n", sorted->identifier);
+			else
+				printf("declare -x %s=\"%s\"\n", sorted->identifier, sorted->value);
+		}
+		sorted = sorted->next;
+	}
+	free_sorted_copy(sorted);
+	return (EXIT_SUCCESS);
+}
 
 int	builtin_export(t_env **env, int argc, char **argv)
 {
@@ -82,7 +109,10 @@ int	builtin_export(t_env **env, int argc, char **argv)
 	i = 1;
 	state = EXIT_SUCCESS;
 	if (argc == 1)
-		//printf the whole env with the export format
+	{
+		if (!print_export_format(*env))
+			return (EXIT_FAILURE);
+	}
 	while (i < argc)
 	{
 		if (export_each_var(env, argv[i]) == EXIT_FAILURE)
