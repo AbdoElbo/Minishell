@@ -1,5 +1,4 @@
 
-
 #include "abdo.h"
 
 int	get_identifier_and_value(char *str, char **identifier,
@@ -55,3 +54,19 @@ int	update_env(t_env **env)
 	}
 	return (EXIT_SUCCESS);
 }
+
+t_env	*find_env(t_env *env, char *identifier)
+{
+	int	len;
+
+	len = ft_strlen(identifier);
+	while (env)
+	{
+		if (ft_strncmp(env->identifier, identifier, len) == 0
+			&& env->identifier[len] == '\0')
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
+}
+
