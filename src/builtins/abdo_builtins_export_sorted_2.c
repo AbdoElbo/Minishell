@@ -1,23 +1,24 @@
-#include "abdo.h"
 
-static int	create_sorted_env(t_env *env)
+#include "builtins.h"
+
+int	create_sorted_env(t_env **sorted, t_env *env)
 {
-	t_env *temp;
 	t_env *new;
 
-	if (!env)
-		return (0);
-	new = NULL;
-	temp = env;
-	while (temp)
+	while (env)
 	{
-		env_addback(&new, temp);
-		temp = temp->next;
+		new = create_node(env->identifier, env->value,
+			env->has_value, env->exported);
+		if (!new)
+			return (free_sorted_copy(*sorted), 0);
+		env_addback(sorted, new);
+		env = env->next;
 	}
+	sort_list(sorted);
 	return (1);
 }
 
-static void	free_sorted_copy(t_env *sorted)
+void	free_sorted_copy(t_env *sorted)
 {
 	t_env	*temp;
 
@@ -25,8 +26,10 @@ static void	free_sorted_copy(t_env *sorted)
 	while (sorted)
 	{
 		temp = sorted->next;
-		free(sorted->identifier);
-		free(sorted->value);
+		if (sorted->identifier)
+			free(sorted->identifier);
+		if (sorted->value)
+			free(sorted->value);
 		free(sorted);
 		sorted = temp;
 	}
@@ -35,13 +38,14 @@ static void	free_sorted_copy(t_env *sorted)
 int	print_export_format(t_env *env)
 {
 	t_env	*sorted;
+	t_env	*sorted_head;
 
 	sorted = NULL;
 	if (!env)
 		return (EXIT_FAILURE);
-	sorted = create_sorted_env(env);
-	if (!sorted)
+	if (!create_sorted_env(&sorted ,env))
 		return (EXIT_FAILURE);
+	sorted_head = sorted;
 	while (sorted)
 	{
 		if (sorted->exported)
@@ -53,6 +57,6 @@ int	print_export_format(t_env *env)
 		}
 		sorted = sorted->next;
 	}
-	free_sorted_copy(sorted);
+	free_sorted_copy(sorted_head);
 	return (EXIT_SUCCESS);
 }
