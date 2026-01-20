@@ -92,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 			return (free(line), free_all(&total), 0);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
-		// print_lst(total->token);
+		print_lst(total->token);
 		print_cmds(total->cmds);
 		free_all(&total);
 	}

@@ -68,4 +68,11 @@ int			ft_t_envp_size(t_envp *envp);
 void		ft_t_envp_delone(t_envp *envp);
 void		ft_t_envp_addback(t_envp **envp, t_envp *new);
 
+typedef struct s_total_info
+{
+	t_token			*token;
+	t_cmds			*cmds;
+	t_envp			*our_envp;
+}	t_total_info;
+
 #endif

@@ -19,8 +19,9 @@
 # include <errno.h>
 # include <signal.h>
 # include "abdo.h"
-# include "haris.h"
 # include "lists.h"
+# include "haris.h"
+# include "expand.h"
 
 char		*ft_strjoin_arg(char const *s1, char const *s2);
 t_token		*parse_input(char *line);

@@ -1,6 +1,6 @@
 # include "abdo.h"
 
-void sig_handler(int sig)
+void	sig_handler(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);

@@ -1,3 +1,4 @@
+
 #include "minishell.h"
 
 void	free_all(t_total_info **total)
@@ -33,4 +34,14 @@ void	free_arr(char **arr)
 		i++;
 	}
 	free(arr);
+}
+
+void	free_data(t_expand *data)
+{
+	if (data)
+	{
+		if (data->temp)
+			free(data->temp);
+		free(data);
+	}
 }
