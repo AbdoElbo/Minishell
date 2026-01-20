@@ -70,7 +70,6 @@ static int	finish_argv(int *arg_index, t_cmds *cmds, char *temp)
 		return (free_arr(temp1), 0);
 	free_arr(cmds->argv);
 	cmds->argv = temp1;
-	free(temp); // not sure if it's actually freed or not,, check !!!
 	return (1);
 }
 
@@ -125,15 +124,17 @@ static int	expand_one_cmd(t_cmds *cmds, enum e_state state)
 				state = SQUOTE;
 			// else if (str[i] == '$')
 			// 	expand_var();
-			else if (ft_isspace(str[i]) || str[i + 1] == '\0')
+			else if (ft_isspace(str[i]))
 			{
-				if (!ft_isspace(str[i]))
-					char_append(temp, str[i]);
 				if (!finish_argv(&arg_index, cmds, temp))
 					return (free(temp), 0);
-				temp = ft_calloc(str_size, sizeof(char));
-				if (!temp)
-					return (write(2, "memalloc 2 fail in expand_one_cmd", 33), 0);
+				ft_bzero(temp, ft_strlen(temp));
+			}
+			else if (str[i + 1] == '\0')
+			{
+				char_append(temp, str[i]);
+				if (!finish_argv(&arg_index, cmds, temp))
+					return (free(temp), 0);
 			}
 			else
 				char_append(temp, str[i]);
@@ -141,14 +142,24 @@ static int	expand_one_cmd(t_cmds *cmds, enum e_state state)
 		else if (state == SQUOTE)
 		{
 			if (str[i] == '\'')
+			{
 				state = NORMAL;
+				if (str[i + 1] == '\0')
+					if (!finish_argv(&arg_index, cmds, temp))
+						return (free(temp), 0);
+			}
 			else
 				char_append(temp, str[i]);
 		}
 		else
 		{
 			if (str[i] == '"')
+			{
 				state = NORMAL;
+				if (str[i + 1] == '\0')
+					if (!finish_argv(&arg_index, cmds, temp))
+						return (free(temp), 0);
+			}
 			// else if (str[i] == '$')
 			// 	expand_var();
 			else
@@ -170,17 +181,8 @@ void	is_quote(int *space_c, int *i, t_cmds *cmds, char *temp)
 		*i = *i +1;
 		while (((str)[*i] != '\''))
 		{
-			printf("%s\n", temp);
-			printf("%s\n", str);
-			printf("%c\n", str[(*i) + *space_c]);
-			printf("%c\n", temp[*i]);
 			temp[*i] = str[(*i) + *space_c];
 			*i = *i +1;
-			printf("--------------------\n");
-			printf("%s\n", temp);
-			printf("%s\n", str);
-			printf("%c\n", str[(*i) + *space_c]);
-			printf("%c\n", temp[*i - 1]);
 		}
 	}
 	if ((str)[(*i)] == '"')
@@ -216,6 +218,7 @@ int	fix_whole_command(t_cmds *cmds)
 	space_c = 0;
 	while ((str)[i + space_c])
 	{
+		//I NEED TO FIX IT HERE SO IT WONT SKIP THE LAST LETTER OF EACH ARGV FROM THE SECND AND ON.
 		if (((str)[i] == '\'') || ((str)[i] == '"') || ft_isspace((str)[i + space_c]))
 			is_quote(&space_c, &i, cmds, temp);
 		while ((str)[i + space_c] && ft_isspace((str)[i + space_c]))
