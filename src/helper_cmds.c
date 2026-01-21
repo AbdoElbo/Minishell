@@ -31,6 +31,8 @@ void	ft_cmds_delone(t_cmds *cmds)
 		}
 		free(cmds->argv);
 		ft_redir_clear(&cmds->redir);
+		free(cmds->whole_cmd);
+		cmds->whole_cmd = NULL;
 		cmds->argv = NULL;
 		cmds->redir = NULL;
 		cmds->next = NULL;

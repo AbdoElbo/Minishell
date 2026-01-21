@@ -14,9 +14,7 @@ void	is_quote_space(int *j, int *i, t_cmds *cmds, char *temp)
 {
 	char	*str;
 	char	quote;
-	int		k;
 
-	k = 0;
 	str = cmds->whole_cmd;
 	if (str[*j] == '\'' || str[*j] == '"')
 	{

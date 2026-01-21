@@ -17,7 +17,7 @@ void	free_all(t_total_info **total)
 		}
 		if ((*total)->our_envp)
 		{
-			free((*total)->our_envp);
+			ft_t_envp_clear(&(*total)->our_envp);
 		}
 		free(*total);
 	}

@@ -68,7 +68,7 @@ static int	expand_one_cmd(t_cmds *cmds, t_state state)
 		return (write(2, "memalloc 2 fail in expand_one_cmd", 33), 0);
 	while (data->str[data->i])
 	{
-		if (ft_strlen(data->temp) == data->str_size - 1) // the 2 here is a bit random, we just indicate that we are starting to reach the end of the string
+		if (ft_strlen(data->temp) == data->str_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
 			if (!increase_buffer(&data->temp, &data->str_size))
 				return (0);
 		if (state == NORMAL)
@@ -79,16 +79,16 @@ static int	expand_one_cmd(t_cmds *cmds, t_state state)
 			result = dquote(data, cmds);
 		data->i++;
 	}
-	return (free(data), 1);
+	if (!result)
+		return (free_data(data), 0);
+	return (free_data(data), 1);
 }
 
 int	expand(t_total_info *total)
 {
 	t_cmds			*cmds;
 	enum e_state	state;
-	int				i;
 
-	i = 0;
 	cmds = total->cmds;
 	while (cmds)
 	{
