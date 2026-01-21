@@ -5,10 +5,7 @@ static int	is_export_valid_identifier(char *str)
 	int	i;
 
 	if (!str || !str[0])
-	{
-		printf("export: `%s': not a valid identifier\n", str);
 		return (0);
-	}
 	if (!(ft_isalpha(str[0]) || str[0] == '_' ))
 	{
 		printf("export: `%s': not a valid identifier\n", str);

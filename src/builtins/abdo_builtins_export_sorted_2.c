@@ -1,13 +1,37 @@
 
 #include "builtins.h"
 
+t_env	*create_node_sorted(char *iden, char *value, int has_value, int exported)
+{
+	t_env	*new_node;
+
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return (NULL);
+	new_node->exported = exported;
+	new_node->has_value = has_value;
+	new_node->string = NULL;
+	new_node->next = NULL;
+	new_node->value = NULL;
+	if (has_value)
+	{
+		new_node->value = ft_strdup(value);
+		if (!new_node->value)
+			return (free(new_node), NULL);
+	}
+	new_node->identifier = ft_strdup(iden);
+	if (!new_node->identifier)
+		return (free (new_node->value), free(new_node), NULL);
+	return (new_node);
+}
+
 int	create_sorted_env(t_env **sorted, t_env *env)
 {
 	t_env *new;
 
 	while (env)
 	{
-		new = create_node(env->identifier, env->value,
+		new = create_node_sorted(env->identifier, env->value,
 			env->has_value, env->exported);
 		if (!new)
 			return (free_sorted_copy(*sorted), 0);
@@ -43,7 +67,7 @@ int	print_export_format(t_env *env)
 	sorted = NULL;
 	if (!env)
 		return (EXIT_FAILURE);
-	if (!create_sorted_env(&sorted ,env))
+	if (!create_sorted_env(&sorted, env))
 		return (EXIT_FAILURE);
 	sorted_head = sorted;
 	while (sorted)
