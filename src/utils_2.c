@@ -100,10 +100,10 @@ void	print_cmds(t_cmds *cmds)
 	printf("----------------CMDS---------------------");
 	while (temp)
 	{
-		printf("\nCommand block %i:\n", i);
+		printf("\nCommand block %i:\n", i + 1);
 		k = 0;
 		printf("Whole command is:%s.\n", temp->whole_cmd);
-		printf("Command %i is :", i);
+		printf("Command %i is :", i + 1);
 		while (temp->argv[k])
 		{
 			printf("'%s' ", temp->argv[k]);
@@ -114,9 +114,17 @@ void	print_cmds(t_cmds *cmds)
 		temp2 = temp->redir;
 		while (temp2)
 		{
-			printf("Redir block %i:\n", j);
-			printf("type: %u, fil:%s\n", temp2->type, temp2->file);
+			printf("Redir block %i:\n", j + 1);
+			if (temp2->type == REDIR_APPEND)
+				printf("type: REDIR_APPEND, file:%s\n", temp2->file);
+			if (temp2->type == REDIR_HEREDOC)
+				printf("type: REDIR_HEREDOC, file:%s\n", temp2->file);
+			if (temp2->type == REDIR_IN)
+				printf("type: REDIR_IN, file:%s\n", temp2->file);
+			if (temp2->type == REDIR_OUT)
+				printf("type: REDIR_OUT, file:%s\n", temp2->file);
 			temp2 = temp2->next;
+			j++;
 		}
 		printf("\n");
 		temp = temp->next;

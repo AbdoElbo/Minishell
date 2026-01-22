@@ -6,33 +6,58 @@ void	char_append(char *temp, char c)
 	int	size;
 
 	size = ft_strlen(temp);
-	printf("\n%i\n", size);
 	temp[size] = c;
 }
 
-void	is_quote_space(int *j, int *i, t_cmds *cmds, char *temp)
+void	is_quote_space(int *j_index, int *i_index, t_cmds *cmds, char *temp)
 {
 	char	*str;
 	char	quote;
+	int		i;
+	int		j;
 
+	i = *i_index;
+	j = *j_index;
 	str = cmds->whole_cmd;
-	if (str[*j] == '\'' || str[*j] == '"')
+	if (str[j] == '\'' || str[j] == '"')
 	{
-		quote = (str)[*j];
-		temp[(*i)++] = str[(*j)++];
-		while (str[*j] != quote)
-		{
-			temp[(*i)++] = str[(*j)++];
-		}
-		temp[(*i)++] = str[(*j)++];
+		quote = (str)[j];
+		temp[i++] = str[j++];
+		while (str[j] != quote)
+			temp[i++] = str[j++];
+		temp[i++] = str[j++];
 	}
-	else if (ft_isspace(str[*j]))
+	else if (ft_isspace(str[j]))
 	{
-		temp[(*i)++] = str[(*j)++];
-		while (str[*j] && ft_isspace(str[*j]))
-			(*j)++;
+		temp[i++] = str[j++];
+		while (str[j] && ft_isspace(str[j]))
+			j++;
 	}
+	*i_index = i;
+	*j_index = j;
 }
+// THE UPDATED VERSION OF THIS FUNCTION IS THE ONE ABOVE.
+// void	is_quote_space(int *j, int *i, t_cmds *cmds, char *temp)
+// {
+// 	char	*str;
+// 	char	quote;
+
+// 	str = cmds->whole_cmd;
+// 	if (str[*j] == '\'' || str[*j] == '"')
+// 	{
+// 		quote = (str)[*j];
+// 		temp[(*i)++] = str[(*j)++];
+// 		while (str[*j] != quote)
+// 			temp[(*i)++] = str[(*j)++];
+// 		temp[(*i)++] = str[(*j)++];
+// 	}
+// 	else if (ft_isspace(str[*j]))
+// 	{
+// 		temp[(*i)++] = str[(*j)++];
+// 		while (str[*j] && ft_isspace(str[*j]))
+// 			(*j)++;
+// 	}
+// }
 
 // static char	**get_envp(t_total_info *total)
 // {

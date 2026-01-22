@@ -73,6 +73,7 @@ typedef struct s_total_info
 	t_token			*token;
 	t_cmds			*cmds;
 	t_envp			*our_envp;
+	int				exit_code;
 }	t_total_info;
 
 #endif

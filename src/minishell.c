@@ -49,6 +49,7 @@ static t_total_info	*init_total(char **envp)
 	total->token = NULL;
 	if (!copy_envp(total, envp))
 		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
+	total->exit_code = 0;
 	return (total);
 }
 
@@ -66,7 +67,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!total)
 			return (free_all(&total), 1);
 		g_signal = 0;
-		line = readline("Ourminishell>");
+		line = readline("minishell$ ");
 		if (!line)
 			break ;
 		if (line[0] == '\0')
@@ -92,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 			return (free(line), free_all(&total), 0);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
-		print_lst(total->token);
+		// print_lst(total->token);
 		print_cmds(total->cmds);
 		free_all(&total);
 	}
