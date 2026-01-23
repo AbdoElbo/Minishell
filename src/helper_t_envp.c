@@ -8,8 +8,7 @@ int	ft_t_envp_size(t_envp *envp)
 	i = 0;
 	if (envp == NULL)
 		return (i);
-	i++;
-	while (envp->next != NULL)
+	while (envp)
 	{
 		i++;
 		envp = envp->next;
@@ -22,7 +21,11 @@ void	ft_t_envp_delone(t_envp *envp)
 	if (envp != NULL)
 	{
 		free(envp->string);
+		free(envp->identifier);
+		free(envp->value);
 		envp->string = NULL;
+		envp->identifier = NULL;
+		envp->value = NULL;
 		envp->next = NULL;
 		free(envp);
 		envp = NULL;

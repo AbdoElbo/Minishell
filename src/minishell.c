@@ -19,6 +19,60 @@ t_envp	*new_envp_node(char *str)
 	return (new_envp);
 }
 
+static int	get_identifier_and_value(char *str, char **identifier,
+				char **value, int *has_value)
+{
+	int	i;
+
+	i = 0;
+	*identifier = NULL;
+	*value = NULL;
+	*has_value = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	*identifier = ft_substr(str, 0, i);
+	if (!*identifier)
+		return (0);
+	if (str[i] == '=')
+	{
+		*has_value = 1;
+		*value = ft_strdup(str + i + 1);
+		if (!*value)
+			return (free(*identifier), 0);
+	}
+	else
+	{
+		*has_value = 0;
+		*value = NULL;
+	}
+	return (1);
+}
+
+static int	update_env(t_envp **env)
+{
+	t_envp	*temp;
+	char	*identifier;
+	char	*value;
+	int		has_value;
+
+	temp = *env;
+	while (temp)
+	{
+		identifier = NULL;
+		value = NULL;
+		has_value = 0;
+		if (!get_identifier_and_value(temp->string, &identifier
+				, &value, &has_value))
+			return (free(identifier), free(value), 0);
+		temp->identifier = identifier;
+		temp->value = value;
+		temp->has_value = has_value;
+		temp->exported = 1;
+		temp = temp->next;
+	}
+	return (1);
+}
+
 static int	copy_envp(t_total_info *total, char **envp)
 {
 	int		i;
@@ -35,6 +89,8 @@ static int	copy_envp(t_total_info *total, char **envp)
 		ft_t_envp_addback(&total->our_envp, new_envp);
 		i++;
 	}
+	if (!update_env(&total->our_envp))
+		return (0);
 	return (1);
 }
 
@@ -44,7 +100,7 @@ static t_total_info	*init_total(char **envp)
 
 	total = ft_calloc(1, sizeof(t_total_info));
 	if (!total)
-		return (write(2, "1st Mem alloc in init total failed", 30), NULL);
+		return (write(2, "1st Mem alloc in init total failed", 34), NULL);
 	total->cmds = NULL;
 	total->token = NULL;
 	if (!copy_envp(total, envp))

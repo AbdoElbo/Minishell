@@ -32,6 +32,10 @@ typedef struct s_redir
 typedef struct s_envp
 {
 	char			*string;
+	char			*identifier;
+	char			*value;
+	int				has_value;
+	int				exported;
 	struct s_envp	*next;
 }	t_envp;
 

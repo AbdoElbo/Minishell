@@ -1,13 +1,18 @@
 
 NAME	:= minishell
-CFLAGS	:= -Wextra -Wall -Werror -g
+CFLAGS	:= -Wextra -Wall -Werror
 
 HEADERS	:= -I ./include
 
 SRCS	:= src/minishell.c src/__path_helper.c src/utils_1.c src/utils_2.c \
 			src/utils_3.c src/abdo_signals.c src/helper_cmds.c src/helper_redir.c \
 			src/helper_token.c src/free_functions.c src/expand.c src/helper_t_envp.c \
-			src/expand_helper_1.c src/expand_helper_2.c
+			src/expand_helper_1.c src/expand_helper_2.c src/expand_helper_3.c
+
+
+GREEN = \033[1;32m
+BLUE = \033[1;34m
+RESET = \033[0m
 
 OBJ_DIR	:= objects
 OBJS 	:= $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRCS))
@@ -34,7 +39,7 @@ libft:
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
 
 clean:
-	@printf "$(BLUE)Cleaned Up$(BLUE)\n"
+	@printf "$(BLUE)Cleaned Up$(RESET)\n"
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
 	@rm -rf $(OBJ_DIR)
 
