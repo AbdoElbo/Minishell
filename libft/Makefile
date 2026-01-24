@@ -47,15 +47,16 @@ RM          := rm -f
 all: $(NAME)
 
 MSG:
-	@printf "$(GREEN)Compiling Libft"
+	@printf "$(GREEN)Compiling Libft$(RESET)"
 
 $(NAME): MSG $(OBJS)
 	@ar rcsUu $(NAME) $(OBJS)
 	@printf "\n"
+	@printf "$(GREEN)Compiling Minishell$(RESET)"
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(LIBFLAGS) -c $< -o $@
-	@printf "."
+	@printf "$(GREEN).$(RESET)"
 
 clean:
 	@$(RM) $(OBJS)

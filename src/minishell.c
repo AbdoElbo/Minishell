@@ -19,34 +19,34 @@ t_envp	*new_envp_node(char *str)
 	return (new_envp);
 }
 
-static int	get_identifier_and_value(char *str, char **identifier,
-				char **value, int *has_value)
-{
-	int	i;
+// static int	get_identifier_and_value(char *str, char **identifier,
+// 				char **value, int *has_value)
+// {
+// 	int	i;
 
-	i = 0;
-	*identifier = NULL;
-	*value = NULL;
-	*has_value = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	*identifier = ft_substr(str, 0, i);
-	if (!*identifier)
-		return (0);
-	if (str[i] == '=')
-	{
-		*has_value = 1;
-		*value = ft_strdup(str + i + 1);
-		if (!*value)
-			return (free(*identifier), 0);
-	}
-	else
-	{
-		*has_value = 0;
-		*value = NULL;
-	}
-	return (1);
-}
+// 	i = 0;
+// 	*identifier = NULL;
+// 	*value = NULL;
+// 	*has_value = 0;
+// 	while (str[i] && str[i] != '=')
+// 		i++;
+// 	*identifier = ft_substr(str, 0, i);
+// 	if (!*identifier)
+// 		return (0);
+// 	if (str[i] == '=')
+// 	{
+// 		*has_value = 1;
+// 		*value = ft_strdup(str + i + 1);
+// 		if (!*value)
+// 			return (free(*identifier), 0);
+// 	}
+// 	else
+// 	{
+// 		*has_value = 0;
+// 		*value = NULL;
+// 	}
+// 	return (1);
+// }
 
 static int	update_env(t_envp **env)
 {
