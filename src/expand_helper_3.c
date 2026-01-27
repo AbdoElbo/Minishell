@@ -15,11 +15,16 @@ static int	finish_argv(int *arg_index, t_cmds *cmds, char *temp)
 			return (free_arr(temp1), 0);
 		i++;
 	}
-	temp1[i] = ft_strdup(temp);
-	if (!temp1[i])
-		return (free_arr(temp1), 0);
-	free_arr(cmds->argv);
-	cmds->argv = temp1;
+	if (ft_strlen(cmds->whole_cmd))
+	{
+		temp1[i] = ft_strdup(temp);
+		if (!temp1[i])
+			return (free_arr(temp1), 0);
+		free_arr(cmds->argv);
+		cmds->argv = temp1;
+	}
+	else
+		free_arr(temp1);
 	return (1);
 }
 

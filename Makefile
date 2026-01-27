@@ -1,5 +1,5 @@
 
-MINISHELL	:= minishell
+NAME	:= minishell
 CFLAGS	:= -Wextra -Wall -Werror
 
 HEADERS	:= -I ./include
@@ -13,7 +13,8 @@ SRCS	:= src/minishell.c src/__path_helper.c src/utils_1.c src/utils_2.c \
 			src/builtins/builtins_export_1.c \
 			src/builtins/builtins_export_sorted_1.c \
 			src/builtins/builtins_export_sorted_2.c src/builtins/builtins_pwd_env.c \
-			src/builtins/builtins_unset.c src/builtins/cd_builtins.c
+			src/builtins/builtins_unset.c src/builtins/cd_builtins.c \
+			src/pipex/pipex.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/cleanup_utils.c   
 
 
 GREEN = \033[1;32m
@@ -26,15 +27,15 @@ OBJS 	:= $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 LIBFT_DIR  := ./libft
 LIBFT  := $(LIBFT_DIR)/libft.a
 
-all: $(LIBFT) $(MINISHELL)
+all: $(LIBFT) $(NAME)
 
 $(OBJ_DIR)/%.o : src/%.c
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 	@printf "$(GREEN).$(RESET)"
 
-$(MINISHELL): $(LIBFT) $(OBJS)
-	@$(CC) $(OBJS) $(LIBFT) $(HEADERS) -lreadline -o $(MINISHELL)
+$(NAME): $(LIBFT) $(OBJS)
+	@$(CC) $(OBJS) $(LIBFT) $(HEADERS) -lreadline -o $(NAME)
 
 $(LIBFT):
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
@@ -46,7 +47,7 @@ clean:
 
 fclean: clean
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
-	@rm -rf $(MINISHELL)
+	@rm -rf $(NAME)
 
 re: fclean all
 

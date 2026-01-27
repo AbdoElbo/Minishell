@@ -27,6 +27,7 @@ typedef struct s_redir
 	char			*file;
 	t_type			type;
 	struct s_redir	*next;
+	int				fd;
 }	t_redir;
 
 typedef struct s_envp

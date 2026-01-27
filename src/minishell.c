@@ -147,6 +147,7 @@ int	main(int argc, char **argv, char **envp)
 			return (free_all(&total), free(line), 1);
 		if (!expand(total))
 			return (free(line), free_all(&total), 0);
+		pipex(total);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
 		// print_lst(total->token);

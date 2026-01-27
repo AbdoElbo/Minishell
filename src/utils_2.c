@@ -104,6 +104,8 @@ void	print_cmds(t_cmds *cmds)
 		k = 0;
 		printf("Whole command is:%s.\n", temp->whole_cmd);
 		printf("Command %i is :", i + 1);
+		if (!temp->argv[k])
+			printf("'%s' ", temp->argv[k]);
 		while (temp->argv[k])
 		{
 			printf("'%s' ", temp->argv[k]);
@@ -123,6 +125,7 @@ void	print_cmds(t_cmds *cmds)
 				printf("type: REDIR_IN, file:%s\n", temp2->file);
 			if (temp2->type == REDIR_OUT)
 				printf("type: REDIR_OUT, file:%s\n", temp2->file);
+			printf("fd: %i\n", temp2->fd);
 			temp2 = temp2->next;
 			j++;
 		}
