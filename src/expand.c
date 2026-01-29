@@ -159,6 +159,7 @@ int	expand(t_total_info *total)
 				return (write(2, "memaloc in expand fail", 22), 0);
 			expand_one_redir(total, cmds, data);
 			cmds->redir = cmds->redir->next;
+			free(data->redir_file);
 		}
 		cmds->redir = temp;
 		cmds = cmds->next;

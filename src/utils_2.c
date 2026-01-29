@@ -153,5 +153,9 @@ int	check_lst_syntax(t_token *lst)
 			return (printf("SYNTAX ERROR\n"), 0);
 		lst = lst->next;
 	}
+	if (!lst->next && lst->value[0] == '\0')
+		return (printf("SYNTAX ERROR\n"), 0);
+	if (curr_type != WORD)
+		return (printf("SYNTAX ERROR\n"), 0);
 	return (1);
 }

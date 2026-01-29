@@ -114,6 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		total->token = parse_input(line);
 		if (!total->token)
 			return (free(line), free_all(&total), 0);
+		print_lst(total->token);
 		if (!get_cmds(total, total->token))
 			return (free_all(&total), free(line), 1);
 		if (!expand(total))

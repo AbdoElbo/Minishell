@@ -54,8 +54,8 @@ int	expand_one_redir(t_total_info *total, t_cmds *cmds, t_expand *data)
 	data->redir_size = ft_strlen(data->redir_file) * 2;
 	while (data->redir_file[data->i_redir])
 	{
-		if (ft_strlen(data->temp) == data->str_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
-			if (!increase_buffer(&data->temp, &data->str_size, 0))
+		if (ft_strlen(data->temp) == data->redir_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
+			if (!increase_buffer(&data->temp, &data->redir_size, 0))
 				return (0);
 		if (data->state == NORMAL)
 			result = normal(total, data, cmds, &data->i_redir);
@@ -64,10 +64,11 @@ int	expand_one_redir(t_total_info *total, t_cmds *cmds, t_expand *data)
 		else
 			result = dquote(total, data, cmds, &data->i_redir);
 		data->i_redir++;
-		// printf("temp %i is : '%s'\n", data->i_redir, data->temp); MAKE SURE TO DELETLATER
 	}
 	free(cmds->redir->file);
 	cmds->redir->file = ft_strdup(data->temp);
+	if (!cmds->redir->file)
+		return (0);
 	ft_bzero(data->temp, ft_strlen(data->temp)); //not sure if its needed!
 	data->i_redir = 0;
 	if (!result)
