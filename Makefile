@@ -14,8 +14,8 @@ SRCS	:= src/minishell.c src/__path_helper.c src/utils_1.c src/utils_2.c \
 			src/builtins/builtins_export_sorted_1.c \
 			src/builtins/builtins_export_sorted_2.c src/builtins/builtins_pwd_env.c \
 			src/builtins/builtins_unset.c src/builtins/cd_builtins.c \
-			src/pipex/pipex.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/cleanup_utils.c   
-
+			src/pipex/pipex.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/cleanup_utils.c \
+			src/expand_redir.c src/expand_redir_helper.c
 
 GREEN = \033[1;32m
 BLUE = \033[1;34m

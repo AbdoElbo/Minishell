@@ -95,6 +95,7 @@ static int	add_redir(t_token **lst, t_cmds *node, t_type redir_type,
 		return (write(2, "Mem alloc in add_redir strdup failed", 36), 0);
 	new_redir->type = redir_type;
 	new_redir->fd = -1;
+	printf("new_redir->file is : '%s'\n", new_redir->file);
 	ft_redir_addback(&node->redir, new_redir);
 	*lst = (*lst)->next;
 	return (1);

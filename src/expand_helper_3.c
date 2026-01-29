@@ -71,7 +71,7 @@ static int	dquote(t_total_info *total, t_expand *data, t_cmds *cmds)
 
 int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 {
-	int			result;
+	int	result;
 
 	while (data->str[data->i])
 	{

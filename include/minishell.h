@@ -24,6 +24,9 @@
 # include "haris.h"
 # include "expand.h"
 
+# define RED   "\001\033[1;31m\002"
+# define RESET "\001\033[0m\002"
+
 char		*ft_strjoin_arg(char const *s1, char const *s2);
 t_token		*parse_input(char *line);
 t_token		*new_node(char *str, int len);
