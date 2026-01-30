@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 10:52:29 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/30 18:46:34 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int	read_heredoc(t_redir *redir)
 	s = get_next_line(0);
 	if (!s)
 		return (close_pipefd(pipefd), write(2, "GNL Fail", 8), 0);
-	while (ft_strncmp(s, delimiter, ft_strlen(delimiter)))
+	while (ft_strncmp(s, delimiter, ft_strlen(delimiter)) != 0
+		|| s[ft_strlen(delimiter)] != '\n')
 	{
 		write(pipefd[1], s, ft_strlen(s));
 		free(s);

@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 15:50:47 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/30 18:40:45 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,87 @@
 #include <stdio.h>
 #include "../include/builtins.h"
 
-// static int	file_open(char *filename, enum e_in_out in_out)
-// {
-// 	int	fd;
+static int	file_open(char *filename, enum e_in_out in_out)
+{
+	int	fd;
 
-// 	fd = -1;
-// 	if (in_out == IN)
-// 		fd = open(filename, O_RDONLY);
-// 	else if (in_out == OUT)
-// 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-// 	else if (in_out == APPEND)
-// 		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
-// 	if (fd == -1)
-// 	{
-// 		perror(filename);
-// 		fd = open("/dev/null", O_RDONLY);
-// 		if (fd == -1)
-// 			return (perror("Failed to open /dev/null"), -1);
-// 	}
-// 	return (fd);
-// }
+	fd = -1;
+	if (in_out == IN)
+		fd = open(filename, O_RDONLY);
+	else if (in_out == OUT)
+		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else if (in_out == APPEND)
+		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (fd == -1)
+	{
+		perror(filename);
+		fd = open("/dev/null", O_RDONLY);
+		if (fd == -1)
+			return (perror("Failed to open /dev/null"), -1);
+	}
+	return (fd);
+}
 
-// static int	handle_redirections(t_data *data)
-// {
-// 	t_redir	*temp;
+static void	handle_redirections(t_data *data)//Needs to be smaller!!!
+{
+	t_redir	*temp;
+	int		input;
+	int		output;
 
-// 	temp = data->cmds->redir;
-// 	while (temp)
-// 	{
-// 		if ()
-// 		temp = temp->next;
-// 	}
-// }
+	input = data->input_fd;
+	output = data->output_fd;
+	temp = data->cmds->redir;
+	while (temp)
+	{
+		if (temp->type == REDIR_APPEND)
+		{
+			if (data->output_fd != 0)
+				close(data->output_fd);
+			temp->fd = file_open(temp->file, APPEND);
+			if (temp->fd == -1)
+				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+			data->output_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_OUT)
+		{
+			if (data->output_fd != 0)
+				close(data->output_fd);
+			temp->fd = file_open(temp->file, OUT);
+			if (temp->fd == -1)
+				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+			data->output_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_IN)
+		{
+			if (data->input_fd != 0)
+				close(data->input_fd);
+			temp->fd = file_open(temp->file, IN);
+			if (temp->fd == -1)
+				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+			data->input_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_HEREDOC)
+		{
+			if (data->input_fd != 0)
+				close(data->input_fd);
+			data->input_fd = temp->fd;
+		}
+		temp = temp->next;
+	}
+	if (input != data->input_fd)
+	{
+		if (dup2(data->input_fd, STDIN_FILENO) == -1)
+			(perror("Dup2 for STDIN failed"), _exit(EXIT_FAILURE));
+		close(data->input_fd);
+	}
+	if (output != data->output_fd)
+	{
+		if (dup2(data->output_fd, STDOUT_FILENO) == -1)
+			(perror("Dup2 for STDOUT failed"), _exit(EXIT_FAILURE));
+		close(data->output_fd);
+	}
+}
+
 static void	child_proccess(t_data *data)
 {
 	if (data->input_fd != 0)
@@ -61,7 +110,7 @@ static void	child_proccess(t_data *data)
 			(perror("Dup2 for STDOUT failed"), _exit(EXIT_FAILURE));
 		close(data->pipefd[1]);
 	}
-	// handle_redirection(data);
+	handle_redirections(data);
 	close(data->pipefd[0]);
 	// if (is_builtin())
 	// 	call_bultin();
@@ -95,6 +144,7 @@ static int	execute_loop(t_data *data) //need to make it 25 lines
 			data->input_fd = data->pipefd[0];
 		}
 		data->cmds = data->cmds->next;
+		i++;
 	}
 	return (1);
 }
