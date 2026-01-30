@@ -1,8 +1,6 @@
 
 #include "minishell.h"
 
-// valgrind -s --leak-check=full --show-leak-kinds=definite --track-fds=yes --log-file="valgrind-%p.log" ./minishell
-
 volatile sig_atomic_t	g_signal;
 
 t_envp	*new_envp_node(char *str)
@@ -114,16 +112,16 @@ int	main(int argc, char **argv, char **envp)
 		total->token = parse_input(line);
 		if (!total->token)
 			return (free(line), free_all(&total), 0);
-		print_lst(total->token);
+		// print_lst(total->token);
 		if (!get_cmds(total, total->token))
 			return (free_all(&total), free(line), 1);
 		if (!expand(total))
 			return (free(line), free_all(&total), 0);
-		pipex(total);
+		total->exit_code = pipex(total);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
 		// print_lst(total->token);
-		print_cmds(total->cmds);
+		// print_cmds(total->cmds);
 		free_all(&total);
 	}
 	return (0);

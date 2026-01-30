@@ -138,24 +138,26 @@ void	print_cmds(t_cmds *cmds)
 
 int	check_lst_syntax(t_token *lst)
 {
-	t_type	prev_type;
 	t_type	curr_type;
+	t_type	next_type;
 
 	while (lst->next)
 	{
-		prev_type = lst->type;
-		curr_type = lst->next->type;
-		if (curr_type == prev_type)
-			return (printf("SYNTAX ERROR\n"), 0);
-		else if (prev_type == REDIR_OUT && curr_type == REDIR_IN)
-			return (printf("SYNTAX ERROR\n"), 0);
-		else if (prev_type == REDIR_IN && curr_type == REDIR_OUT)
-			return (printf("SYNTAX ERROR\n"), 0);
+		curr_type = lst->type;
+		next_type = lst->next->type;
+		if (curr_type == next_type)
+			return (printf("Syntax Error\n"), 0);
+		else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
+			return (printf("Syntax Error\n"), 0);
+		else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
+			return (printf("Syntax Error\n"), 0);
 		lst = lst->next;
 	}
-	if (!lst->next && lst->value[0] == '\0')
-		return (printf("SYNTAX ERROR\n"), 0);
-	if (curr_type != WORD)
-		return (printf("SYNTAX ERROR\n"), 0);
+	if (lst->value[0] == '\0')
+		return (printf("Syntax Error:\nNo redirection File\n"), 0);
+	if (lst->type != WORD)
+		return (printf("Syntax Error:\nNo redirection File\n"), 0);
 	return (1);
 }
+
+

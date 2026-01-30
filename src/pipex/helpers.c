@@ -6,19 +6,13 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/27 21:06:33 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/30 10:52:29 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
+#include "../include/builtins.h"
 
-/// @brief Reads here_doc input from stdin into an internal pipe.
-/// @details Repeatedly reads lines from stdin until the delimiter string
-///          is encountered. All intermediate lines are written to the pipe,
-///          whose read end becomes the new input_fd for the pipeline.
-///          On failure, prints an error and leaves data unchanged.
-/// @param data Pointer to the main program state (uses argv[2] as delimiter).
-/// @return 1 on success, or 0 if pipe creation or input reading fails.
 int	read_heredoc(t_redir *redir)
 {
 	int		pipefd[2];
@@ -61,12 +55,6 @@ int	argc_check(char **argv, int argc)
 	return (1);
 }
 
-/// @brief Constructs a fallback command array containing a single empty string.
-/// @details Allocates a two-element argv-style array and sets its first
-///          element to an empty string. Used when a command input is empty
-///          or whitespace-only to ensure consistent downstream handling.
-/// @param cmds Address of the command slot to replace.
-/// @return 1 on success, or 0 if allocation fails.
 int	build_empty_cmd(char ***cmds)
 {
 	char	**array;
@@ -81,14 +69,6 @@ int	build_empty_cmd(char ***cmds)
 	return (1);
 }
 
-/// @brief Joins a directory path and a command name into a single path string.
-/// @details Allocates a new string containing s1, a '/', and s2. If s2 is
-///          empty or NULL, returns an allocated empty string. Intended for
-///          PATH resolution where s1 is a directory and s2 is the command.
-///          The caller is responsible for freeing the returned string.
-/// @param s1 Directory path prefix.
-/// @param s2 Command name to append.
-/// @return A newly allocated joined string on success, or NULL on failure.
 char	*ft_strjoin_path(char const *s1, char const *s2)
 {
 	char	*new_string;
@@ -118,15 +98,6 @@ char	*ft_strjoin_path(char const *s1, char const *s2)
 	return (new_string);
 }
 
-/// @brief Waits for all child processes and frees program resources.
-/// @details Iterates through the stored PIDs, calling waitpid() for each
-///          child in order. The exit status of the last child is extracted
-///          according to POSIX rules: normal exit returns its exit code,
-///          signal termination returns 128 + signal number, and unexpected
-///          cases default to 1. After all waits complete, the function frees
-///          all allocated data structures.
-/// @param data Pointer to the main program state containing child PIDs.
-/// @return The exit code of the last command in the pipeline.
 int	pid_wait_and_free(t_data *data)
 {
 	int	i;
@@ -151,41 +122,23 @@ int	pid_wait_and_free(t_data *data)
 	return (exit_code);
 }
 
-/// @brief Allocates and initializes the main program state structure.
-/// @details Stores argc, argv, and envp, determines the number of pipeline
-///          commands, and sets the starting position of the command strings
-///          (adjusting for here_doc mode when present). Allocates the PID
-///          array used to track child processes. Other fields are initialized
-///          to NULL and populated later during setup.
-/// @param argc Argument count from main().
-/// @param argv Argument vector from main().
-/// @param envp Environment variables passed to the program.
-/// @return A pointer to a fully initialized t_data structure, or NULL on
-///         allocation failure.
-t_data	*init_datas(int argc, char **argv, char **envp)
+t_data	*init_datas(t_total_info *total)
 {
 	t_data	*data;
 
 	data = malloc(sizeof(t_data));
 	if (data == NULL)
 		return (NULL);
-	data->argc = argc;
-	data->argv = argv;
-	data->envp = envp;
-	data->cmds = NULL;
-	data->paths = NULL;
-	if (!ft_strncmp(argv[1], "here_doc", 9))
-	{
-		data->cmds_count = argc - 4;
-		data->first_cmd = argv + 3;
-	}
-	else
-	{
-		data->cmds_count = (argc - 3);
-		data->first_cmd = argv + 2;
-	}
+	data->cmds_count = ft_cmds_size(total->cmds);
+	data->cmds = total->cmds;
+	data->envp_list = total->our_envp;
+	data->input_fd = 0;
+	data->output_fd = 1;
+	data->envp = change_to_arr(data->envp_list);
+	if (!data->envp)
+		return (NULL);
 	data->pids = ft_calloc(data->cmds_count + 1, sizeof(pid_t));
 	if (!data->pids)
-		return (NULL);
+		return (free(data->envp), NULL);
 	return (data);
 }

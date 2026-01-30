@@ -6,21 +6,15 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/27 21:08:25 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:50:47 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include <errno.h>
 #include <stdio.h>
+#include "../include/builtins.h"
 
-/// @brief Opens a file in input, output, or append mode.
-/// @details For IN, opens the file read-only. For OUT, creates/truncates
-///          the file for writing. For APPEND, creates and appends to the
-///          file. On failure, prints an error using perror().
-/// @param filename Path of the file to open.
-/// @param in_out File mode selector (IN, OUT, or APPEND).
-/// @return The file descriptor on success, or -1 on failure.
 // static int	file_open(char *filename, enum e_in_out in_out)
 // {
 // 	int	fd;
@@ -42,40 +36,48 @@
 // 	return (fd);
 // }
 
-/// @brief Executes a single pipeline command in a child process.
-/// @details Redirects input_fd to STDIN and the pipe write end to STDOUT,
-///          closes unused file descriptors, and then calls execve() with
-///          the selected command. On execve() failure, delegates to
-///          child_exec_error().
-/// @param data Pointer to the main program state.
-/// @param i Index of the command to execute.
-static void	child_proccess(t_data *data, int i)
+// static int	handle_redirections(t_data *data)
+// {
+// 	t_redir	*temp;
+
+// 	temp = data->cmds->redir;
+// 	while (temp)
+// 	{
+// 		if ()
+// 		temp = temp->next;
+// 	}
+// }
+static void	child_proccess(t_data *data)
 {
-	if (data->input_fd == -1)
-		(close_pipefd(data->pipefd), free_datas(data), _exit(EXIT_FAILURE));
-	if (dup2(data->input_fd, STDIN_FILENO) == -1)
-		(perror("Dup2 for STDIN failed"), _exit(EXIT_FAILURE));
-	close(data->input_fd);
-	if (dup2(data->pipefd[1], STDOUT_FILENO) == -1)
-		(perror("Dup2 for STDOUT failed"), _exit(EXIT_FAILURE));
-	close(data->pipefd[1]);
+	if (data->input_fd != 0)
+	{
+		if (dup2(data->input_fd, STDIN_FILENO) == -1)
+			(perror("Dup2 for STDIN failed"), _exit(EXIT_FAILURE));
+		close(data->input_fd);
+	}
+	if (data->cmds->next)
+	{
+		if (dup2(data->pipefd[1], STDOUT_FILENO) == -1)
+			(perror("Dup2 for STDOUT failed"), _exit(EXIT_FAILURE));
+		close(data->pipefd[1]);
+	}
+	// handle_redirection(data);
 	close(data->pipefd[0]);
-	execve(data->cmds[i][0], data->cmds[i], data->envp);
-	child_exec_error(data, i);
+	// if (is_builtin())
+	// 	call_bultin();
+	// else
+	// 	execve(data->cmds[i][0], data->cmds[i], data->envp);
+	path_check_one(data->cmds->argv, data->paths);
+	execve(data->cmds->argv[0], data->cmds->argv, data->envp);
+	child_exec_error(data);
 }
 
-/// @brief Executes all pipeline stages except the final command.
-/// @details For each intermediate command, creates a pipe, forks a child,
-///          runs the command in the child, and in the parent updates the
-///          input_fd to the read end of the pipe while closing unused FDs.
-/// @param data Pointer to the main program state.
-/// @return 1 on success, or 0 if pipe or fork fails.
-static int	execute_loop(t_data *data)
+static int	execute_loop(t_data *data) //need to make it 25 lines
 {
-	int	i;
+	int		i;
 
 	i = 0;
-	while (i <= (data->cmds_count - 1))
+	while (data->cmds)
 	{
 		if (i != data->cmds_count)
 			if (pipe(data->pipefd) < 0)
@@ -84,15 +86,15 @@ static int	execute_loop(t_data *data)
 		if (data->pids[i] < 0)
 			return (perror("Fork failed"), 0);
 		else if (data->pids[i] == 0)
-			child_proccess(data, i);
+			child_proccess(data);
 		else
 		{
-			if (data->input_fd != -1)
+			if (data->input_fd != 0)
 				close(data->input_fd);
 			close(data->pipefd[1]);
 			data->input_fd = data->pipefd[0];
 		}
-		i++;
+		data->cmds = data->cmds->next;
 	}
 	return (1);
 }
@@ -115,28 +117,24 @@ static int	handle_heredocs(t_cmds *cmds)
 	return (1);
 }
 
-/// @brief Entry point for the bonus pipex with here_doc support.
-/// @details Initializes the program state, handles either here_doc input or
-///          a regular infile, executes all pipeline commands, waits for all
-///          children to finish, and frees resources before exiting.
-/// @param argc Argument count from main().
-/// @param argv Argument vector (supports both here_doc and normal mode).
-/// @param envp Environment variables passed to the program.
-/// @return The exit code of the last command in the pipeline, or 1 on setup
-///         failure.
 int	pipex(t_total_info *total)
 {
 	t_data	*data;
+	int		i;
 
+	i = 0;
 	if (!handle_heredocs(total->cmds))
-		return (0);
-	return (1);
+		return (1);
+	data = setup_datas(total);
+	if (!data)
+		return (1);
 	// else
 		// data->input_fd = file_open(argv[1], IN);
 	// if (data->input_fd == -1)
 	// 	return (free_data(data), 1);
 	if (!execute_loop(data))
 		return (pid_wait_and_free(data));
+	data->cmds = total->cmds;
 	// if (!execute_last(data))
 	// 	return (pid_wait_and_free(data));
 	return (pid_wait_and_free(data));

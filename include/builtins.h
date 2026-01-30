@@ -7,7 +7,7 @@
 
 int		env_size(t_envp *env);
 // void	free_arr(char **arr, int i);
-// char	**change_to_arr(t_envp *env);
+char	**change_to_arr(t_envp *env);
 int		word_count(char const *s);
 
 int		get_identifier_and_value(char *str, char **identifier,
