@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 18:40:45 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/30 19:38:13 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include "../include/builtins.h"
 
+//I NEED TO FIX THE ISSUE OF NOT EXITING WHEN THE FILE DOESNT EXIST.
 static int	file_open(char *filename, enum e_in_out in_out)
 {
 	int	fd;
@@ -26,7 +27,7 @@ static int	file_open(char *filename, enum e_in_out in_out)
 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (in_out == APPEND)
 		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	if (fd == -1)
+	else if (fd == -1)
 	{
 		perror(filename);
 		fd = open("/dev/null", O_RDONLY);
