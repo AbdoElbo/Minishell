@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 19:38:13 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/31 23:07:17 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ static int	file_open(char *filename, enum e_in_out in_out)
 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (in_out == APPEND)
 		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	else if (fd == -1)
-	{
-		perror(filename);
-		fd = open("/dev/null", O_RDONLY);
-		if (fd == -1)
-			return (perror("Failed to open /dev/null"), -1);
-	}
+	// if (fd == -1)
+	// {
+	// 	perror(filename);
+	// 	fd = open("/dev/null", O_RDONLY);
+	// 	if (fd == -1)
+	// 		return (perror("Failed to open /dev/null"), -1);
+	// }
 	return (fd);
 }
 
@@ -50,20 +50,20 @@ static void	handle_redirections(t_data *data)//Needs to be smaller!!!
 	{
 		if (temp->type == REDIR_APPEND)
 		{
-			if (data->output_fd != 0)
+			if (data->output_fd != 1)
 				close(data->output_fd);
 			temp->fd = file_open(temp->file, APPEND);
 			if (temp->fd == -1)
-				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+				(perror(temp->file), _exit(EXIT_FAILURE));
 			data->output_fd = temp->fd;
 		}
 		else if (temp->type == REDIR_OUT)
 		{
-			if (data->output_fd != 0)
+			if (data->output_fd != 1)
 				close(data->output_fd);
 			temp->fd = file_open(temp->file, OUT);
 			if (temp->fd == -1)
-				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+				(perror(temp->file), _exit(EXIT_FAILURE));
 			data->output_fd = temp->fd;
 		}
 		else if (temp->type == REDIR_IN)
@@ -72,7 +72,7 @@ static void	handle_redirections(t_data *data)//Needs to be smaller!!!
 				close(data->input_fd);
 			temp->fd = file_open(temp->file, IN);
 			if (temp->fd == -1)
-				(perror("Dup2 in handle_red failed"), _exit(EXIT_FAILURE));
+				(perror(temp->file), _exit(EXIT_FAILURE));
 			data->input_fd = temp->fd;
 		}
 		else if (temp->type == REDIR_HEREDOC)
@@ -97,6 +97,17 @@ static void	handle_redirections(t_data *data)//Needs to be smaller!!!
 	}
 }
 
+static void	handle_parent(t_data *data)
+{
+	if (data->input_fd != 0)
+		close(data->input_fd);
+	if (data->cmds->next)
+	{
+		close(data->pipefd[1]);
+		data->input_fd = data->pipefd[0];
+	}
+}
+
 static void	child_proccess(t_data *data)
 {
 	if (data->input_fd != 0)
@@ -112,7 +123,8 @@ static void	child_proccess(t_data *data)
 		close(data->pipefd[1]);
 	}
 	handle_redirections(data);
-	close(data->pipefd[0]);
+	if (data->cmds->next)
+		close(data->pipefd[0]);
 	// if (is_builtin())
 	// 	call_bultin();
 	// else
@@ -129,7 +141,7 @@ static int	execute_loop(t_data *data) //need to make it 25 lines
 	i = 0;
 	while (data->cmds)
 	{
-		if (i != data->cmds_count)
+		if (data->cmds->next)
 			if (pipe(data->pipefd) < 0)
 				return (close(data->input_fd), perror("Pipe Failed"), 0);
 		data->pids[i] = fork();
@@ -138,12 +150,7 @@ static int	execute_loop(t_data *data) //need to make it 25 lines
 		else if (data->pids[i] == 0)
 			child_proccess(data);
 		else
-		{
-			if (data->input_fd != 0)
-				close(data->input_fd);
-			close(data->pipefd[1]);
-			data->input_fd = data->pipefd[0];
-		}
+			handle_parent(data);
 		data->cmds = data->cmds->next;
 		i++;
 	}
@@ -171,22 +178,13 @@ static int	handle_heredocs(t_cmds *cmds)
 int	pipex(t_total_info *total)
 {
 	t_data	*data;
-	int		i;
 
-	i = 0;
 	if (!handle_heredocs(total->cmds))
 		return (1);
 	data = setup_datas(total);
 	if (!data)
 		return (1);
-	// else
-		// data->input_fd = file_open(argv[1], IN);
-	// if (data->input_fd == -1)
-	// 	return (free_data(data), 1);
 	if (!execute_loop(data))
 		return (pid_wait_and_free(data));
-	data->cmds = total->cmds;
-	// if (!execute_last(data))
-	// 	return (pid_wait_and_free(data));
 	return (pid_wait_and_free(data));
 }

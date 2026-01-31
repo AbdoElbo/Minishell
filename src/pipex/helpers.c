@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 18:46:34 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/01/31 22:59:24 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	read_heredoc(t_redir *redir)
 		return (write(2, "Invalid delimiter", 17), 0);
 	if (pipe(pipefd) < 0)
 		return (perror("Pipe failed"), 0);
+	write(1, "heredoc> ", 9);
 	s = get_next_line(0);
 	if (!s)
 		return (close_pipefd(pipefd), write(2, "GNL Fail", 8), 0);
@@ -32,27 +33,16 @@ int	read_heredoc(t_redir *redir)
 	{
 		write(pipefd[1], s, ft_strlen(s));
 		free(s);
+		write(1, "heredoc> ", 9);
 		s = get_next_line(0);
 		if (!s)
-			return (close_pipefd(pipefd), free(s), write(2, "GNL Fail", 8), 0);
+			break ;
 	}
 	free (s);
+	write(1, "heredoc> ", 9);
 	get_next_line(-1);
 	close(pipefd[1]);
 	redir->fd = pipefd[0];
-	return (1);
-}
-
-int	argc_check(char **argv, int argc)
-{
-	if (!ft_strncmp(argv[1], "here_doc", 9))
-	{
-		if (argc <= 5)
-			return (write(2, "Wrong input, put more arguments\n", 32), 0);
-	}
-	else
-		if (argc <= 4)
-			return (write(2, "Wrong input, put more arguments\n", 32), 0);
 	return (1);
 }
 
@@ -106,6 +96,7 @@ int	pid_wait_and_free(t_data *data)
 	int	exit_code;
 
 	i = 0;
+	exit_code = 0;
 	while (data->pids[i])
 	{
 		if (waitpid(data->pids[i], &status, 0) > 0)
@@ -137,7 +128,7 @@ t_data	*init_datas(t_total_info *total)
 	data->output_fd = 1;
 	data->envp = change_to_arr(data->envp_list);
 	if (!data->envp)
-		return (NULL);
+		return (free(data), NULL);
 	data->pids = ft_calloc(data->cmds_count + 1, sizeof(pid_t));
 	if (!data->pids)
 		return (free(data->envp), NULL);
