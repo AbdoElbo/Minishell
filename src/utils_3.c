@@ -15,6 +15,7 @@ static t_cmds	*create_newcmds(void)
 	new_node->next = NULL;
 	new_node->redir = NULL;
 	new_node->whole_cmd = NULL;
+	new_node->argc = 0;
 	return (new_node);
 }
 

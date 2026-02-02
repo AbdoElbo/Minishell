@@ -8,14 +8,13 @@ SRCS	:= src/minishell.c src/__path_helper.c src/utils_1.c src/utils_2.c \
 			src/utils_3.c src/abdo_signals.c src/helper_cmds.c src/helper_redir.c \
 			src/helper_token.c src/free_functions.c src/expand.c src/helper_t_envp.c \
 			src/expand_helper_1.c src/expand_helper_2.c src/expand_helper_3.c \
-			src/builtins/arr.c src/builtins/builtin_helper.c \
-			src/builtins/builtins_echo.c src/builtins/builtins_exit.c \
-			src/builtins/builtins_export_1.c \
-			src/builtins/builtins_export_sorted_1.c \
-			src/builtins/builtins_export_sorted_2.c src/builtins/builtins_pwd_env.c \
-			src/builtins/builtins_unset.c src/builtins/cd_builtins.c \
 			src/pipex/pipex.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/cleanup_utils.c \
-			src/expand_redir.c src/expand_redir_helper.c
+			src/expand_redir.c src/expand_redir_helper.c \
+			src/builtins/arr.c src/builtins/builtin_helper.c src/builtins/builtins_cd.c \
+			src/builtins/builtins_echo.c src/builtins/builtins_exit.c \
+			src/builtins/builtins_export_1.c src/builtins/builtins_export_sorted_1.c \
+			src/builtins/builtins_export_sorted_2.c src/builtins/builtins_pwd_env.c \
+			src/builtins/builtins_unset.c src/builtins/call_builtins.c
 
 GREEN = \033[1;32m
 BLUE = \033[1;34m

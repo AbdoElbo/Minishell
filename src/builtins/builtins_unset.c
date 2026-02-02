@@ -21,7 +21,7 @@ static int	is_unset_valid_identifier(char *str)
 static void	delete_node(t_envp **env, t_envp *prev, t_envp *curr)
 {
 	if (!env || !curr)
-		return;
+		return ;
 	if (prev)
 		prev->next = curr->next;
 	else

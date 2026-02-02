@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/31 23:07:17 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/02 21:58:32 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,13 +125,14 @@ static void	child_proccess(t_data *data)
 	handle_redirections(data);
 	if (data->cmds->next)
 		close(data->pipefd[0]);
-	// if (is_builtin())
-	// 	call_bultin();
-	// else
-	// 	execve(data->cmds[i][0], data->cmds[i], data->envp);
-	path_check_one(data->cmds->argv, data->paths);
-	execve(data->cmds->argv[0], data->cmds->argv, data->envp);
-	child_exec_error(data);
+	if (is_builtin(data))
+		_exit(call_builtins(data));
+	else
+	{
+		path_check_one(data->cmds->argv, data->paths);
+		execve(data->cmds->argv[0], data->cmds->argv, data->envp);
+		child_exec_error(data);
+	}
 }
 
 static int	execute_loop(t_data *data) //need to make it 25 lines
@@ -178,13 +179,22 @@ static int	handle_heredocs(t_cmds *cmds)
 int	pipex(t_total_info *total)
 {
 	t_data	*data;
+	int		exit;
 
 	if (!handle_heredocs(total->cmds))
 		return (1);
 	data = setup_datas(total);
 	if (!data)
 		return (1);
-	if (!execute_loop(data))
+	if (is_builtin(data) && ft_cmds_size(total->cmds) == 1)
+	{
+		exit = call_builtins(data);
+		return (free_datas(data), 1);
+	}
+	else
+	{
+		if (!execute_loop(data))
+			return (pid_wait_and_free(data));
 		return (pid_wait_and_free(data));
-	return (pid_wait_and_free(data));
+	}
 }

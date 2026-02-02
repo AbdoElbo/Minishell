@@ -44,6 +44,7 @@ typedef struct s_cmds
 {
 	char			*whole_cmd;
 	char			**argv;
+	int				argc;
 	t_type			*type;
 	t_redir			*redir;
 	struct s_cmds	*next;

@@ -38,21 +38,19 @@ static void	print_strings(char **argv, int no_nl, int i)
 	}
 }
 
-int	builtin_echo(char *env, int argc, char **argv)
+int	builtin_echo(char **strings)
 {
 	int	i;
 	int	no_nl;
 
-	(void)env;
-	(void)argc;
 	i = 1;
 	no_nl = 0;
-	while (argv[i] && newline_check(argv[i]))
+	while (strings[i] && newline_check(strings[i]))
 	{
 		no_nl = 1;
 		i++; // im using the index i to start printing from it in the next func
 	}
-	print_strings(argv, no_nl, i);
+	print_strings(strings, no_nl, i);
 	return (EXIT_SUCCESS);
 }
 

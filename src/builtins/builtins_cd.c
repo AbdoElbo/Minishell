@@ -99,16 +99,16 @@ static int	rollback_env(t_envp **env, char **old, char **pwd)
 	return (free(*old), free(*pwd), EXIT_SUCCESS);
 }
 
-int	builtin_cd(t_envp **env, char *new_path)
+int	builtin_cd(t_envp **env, int argc, char **argv)
 {
 	char	*copy_old;
 	char	*copy_pwd;
 
-	if (!*env)
+	if (!*env || argc != 2)
 		return (EXIT_FAILURE);
-	if (!new_path)
-		new_path = getenv("HOME");
-	if (!new_path)
+	if (!argv[1])
+		argv[1] = getenv("HOME");
+	if (!argv[1])
 		return (printf("cd: HOME not set\n"), EXIT_FAILURE);
 	copy_old = get_envp_value(*env, "OLDPWD=");
 	if (!copy_old)
@@ -118,9 +118,9 @@ int	builtin_cd(t_envp **env, char *new_path)
 		return (free(copy_old), EXIT_FAILURE);
 	if (change_old_path(env, copy_pwd) == EXIT_FAILURE)
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
-	if (chdir(new_path) != 0)
+	if (chdir(argv[1]) != 0)
 	{
-		printf("cd: %s: No such file or directory\n", new_path);
+		printf("cd: %s: No such file or directory\n", argv[1]);
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	}
 	if (update_new_path(env) == EXIT_FAILURE)

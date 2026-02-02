@@ -119,11 +119,11 @@ void	print_cmds(t_cmds *cmds)
 			printf("Redir block %i:\n", j + 1);
 			if (temp2->type == REDIR_APPEND)
 				printf("type: REDIR_APPEND, file:%s\n", temp2->file);
-			if (temp2->type == REDIR_HEREDOC)
+			else if (temp2->type == REDIR_HEREDOC)
 				printf("type: REDIR_HEREDOC, file:%s\n", temp2->file);
-			if (temp2->type == REDIR_IN)
+			else if (temp2->type == REDIR_IN)
 				printf("type: REDIR_IN, file:%s\n", temp2->file);
-			if (temp2->type == REDIR_OUT)
+			else if (temp2->type == REDIR_OUT)
 				printf("type: REDIR_OUT, file:%s\n", temp2->file);
 			printf("fd: %i\n", temp2->fd);
 			temp2 = temp2->next;

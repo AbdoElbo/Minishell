@@ -117,11 +117,12 @@ int	main(int argc, char **argv, char **envp)
 			return (free_all(&total), free(line), 1);
 		if (!expand(total))
 			return (free(line), free_all(&total), 0);
+		// print_cmds(total->cmds);
 		total->exit_code = pipex(total);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
 		// print_lst(total->token);
-		// print_cmds(total->cmds);
+		print_cmds(total->cmds);
 		free_all(&total);
 	}
 	return (0);
