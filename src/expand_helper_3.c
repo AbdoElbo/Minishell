@@ -44,10 +44,7 @@ static int	split_command(t_total_info *total, t_expand *data)
 	char	**temp;
 	char	*last_str;
 	int		i;
-	int		has_space;
-
 	i = 0;
-	has_space = 0;
 	last_str = NULL;
 	while (data->temp[i] && !ft_isspace(data->temp[i]))
 		i++;

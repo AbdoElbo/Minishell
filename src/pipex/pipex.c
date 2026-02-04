@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/02 21:58:32 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/04 16:30:35 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,15 @@ static void	handle_redirections(t_data *data)//Needs to be smaller!!!
 
 static void	handle_parent(t_data *data)
 {
+	t_redir	*temp;
+
+	temp = data->cmds->redir;
+	while (temp)
+	{
+		if (temp->type == REDIR_HEREDOC && temp->fd > 2)
+			close(temp->fd);
+		temp = temp->next;
+	}
 	if (data->input_fd != 0)
 		close(data->input_fd);
 	if (data->cmds->next)
@@ -189,7 +198,7 @@ int	pipex(t_total_info *total)
 	if (is_builtin(data) && ft_cmds_size(total->cmds) == 1)
 	{
 		exit = call_builtins(data);
-		return (free_datas(data), 1);
+		return (free_datas(data), exit);
 	}
 	else
 	{

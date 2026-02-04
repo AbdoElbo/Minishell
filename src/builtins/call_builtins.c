@@ -1,5 +1,6 @@
 
 #include "builtins.h"
+#include "pipex.h"
 
 int	is_builtin(t_data *data)
 {
@@ -25,7 +26,6 @@ int	call_builtins(t_data *data)
 	int	status;
 
 	status = 0;
-	write(2, "THIS IS A BUILTINNNNN\n", 22);
 	if (ft_strncmp(data->cmds->argv[0], "cd", 2) == 0)
 		status = builtin_cd(&data->envp_list, data->cmds->argc, data->cmds->argv);
 	else if (ft_strncmp(data->cmds->argv[0], "echo", 4) == 0)

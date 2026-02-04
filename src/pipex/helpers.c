@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/31 22:59:24 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/04 16:32:03 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	read_heredoc(t_redir *redir)
 			break ;
 	}
 	free (s);
-	write(1, "heredoc> ", 9);
 	get_next_line(-1);
 	close(pipefd[1]);
 	redir->fd = pipefd[0];
