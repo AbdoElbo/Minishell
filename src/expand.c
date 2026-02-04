@@ -50,7 +50,7 @@ static int	fix_whole_command(t_cmds *cmds)
 			temp[i++] = str[j++];
 	}
 	free((cmds->whole_cmd));
-	if (temp[ft_strlen(temp) - 1] == ' ')
+	if (ft_strlen(temp) > 0 && temp[ft_strlen(temp) - 1] == ' ')
 		temp[ft_strlen(temp) - 1] = '\0';
 	cmds->whole_cmd = ft_strdup(temp);
 	if (!(cmds->whole_cmd))
@@ -129,7 +129,7 @@ static t_expand	*init_data(char *whole_cmds)
 	data->str = whole_cmds;
 	data->redir_file = NULL;
 	data->redir_size = 0;
-	data->str_size = ft_strlen(data->str) * 2;
+	data->str_size = ft_strlen(data->str) * 2 + 1;
 	data->temp = ft_calloc(data->str_size, sizeof(char));
 	if (!data->temp)
 		return (write(2, "memalloc 2 fail in init_data", 28), free(data), NULL);
