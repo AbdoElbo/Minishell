@@ -17,6 +17,7 @@ typedef struct s_expand
 	char			*str;
 	int				arg_index;
 	char			*temp;
+	char			*r_temp;
 	int				str_size;
 	int				redir_size;
 	int				i;

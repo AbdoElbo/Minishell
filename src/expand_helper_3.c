@@ -44,6 +44,7 @@ static int	split_command(t_total_info *total, t_expand *data)
 	char	**temp;
 	char	*last_str;
 	int		i;
+
 	i = 0;
 	last_str = NULL;
 	while (data->temp[i] && !ft_isspace(data->temp[i]))
@@ -86,8 +87,10 @@ static int	normal(t_total_info *total, t_expand *data, t_cmds *cmds)
 		expand_var(total, data);
 		if (!split_command(total, data))
 			return (free(data->temp), 0);
+		if (!ft_strlen(data->temp) && ft_isspace(data->str[data->i + 1]))
+			data->i++; //we added this condition to make sure that when var is null we dont create an argv.
 	}
-	else if (ft_isspace(cmds->whole_cmd[data->i]))
+	else if (ft_isspace(cmds->whole_cmd[data->i]) && ft_strlen(data->temp))
 	{
 		if (!finish_argv(&data->arg_index, cmds, data->temp))
 			return (free(data->temp), 0);

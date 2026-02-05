@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/04 16:30:35 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/05 15:09:15 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,11 @@ static int	handle_heredocs(t_cmds *cmds)
 	return (1);
 }
 
+// int	exec_null(t_total_info *total)
+// {
+		// handle_parent_redir(data);
+// }
+
 int	pipex(t_total_info *total)
 {
 	t_data	*data;
@@ -195,15 +200,18 @@ int	pipex(t_total_info *total)
 	data = setup_datas(total);
 	if (!data)
 		return (1);
-	if (is_builtin(data) && ft_cmds_size(total->cmds) == 1)
+	if (ft_cmds_size(total->cmds) == 1)
 	{
-		exit = call_builtins(data);
-		return (free_datas(data), exit);
+		if (is_builtin(data))
+		{
+			exit = call_builtins(data);
+			return (free_datas(data), exit);
+		}
+		// else if (!total->cmds->argv[0])
+		// {
+		// 	exit = exec_null(total);
+		// 	return (free_datas(data), exit);
+		// }
 	}
-	else
-	{
-		if (!execute_loop(data))
-			return (pid_wait_and_free(data));
-		return (pid_wait_and_free(data));
-	}
+	return (execute_loop(data), pid_wait_and_free(data));
 }

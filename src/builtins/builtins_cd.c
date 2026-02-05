@@ -105,11 +105,11 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 	char	*copy_pwd;
 
 	if (!*env || argc != 2)
-		return (EXIT_FAILURE);
+		return (write(2, " too many arguments", 19), EXIT_FAILURE);
 	if (!argv[1])
 		argv[1] = getenv("HOME");
 	if (!argv[1])
-		return (printf("cd: HOME not set\n"), EXIT_FAILURE);
+		return (write(2, "cd: HOME not set\n", 18), EXIT_FAILURE);
 	copy_old = get_envp_value(*env, "OLDPWD=");
 	if (!copy_old)
 		return (EXIT_FAILURE);
@@ -120,11 +120,12 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	if (chdir(argv[1]) != 0)
 	{
-		printf("cd: %s: No such file or directory\n", argv[1]);
+		write(2, "cd: ", 4);
+		write(2, argv[1], ft_strlen(argv[1]));
+		write(2, ": No such file or directory\n", 28);
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	}
 	if (update_new_path(env) == EXIT_FAILURE)
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	return (free(copy_old), free(copy_pwd), EXIT_SUCCESS);
 }
-

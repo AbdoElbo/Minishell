@@ -49,7 +49,8 @@ static int	fix_whole_command(t_cmds *cmds)
 		else
 			temp[i++] = str[j++];
 	}
-	free((cmds->whole_cmd));
+	if (cmds->whole_cmd)
+		free((cmds->whole_cmd));
 	if (ft_strlen(temp) > 0 && temp[ft_strlen(temp) - 1] == ' ')
 		temp[ft_strlen(temp) - 1] = '\0';
 	cmds->whole_cmd = ft_strdup(temp);
@@ -127,6 +128,7 @@ static t_expand	*init_data(char *whole_cmds)
 	data->i_redir = 0;
 	data->arg_index = 0;
 	data->str = whole_cmds;
+	data->r_temp = NULL;
 	data->redir_file = NULL;
 	data->redir_size = 0;
 	data->str_size = ft_strlen(data->str) * 2 + 1;
@@ -154,12 +156,12 @@ int	expand(t_total_info *total)
 		temp = cmds->redir;
 		while (cmds->redir)
 		{
-			data->redir_file = ft_strdup(cmds->redir->file);
-			if (!data->redir_file)
-				return (write(2, "memaloc in expand fail", 22), 0);
+			data->r_temp = ft_calloc(ft_strlen(cmds->redir->file) * 2 + 1, sizeof(char));
+			if (!data->r_temp)
+				return (write(2, "memaloc fail in expand", 22), 0);
 			expand_one_redir(total, cmds, data);
 			cmds->redir = cmds->redir->next;
-			free(data->redir_file);
+			free(data->r_temp);
 		}
 		cmds->redir = temp;
 		cmds = cmds->next;

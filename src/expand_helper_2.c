@@ -7,6 +7,7 @@ void	char_append(char *temp, char c)
 
 	size = ft_strlen(temp);
 	temp[size] = c;
+	temp[size + 1] = '\0';
 }
 
 int	increase_buffer(char **temp, int *size, int var_len)

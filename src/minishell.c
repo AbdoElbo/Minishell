@@ -63,7 +63,7 @@ static int	copy_envp(t_total_info *total, char **envp)
 	return (1);
 }
 
-static t_total_info	*init_total(char **envp)
+static t_total_info	*init_total(char **envp, int exit)
 {
 	t_total_info	*total;
 
@@ -72,9 +72,9 @@ static t_total_info	*init_total(char **envp)
 		return (write(2, "1st Mem alloc in init total failed", 34), NULL);
 	total->cmds = NULL;
 	total->token = NULL;
+	total->exit_code = exit;
 	if (!copy_envp(total, envp))
 		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
-	total->exit_code = 0;
 	return (total);
 }
 
@@ -82,13 +82,15 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_total_info	*total;
 	char			*line;
+	int				exit;
 
 	(void)argv;
 	(void)argc;
+	exit = 0;
 	signal_setup();
 	while (1)
 	{
-		total = init_total(envp);
+		total = init_total(envp, exit);
 		if (!total)
 			return (free_all(&total), 1);
 		g_signal = 0;
@@ -107,23 +109,24 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (*line != '\0')
 			add_history(line);
-		if (!ft_strncmp(line, "exit", 5))
-			return (free(line), free_all(&total), 0);
+		// if (!ft_strncmp(line, "exit", 5))
+		// 	return (free(line), free_all(&total), 0);
 		total->token = parse_input(line);
 		if (!total->token)
 			return (free(line), free_all(&total), 0);
 		// print_lst(total->token);
 		if (!get_cmds(total, total->token))
 			return (free_all(&total), free(line), 1);
+		// print_cmds(total->cmds);
 		if (!expand(total))
 			return (free(line), free_all(&total), 0);
 		// print_cmds(total->cmds);
-		total->exit_code = pipex(total);
+		exit = pipex(total);
 		free(line);
 		// check_our_envp(total->our_envp, envp);
 		// print_lst(total->token);
-		print_cmds(total->cmds);
+		// print_cmds(total->cmds);
 		free_all(&total);
 	}
-	return (0);
+	return (exit);
 }

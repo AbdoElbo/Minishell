@@ -12,7 +12,7 @@ static t_envp	*find_value(t_envp *env, char *identifier)
 			return (env);
 		env = env->next;
 	}
-	return (NULL);
+	return (write(2, "couldn't find the identifier\n", 29), NULL);
 }
 
 static int	treat_invalid_variable(t_total_info *total, t_expand *data)
@@ -44,7 +44,8 @@ static int	treat_invalid_variable(t_total_info *total, t_expand *data)
 
 static char	*extract_variable(t_expand *data, int *var_len)
 {
-	int	i;
+	int		i;
+	char	*substring;
 
 	*var_len = 0;
 	i = data->i_redir;
@@ -56,7 +57,10 @@ static char	*extract_variable(t_expand *data, int *var_len)
 			&& !increase_buffer(&data->temp, &data->redir_size, *var_len))
 			return (NULL);
 	}
-	return (ft_substr(data->redir_file, data->i_redir, *var_len));
+	substring = ft_substr(data->redir_file, data->i_redir, *var_len);
+	if (!substring)
+		return (write(2, "substr fail in extract_variable", 31), NULL);
+	return (substring);
 }
 
 static int	treat_valid_variable(t_total_info *total, t_expand *data)
