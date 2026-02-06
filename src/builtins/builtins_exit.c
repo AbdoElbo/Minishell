@@ -1,45 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   abdo_builtins_exit.c                               :+:      :+:    :+:   */
+/*   builtins_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 20:19:08 by aelbouaz          #+#    #+#             */
-/*   Updated: 2026/01/22 20:30:38 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/06 19:38:17 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include <limits.h>
-
-// returns 1 if the string is variation of :
-// -n or -nnnn or -nnnnnnnnn...
-// returns 0 if the string should be treated as a string (no newline)
-static long long	ft_atoll(const char *str)
-{
-	int			i;
-	int			sign;
-	long long	result;
-
-	i = 0;
-	sign = 1;
-	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	result = 0;
-	while (str[i] && str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	return (result * sign);
-}
 
 static int	check_number(long long result, char *s, int i, int sign)
 {
@@ -65,11 +37,10 @@ static int	check_number(long long result, char *s, int i, int sign)
 	return (0);
 }
 
-static int	its_over(const char *str)
+static int	its_over(const char *str, long long *result)
 {
 	int			i;
 	int			sign;
-	long long	result;
 
 	i = 0;
 	sign = 1;
@@ -81,43 +52,63 @@ static int	its_over(const char *str)
 			sign = -1;
 		i++;
 	}
-	result = 0;
 	while (str[i] && str[i] >= '0' && str[i] <= '9')
 	{
-		result = result * 10 + (str[i] - '0');
-		if (check_number(result, (char *)str, i, sign))
+		(*result) = (*result) * 10 + (str[i] - '0');
+		if (check_number((*result), (char *)str, i, sign))
 			return (1);
 		i++;
 	}
+	(*result) *= sign;
 	return (0);
 }
 
-// int	main(int argc, char **argv)
-// {
-// 	if (its_over(argv[1]))
-// 	{
-// 		write(2, "Error:\nLONG_Overflow.\n", 22);
-// 		return (0);
-// 	}
-// 	else
-// 		printf("%lli\n", (ft_atoll(argv[1]) % 256));
-// 	return (0);
-// }
+static int	all_digit(char *str)
+{
+	int	i;
 
-// every exit returns the value modulo 256
-// example: exit 1000 --> 1000 % 256 = 232
-// so the return value is 232
-// but the limit is up to LONG_MAX, if LONG MAX is reached, we print the following :
-// bash: exit: *INSERT NUMBER HERE*: numeric argument required
+	i = 0;
+	if (str[0] == '-' || str[0] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
-int		builtin_exit(char *env, char *str)
+static void	write_error(char *str)
+{
+	write(2, "exit: ", 6);
+	write(2, str, ft_strlen(str));
+	write(2, ": numeric argument required\n", 28);
+}
+
+int	builtin_exit(int argc, char **argv, t_total_info *total)
 {
 	long long	result;
 
-	(void)env;
-	result = ft_atoll(str);
-	its_over(str);
+	if (argc == 1)
+		((void)free_all(&total), _exit(EXIT_SUCCESS));
+	if (argc != 2)
+	{
+		write(2, "exit: too many arguments\n", 25);
+		return (EXIT_FAILURE);
+	}
+	if (!all_digit(argv[1]))
+	{
+		write_error(argv[1]);
+		((void)free_all(&total), _exit (2));
+	}
+	result = 0;
+	if (its_over(argv[1], &result))
+	{
+		write_error(argv[1]);
+		((void)free_all(&total), _exit (EXIT_FAILURE));
+	}
+	result = result % 256;
+	((void)free_all(&total), _exit(result));
 	return (result);
 }
-
-// the functions above work except for the builtin_exit, not yet

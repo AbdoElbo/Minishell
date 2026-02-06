@@ -70,6 +70,12 @@ static t_total_info	*init_total(char **envp, int exit)
 	total = ft_calloc(1, sizeof(t_total_info));
 	if (!total)
 		return (write(2, "1st Mem alloc in init total failed", 34), NULL);
+	total->stdin = dup(STDIN_FILENO);
+	if (total->stdin == -1)
+		return (close(total->stdin), perror("dup"), free(total), NULL);
+	total->stdout = dup(STDOUT_FILENO);
+	if (total->stdout == -1)
+		return (close(total->stdout), perror("dup"), free(total), NULL);
 	total->cmds = NULL;
 	total->token = NULL;
 	total->exit_code = exit;
@@ -92,7 +98,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		total = init_total(envp, exit);
 		if (!total)
-			return (free_all(&total), 1);
+			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
 		line = readline(RED"Minishell$ "RESET);
 		if (!line)

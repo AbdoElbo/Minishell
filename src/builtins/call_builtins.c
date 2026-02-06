@@ -10,8 +10,8 @@ int	is_builtin(t_data *data)
 		return (1);
 	else if (ft_strncmp(data->cmds->argv[0], "echo", 4) == 0)
 		return (1);
-	// else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
-	// 	return (1);
+	else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
+		return (1);
 	else if (ft_strncmp(data->cmds->argv[0], "export", 6) == 0)
 		return (1);
 	else if (ft_strncmp(data->cmds->argv[0], "pwd", 3) == 0)
@@ -23,7 +23,7 @@ int	is_builtin(t_data *data)
 	return (0);
 }
 
-int	call_builtins(t_data *data)
+int	call_builtins(t_data *data, t_total_info *total)
 {
 	int	status;
 
@@ -33,8 +33,8 @@ int	call_builtins(t_data *data)
 		status = builtin_cd(&data->envp_list, data->cmds->argc, data->cmds->argv);
 	else if (ft_strncmp(data->cmds->argv[0], "echo", 4) == 0)
 		status = builtin_echo(data->cmds->argv);
-	// else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
-	// 	status = builtin_exit(); // later
+	else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
+		status = builtin_exit(data->cmds->argc, data->cmds->argv, total);
 	else if (ft_strncmp(data->cmds->argv[0], "export", 6) == 0)
 		status = builtin_export(&data->envp_list, data->cmds->argc, data->cmds->argv);
 	else if (ft_strncmp(data->cmds->argv[0], "pwd", 3) == 0)

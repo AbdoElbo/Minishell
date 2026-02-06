@@ -27,13 +27,13 @@ int		print_export_format(t_envp *env);
 
 int		builtin_cd(t_envp **env, int argc, char **argv);
 int		builtin_echo(char **strings);
-int		builtin_exit(char *env, char *str);
+int		builtin_exit(int argc, char **argv, t_total_info *total);
 int		builtin_export(t_envp **env, int argc, char **argv);
 int		builtin_pwd(void);
 int		builtin_env(t_envp **env);
 int		builtin_unset(t_envp **env, int argc, char **argv);
 
 int		is_builtin(t_data *data);
-int		call_builtins(t_data *data);
+int		call_builtins(t_data *data, t_total_info *total);
 
 #endif

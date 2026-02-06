@@ -1,8 +1,34 @@
 
 #include "minishell.h"
 
+int	reset_stds(t_total_info *total)
+{
+	if (!total)
+		return (1);
+	if (total->stdin != -1)
+	{
+		if (dup2(total->stdin, STDIN_FILENO) == -1)
+			return (perror("Dup2 for STDIN failed"), 1);
+		close(total->stdin);
+		total->stdin = -1;
+	}
+	if (total->stdout != -1)
+	{
+		if (dup2(total->stdout, STDOUT_FILENO) == -1)
+			return (perror("Dup2 for STDOUT failed"), 1);
+		close(total->stdout);
+		total->stdout = -1;
+	}
+	return (0);
+}
+
 void	free_all(t_total_info **total)
 {
+	int	exit;
+
+	exit = 0;
+	if (*total)
+		exit = reset_stds(*total);
 	if (*total)
 	{
 		if ((*total)->token)
@@ -21,6 +47,8 @@ void	free_all(t_total_info **total)
 		}
 		free(*total);
 	}
+	if (exit)
+		_exit(EXIT_FAILURE);
 }
 
 void	free_arr(char **arr)

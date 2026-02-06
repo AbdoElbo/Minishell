@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/05 15:09:15 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/06 19:14:26 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,67 @@ static int	file_open(char *filename, enum e_in_out in_out)
 	// 		return (perror("Failed to open /dev/null"), -1);
 	// }
 	return (fd);
+}
+
+static int	handle_redir_parent(t_data *data)//Needs to be smaller!!!
+{
+	t_redir	*temp;
+	int		input;
+	int		output;
+
+	input = data->input_fd;
+	output = data->output_fd;
+	temp = data->cmds->redir;
+	while (temp)
+	{
+		if (temp->type == REDIR_APPEND)
+		{
+			if (data->output_fd != 1)
+				close(data->output_fd);
+			temp->fd = file_open(temp->file, APPEND);
+			if (temp->fd == -1)
+				return (perror(temp->file), EXIT_FAILURE);
+			data->output_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_OUT)
+		{
+			if (data->output_fd != 1)
+				close(data->output_fd);
+			temp->fd = file_open(temp->file, OUT);
+			if (temp->fd == -1)
+				return (perror(temp->file), EXIT_FAILURE);
+			data->output_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_IN)
+		{
+			if (data->input_fd != 0)
+				close(data->input_fd);
+			temp->fd = file_open(temp->file, IN);
+			if (temp->fd == -1)
+				return (perror(temp->file), EXIT_FAILURE);
+			data->input_fd = temp->fd;
+		}
+		else if (temp->type == REDIR_HEREDOC)
+		{
+			if (data->input_fd != 0)
+				close(data->input_fd);
+			data->input_fd = temp->fd;
+		}
+		temp = temp->next;
+	}
+	if (input != data->input_fd)
+	{
+		if (dup2(data->input_fd, STDIN_FILENO) == -1)
+			return (perror("Dup2 for STDIN failed"), EXIT_FAILURE);
+		close(data->input_fd);
+	}
+	if (output != data->output_fd)
+	{
+		if (dup2(data->output_fd, STDOUT_FILENO) == -1)
+			return (perror("Dup2 for STDOUT failed"), EXIT_FAILURE);
+		close(data->output_fd);
+	}
+	return (0);
 }
 
 static void	handle_redirections(t_data *data)//Needs to be smaller!!!
@@ -117,7 +178,7 @@ static void	handle_parent(t_data *data)
 	}
 }
 
-static void	child_proccess(t_data *data)
+static void	child_proccess(t_data *data, t_total_info *total)
 {
 	if (data->input_fd != 0)
 	{
@@ -135,8 +196,8 @@ static void	child_proccess(t_data *data)
 	if (data->cmds->next)
 		close(data->pipefd[0]);
 	if (is_builtin(data))
-		_exit(call_builtins(data));
-	else
+		_exit(call_builtins(data, total));
+	else if (data->cmds->argv[0])
 	{
 		path_check_one(data->cmds->argv, data->paths);
 		execve(data->cmds->argv[0], data->cmds->argv, data->envp);
@@ -144,7 +205,20 @@ static void	child_proccess(t_data *data)
 	}
 }
 
-static int	execute_loop(t_data *data) //need to make it 25 lines
+static int	restore_parent_stdio(t_total_info *total)
+{
+	if (!total)
+		return (1);
+	if (total->stdin != -1)
+		if (dup2(total->stdin, STDIN_FILENO) == -1)
+			return (perror("Dup2 for STDIN failed"), 1);
+	if (total->stdout != -1)
+		if (dup2(total->stdout, STDOUT_FILENO) == -1)
+			return (perror("Dup2 for STDOUT failed"), 1);
+	return (0);
+}
+
+static int	execute_loop(t_data *data, t_total_info *total) //need to make it 25 lines
 {
 	int		i;
 
@@ -158,7 +232,7 @@ static int	execute_loop(t_data *data) //need to make it 25 lines
 		if (data->pids[i] < 0)
 			return (perror("Fork failed"), 0);
 		else if (data->pids[i] == 0)
-			child_proccess(data);
+			child_proccess(data, total);
 		else
 			handle_parent(data);
 		data->cmds = data->cmds->next;
@@ -185,33 +259,31 @@ static int	handle_heredocs(t_cmds *cmds)
 	return (1);
 }
 
-// int	exec_null(t_total_info *total)
-// {
-		// handle_parent_redir(data);
-// }
 
 int	pipex(t_total_info *total)
 {
 	t_data	*data;
 	int		exit;
 
-	if (!handle_heredocs(total->cmds))
-		return (1);
 	data = setup_datas(total);
-	if (!data)
+	if (!data || !handle_heredocs(total->cmds))
 		return (1);
 	if (ft_cmds_size(total->cmds) == 1)
 	{
+		if (is_builtin(data) || !total->cmds->argv[0])
+		{
+			exit = handle_redir_parent(data);
+			if (exit)
+				return (restore_parent_stdio(total), free_datas(data), exit);
+		}
 		if (is_builtin(data))
 		{
-			exit = call_builtins(data);
+			exit = call_builtins(data, total);
+			restore_parent_stdio(total);
 			return (free_datas(data), exit);
 		}
-		// else if (!total->cmds->argv[0])
-		// {
-		// 	exit = exec_null(total);
-		// 	return (free_datas(data), exit);
-		// }
+		else if (!total->cmds->argv[0])
+			return (free_datas(data), exit);
 	}
-	return (execute_loop(data), pid_wait_and_free(data));
+	return (execute_loop(data, total), pid_wait_and_free(data));
 }

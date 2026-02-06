@@ -80,6 +80,8 @@ typedef struct s_total_info
 	t_cmds			*cmds;
 	t_envp			*our_envp;
 	int				exit_code;
+	int				stdin;
+	int				stdout;
 }	t_total_info;
 
 #endif

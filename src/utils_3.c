@@ -19,22 +19,6 @@ static t_cmds	*create_newcmds(void)
 	return (new_node);
 }
 
-// static int	count_cmds(t_token *lst)
-// {
-// 	int	i;
-
-// 	i = 1;
-// 	if (!lst)
-// 		return (0);
-// 	while (lst)
-// 	{
-// 		if (lst->type == PIPE)
-// 			i++;
-// 		lst = lst->next;
-// 	}
-// 	return (i);
-// }
-
 static int	add_argv(t_cmds *new_node, char *new_argv)
 {
 	char	*temp;

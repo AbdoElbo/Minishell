@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:55:03 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/01/30 13:12:43 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/06 13:16:46 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,6 @@ void	free_datas(t_data *data)
 {
 	if (data)
 	{
-		// if (data->cmds)
-		// 	free_cmds(data->cmds);
 		if (data->paths)
 			free_paths(data->paths);
 		if (data->pids)
@@ -93,9 +91,6 @@ void	free_datas(t_data *data)
 		if (data->envp)
 			free_arr(data->envp);
 		free(data);
-		// if (data->pipefd[0] > 2)
-		// 	close(data->pipefd[0]);
-		// if (data->pipefd[1] > 2)
-		// 	close(data->pipefd[1]);
+		
 	}
 }
