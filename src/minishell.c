@@ -3,136 +3,65 @@
 
 volatile sig_atomic_t	g_signal;
 
-t_envp	*new_envp_node(char *str)
+static void	sig_handler(int sig)
 {
-	t_envp	*new_envp;
-
-	new_envp = ft_calloc(1, sizeof(t_envp));
-	if (!new_envp)
-		return (write(2, "Memaloc 2 fail new_envp", 23), NULL);
-	new_envp->string = ft_strdup(str);
-	if (!new_envp->string)
-		return (write(2, "Memaloc 2 fail new_envp", 23), free(new_envp), NULL);
-	new_envp->next = NULL;
-	return (new_envp);
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-static int	update_env(t_envp **env)
+static void	signal_setup(void)
 {
-	t_envp	*temp;
-	char	*identifier;
-	char	*value;
-	int		has_value;
+	struct sigaction	sa;
 
-	temp = *env;
-	while (temp)
-	{
-		identifier = NULL;
-		value = NULL;
-		has_value = 0;
-		if (!get_identifier_and_value(temp->string, &identifier
-				, &value, &has_value))
-			return (free(identifier), free(value), 0);
-		temp->identifier = identifier;
-		temp->value = value;
-		temp->has_value = has_value;
-		temp->exported = 1;
-		temp = temp->next;
-	}
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = sig_handler;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	rl_catch_signals = 0;
+}
+
+static int	handle_line(t_total_info **total, char *line, int *exit_code)
+{
+	if (!*line || g_signal)
+		return (free(line), 1);
+	add_history(line);
+	(*total)->token = parse_input(line);
+	if (!(*total)->token)
+		return (free(line), 0);
+	if (!get_cmds(*total, (*total)->token))
+		return (free(line), 1);
+	if (!expand(*total))
+		return (free(line), 0);
+	*exit_code = pipex(*total);
+	free(line);
 	return (1);
-}
-
-static int	copy_envp(t_total_info *total, char **envp)
-{
-	int		i;
-	t_envp	*new_envp;
-
-	i = 0;
-	if (!envp)
-		return (0);
-	while (envp[i])
-	{
-		new_envp = new_envp_node(envp[i]);
-		if (!new_envp)
-			return (0);
-		ft_t_envp_addback(&total->our_envp, new_envp);
-		i++;
-	}
-	if (!update_env(&total->our_envp))
-		return (0);
-	return (1);
-}
-
-static t_total_info	*init_total(char **envp, int exit)
-{
-	t_total_info	*total;
-
-	total = ft_calloc(1, sizeof(t_total_info));
-	if (!total)
-		return (write(2, "1st Mem alloc in init total failed", 34), NULL);
-	total->stdin = dup(STDIN_FILENO);
-	if (total->stdin == -1)
-		return (close(total->stdin), perror("dup"), free(total), NULL);
-	total->stdout = dup(STDOUT_FILENO);
-	if (total->stdout == -1)
-		return (close(total->stdout), perror("dup"), free(total), NULL);
-	total->cmds = NULL;
-	total->token = NULL;
-	total->exit_code = exit;
-	if (!copy_envp(total, envp))
-		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
-	return (total);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_total_info	*total;
 	char			*line;
-	int				exit;
+	int				exit_code;
 
 	(void)argv;
 	(void)argc;
-	exit = 0;
+	exit_code = 0;
 	signal_setup();
 	while (1)
 	{
-		total = init_total(envp, exit);
+		total = init_total(envp, exit_code);
 		if (!total)
 			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
 		line = readline(RED"Minishell$ "RESET);
 		if (!line)
 			break ;
-		if (line[0] == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		if (g_signal)
-		{
-			free(line);
-			continue ;
-		}
-		if (*line != '\0')
-			add_history(line);
-		// if (!ft_strncmp(line, "exit", 5))
-		// 	return (free(line), free_all(&total), 0);
-		total->token = parse_input(line);
-		if (!total->token)
-			return (free(line), free_all(&total), 0);
-		// print_lst(total->token);
-		if (!get_cmds(total, total->token))
-			return (free_all(&total), free(line), 1);
-		// print_cmds(total->cmds);
-		if (!expand(total))
-			return (free(line), free_all(&total), 0);
-		// print_cmds(total->cmds);
-		exit = pipex(total);
-		free(line);
-		// check_our_envp(total->our_envp, envp);
-		// print_lst(total->token);
-		// print_cmds(total->cmds);
+		if (!handle_line(&total, line, &exit_code))
+			return (free_all(&total), exit_code);
 		free_all(&total);
 	}
-	return (exit);
+	return (exit_code);
 }

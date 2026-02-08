@@ -27,18 +27,17 @@
 # define RED   "\001\033[1;31m\002"
 # define RESET "\001\033[0m\002"
 
-char		*ft_strjoin_arg(char const *s1, char const *s2);
-t_token		*parse_input(char *line);
-t_token		*new_node(char *str, int len);
-void		print_lst(t_token *lst);
-int			is_operator(char c);
+t_total_info	*init_total(char **envp, int exit);
 
-int			get_cmds(t_total_info *total, t_token *lst);
-void		check_our_envp(t_envp *our_envp, char **envp);
-void		print_cmds(t_cmds *lst);
-int			check_lst_syntax(t_token *lst);
+char		    *ft_strjoin_arg(char const *s1, char const *s2);
+t_token		    *parse_input(char *line);
+t_token		    *new_node(char *str, int len);
+void		    print_lst(t_token *lst);
+int			    is_operator(char c);
 
-void		sig_handler(int sig);
-void		signal_setup(void);
+int			    get_cmds(t_total_info *total, t_token *lst);
+void		    check_our_envp(t_envp *our_envp, char **envp);
+void		    print_cmds(t_cmds *lst);
+int			    check_lst_syntax(t_token *lst);
 
 #endif
