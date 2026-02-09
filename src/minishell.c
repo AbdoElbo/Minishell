@@ -56,7 +56,21 @@ int	main(int argc, char **argv, char **envp)
 		if (!total)
 			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
-		line = readline(RED"Minishell$ "RESET);
+		// line = readline(RED"Minishell$ "RESET); this is our line 
+		//the code bellow is needed for the tester
+		if (isatty(STDIN_FILENO))
+			line = readline(RED"Minishell$ "RESET);
+		else
+		{
+			line = get_next_line(STDIN_FILENO);
+			if (line)
+			{
+				char *tmp = ft_strtrim(line, "\n");
+				free(line);
+				line = tmp;
+			}
+		}
+		//the code above is needed for the tester.
 		if (!line)
 			break ;
 		if (!handle_line(&total, line, &exit_code))
