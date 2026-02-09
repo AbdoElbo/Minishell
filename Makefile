@@ -16,7 +16,7 @@ SRCS	:=  src/minishell.c src/builtins/arr.c src/builtins/builtin_helper.c \
 			src/pipex/cleanup_utils.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/pipex.c\
 			src/utils/free_functions.c src/utils/helper_cmds.c src/utils/helper_redir.c \
 			src/utils/helper_t_envp.c src/utils/helper_token.c \
-			src/utils/utils_1.c src/utils/utils_2.c src/utils/utils_3.c src/utils/utils_4.c
+			src/utils/parse_input.c src/utils/utils_2.c src/utils/get_cmds.c src/utils/utils_4.c
 
 GREEN = \033[1;32m
 BLUE = \033[1;34m

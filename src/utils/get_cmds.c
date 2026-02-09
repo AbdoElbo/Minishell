@@ -34,32 +34,6 @@ static int	add_argv(t_cmds *new_node, char *new_argv)
 	return (1);
 }
 
-int	return_i(char *redir_file)
-{
-	int	i;
-
-	i = 0;
-	while (redir_file[i])
-	{
-		if (redir_file[i] == '\'')
-		{
-			i++;
-			while (redir_file[i] != '\'')
-				i++;
-		}
-		else if (redir_file[i] == '"')
-		{
-			i++;
-			while (redir_file[i] != '"')
-				i++;
-		}
-		else if (ft_isspace(redir_file[i]))
-			break ;
-		i++;
-	}
-	return (i);
-}
-
 static int	add_redir(t_token **lst, t_cmds *node, t_type redir_type,
 	char *redir_file)
 {
@@ -85,7 +59,7 @@ static int	add_redir(t_token **lst, t_cmds *node, t_type redir_type,
 	return (1);
 }
 
-int	add_node(t_cmds **cmds, t_cmds **new_node)
+static int	add_node(t_cmds **cmds, t_cmds **new_node)
 {
 	ft_cmds_addback(cmds, *new_node);
 	*new_node = create_newcmds();

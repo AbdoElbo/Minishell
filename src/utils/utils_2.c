@@ -1,6 +1,13 @@
 
 #include "minishell.h"
 
+int	is_operator(char c)
+{
+	if (c == '|' || c == '>' || c == '<')
+		return (1);
+	return (0);
+}
+
 t_token	*new_node(char *str, int len)
 {
 	t_token	*new_node;
@@ -58,6 +65,32 @@ void	check_our_envp(t_envp *our_envp, char **envp)
 		our_envp = our_envp->next;
 	}
 	printf("DONE.\n");
+}
+
+int	return_i(char *redir_file)
+{
+	int	i;
+
+	i = 0;
+	while (redir_file[i])
+	{
+		if (redir_file[i] == '\'')
+		{
+			i++;
+			while (redir_file[i] != '\'')
+				i++;
+		}
+		else if (redir_file[i] == '"')
+		{
+			i++;
+			while (redir_file[i] != '"')
+				i++;
+		}
+		else if (ft_isspace(redir_file[i]))
+			break ;
+		i++;
+	}
+	return (i);
 }
 
 void	print_lst(t_token *lst)
@@ -135,29 +168,3 @@ void	print_cmds(t_cmds *cmds)
 	}
 	printf("-----------------------------------------\n");
 }
-
-int	check_lst_syntax(t_token *lst)
-{
-	t_type	curr_type;
-	t_type	next_type;
-
-	while (lst->next)
-	{
-		curr_type = lst->type;
-		next_type = lst->next->type;
-		if (curr_type == next_type)
-			return (printf("Syntax Error\n"), 0);
-		else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
-			return (printf("Syntax Error\n"), 0);
-		else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
-			return (printf("Syntax Error\n"), 0);
-		lst = lst->next;
-	}
-	if (lst->value[0] == '\0')
-		return (printf("Syntax Error:\nNo redirection File\n"), 0);
-	if (lst->type != WORD)
-		return (printf("Syntax Error:\nNo redirection File\n"), 0);
-	return (1);
-}
-
-

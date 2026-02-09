@@ -1,11 +1,28 @@
 
 #include "minishell.h"
 
-int	is_operator(char c)
+static int	check_lst_syntax(t_token *lst)
 {
-	if (c == '|' || c == '>' || c == '<')
-		return (1);
-	return (0);
+	t_type	curr_type;
+	t_type	next_type;
+
+	while (lst->next)
+	{
+		curr_type = lst->type;
+		next_type = lst->next->type;
+		if (curr_type == next_type)
+			return (printf("Syntax Error\n"), 0);
+		else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
+			return (printf("Syntax Error\n"), 0);
+		else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
+			return (printf("Syntax Error\n"), 0);
+		lst = lst->next;
+	}
+	if (lst->value[0] == '\0')
+		return (printf("Syntax Error:\nNo redirection File\n"), 0);
+	if (lst->type != WORD)
+		return (printf("Syntax Error:\nNo redirection File\n"), 0);
+	return (1);
 }
 
 static int	quote_handler(char *line, int *i)
@@ -29,7 +46,7 @@ static int	quote_handler(char *line, int *i)
 	return (1);
 }
 
-static int	handler(char *line, int *i)
+static int	operator_handler(char *line, int *i)
 {
 	if (line[*i] == '|')
 		return ((*i)++, 1);
@@ -60,7 +77,7 @@ static char	*get_next_word(char *line, int *i)
 		(*i)++;
 	start = *i;
 	if (line[*i] && is_operator(line[*i]))
-		handler(line, i);
+		operator_handler(line, i);
 	else
 	{
 		while (line[*i] && !is_operator(line[*i]))
