@@ -203,6 +203,7 @@ static void	child_proccess(t_data *data, t_total_info *total)
 		execve(data->cmds->argv[0], data->cmds->argv, data->envp);
 		child_exec_error(data);
 	}
+	_exit(EXIT_SUCCESS);
 }
 
 static int	restore_parent_stdio(t_total_info *total)

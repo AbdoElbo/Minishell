@@ -8,7 +8,9 @@ static int	is_export_valid_identifier(char *str)
 		return (0);
 	if (!(ft_isalpha(str[0]) || str[0] == '_' ))
 	{
-		printf("export: `%s': not a valid identifier\n", str);
+		write(2, "export: `", 9);
+		write(2, str, ft_strlen(str));
+		write(2, "': not a valid identifier\n", 26);
 		return (0);
 	}
 	i = 1;
@@ -16,7 +18,9 @@ static int	is_export_valid_identifier(char *str)
 	{
 		if (!(ft_isalnum(str[i]) || str[i] == '_'))
 		{
-			printf("export: `%s': not a valid identifier\n", str);
+			write(2, "export: `", 9);
+			write(2, str, ft_strlen(str));
+			write(2, "': not a valid identifier\n", 26);
 			return (0);
 		}
 		i++;

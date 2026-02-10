@@ -42,7 +42,9 @@ static int	unset_each_var(t_envp **env, char *str)
 		return (EXIT_SUCCESS);
 	if (!is_unset_valid_identifier(str))
 	{
-		printf("unset: `%s': not a valid identifier\n", str);
+		write(2, "unset: `", 9);
+		write(2, str, ft_strlen(str));
+		write(2, "': not a valid identifier\n", 26);
 		return (EXIT_FAILURE);
 	}
 	len = ft_strlen(str);

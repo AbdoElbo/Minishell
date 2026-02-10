@@ -26,13 +26,13 @@ static void	signal_setup(void)
 static int	handle_line(t_total_info **total, char *line, int *exit_code)
 {
 	if (!*line || g_signal)
-		return (free(line), 1);
+		return (free(line), 0);
 	add_history(line);
 	(*total)->token = parse_input(line);
 	if (!(*total)->token)
-		return (free(line), 0);
+		return ((*exit_code) = 2, free(line), 0);
 	if (!get_cmds(*total, (*total)->token))
-		return (free(line), 1);
+		return (free(line), 0);
 	if (!expand(*total))
 		return (free(line), 0);
 	*exit_code = pipex(*total);
@@ -56,7 +56,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!total)
 			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
-		// line = readline(RED"Minishell$ "RESET); this is our line 
+		// line = readline(RED"Minishell$ "RESET); //this is our line 
 		//the code bellow is needed for the tester
 		if (isatty(STDIN_FILENO))
 			line = readline(RED"Minishell$ "RESET);
