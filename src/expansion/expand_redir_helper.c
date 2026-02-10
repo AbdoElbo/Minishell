@@ -12,7 +12,7 @@ static t_envp	*find_value(t_envp *env, char *identifier)
 			return (env);
 		env = env->next;
 	}
-	return (write(2, "couldn't find the identifier\n", 29), NULL);
+	return (NULL);
 }
 
 static int	treat_invalid_variable(t_total_info *total, t_expand *data)
@@ -24,19 +24,19 @@ static int	treat_invalid_variable(t_total_info *total, t_expand *data)
 		exit_code = ft_itoa(total->exit_code);
 		if (!exit_code)
 			return (write(2, "mem aloc fail in expand_var", 27), 0);
-		if (ft_strlen(data->temp) + ft_strlen(exit_code) >= data->redir_size)
+		if (ft_strlen(data->r_temp) + ft_strlen(exit_code) >= data->redir_size)
 		{
-			if (!increase_buffer(&data->temp, &data->redir_size, 0))
+			if (!increase_buffer(&data->r_temp, &data->redir_size, 0))
 				return (free(exit_code), 0);
 		}
-		ft_memcpy(data->temp + ft_strlen(data->temp),
+		ft_memcpy(data->r_temp + ft_strlen(data->r_temp),
 			exit_code, ft_strlen(exit_code));
 		data->i_redir += 1;
 		free(exit_code);
 	}
 	else if (data->redir_file[data->i_redir + 1]
 		== '\0' || ft_isspace(data->redir_file[data->i_redir + 1]))
-		ft_memcpy(data->temp + ft_strlen(data->temp), "$", 1);
+		ft_memcpy(data->r_temp + ft_strlen(data->r_temp), "$", 1);
 	else
 		data->i_redir += 1;
 	return (1);
@@ -79,10 +79,10 @@ static int	treat_valid_variable(t_total_info *total, t_expand *data)
 	if (!temp)
 		return (free(variable), 0);
 	var_len = ft_strlen(temp->value);
-	if ((ft_strlen(data->temp) + var_len) > data->redir_size - 2
-		&& (!increase_buffer(&data->temp, &data->redir_size, var_len)))
+	if ((ft_strlen(data->r_temp) + var_len) > data->redir_size - 2
+		&& (!increase_buffer(&data->r_temp, &data->redir_size, var_len)))
 		return (free(variable), 0);
-	ft_memcpy(data->temp + ft_strlen(data->temp),
+	ft_memcpy(data->r_temp + ft_strlen(data->r_temp),
 		temp->value, ft_strlen(temp->value));
 	return (free(variable), 1);
 }
@@ -92,6 +92,7 @@ int	expand_var_redir(t_total_info *total, t_expand *data)
 	char	*argv;
 	int		i;
 
+	data->redir_file = total->cmds->redir->file;
 	argv = data->redir_file;
 	i = data->i_redir;
 	if (!(ft_isalpha(argv[i + 1]) || argv[i + 1] == '_' ))

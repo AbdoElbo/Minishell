@@ -6,19 +6,19 @@ int	is_builtin(t_data *data)
 {
 	if (!data->cmds->argv[0])
 		return (0);
-	if (ft_strncmp(data->cmds->argv[0], "cd", 2) == 0)
+	if (ft_strncmp(data->cmds->argv[0], "cd", 3) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "echo", 4) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "echo", 5) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "exit", 5) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "export", 6) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "export", 7) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "pwd", 3) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "pwd", 4) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "env", 3) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "env", 4) == 0)
 		return (1);
-	else if (ft_strncmp(data->cmds->argv[0], "unset", 5) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "unset", 6) == 0)
 		return (1);
 	return (0);
 }
@@ -29,19 +29,19 @@ int	call_builtins(t_data *data, t_total_info *total)
 
 	status = 0;
 	// handle_parent_redir(data);
-	if (ft_strncmp(data->cmds->argv[0], "cd", 2) == 0)
+	if (ft_strncmp(data->cmds->argv[0], "cd", 3) == 0)
 		status = builtin_cd(&data->envp_list, data->cmds->argc, data->cmds->argv);
-	else if (ft_strncmp(data->cmds->argv[0], "echo", 4) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "echo", 5) == 0)
 		status = builtin_echo(data->cmds->argv);
-	else if (ft_strncmp(data->cmds->argv[0], "exit", 4) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "exit", 5) == 0)
 		status = builtin_exit(data->cmds->argc, data->cmds->argv, total);
-	else if (ft_strncmp(data->cmds->argv[0], "export", 6) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "export", 7) == 0)
 		status = builtin_export(&data->envp_list, data->cmds->argc, data->cmds->argv);
-	else if (ft_strncmp(data->cmds->argv[0], "pwd", 3) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "pwd", 4) == 0)
 		status = builtin_pwd();
-	else if (ft_strncmp(data->cmds->argv[0], "env", 3) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "env", 4) == 0)
 		status = builtin_env(&data->envp_list);
-	else if (ft_strncmp(data->cmds->argv[0], "unset", 5) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "unset", 6) == 0)
 		status = builtin_unset(&data->envp_list, data->cmds->argc, data->cmds->argv);
 	return (status);
 }

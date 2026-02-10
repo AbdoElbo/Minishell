@@ -75,6 +75,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (!handle_line(&total, line, &exit_code))
 			return (free_all(&total), exit_code);
+		// print_cmds(total->cmds);
 		free_all(&total);
 	}
 	return (exit_code);

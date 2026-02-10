@@ -140,9 +140,9 @@ int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 			result = dquote(total, data, cmds);
 		data->i++;
 	}
-	if (ft_strlen(data->temp))
-		if (!finish_argv(&data->arg_index, cmds, data->temp))
-			return (free(data->temp), 0);
+	// if (ft_strlen(data->temp))
+	if (!finish_argv(&data->arg_index, cmds, data->temp))
+		return (free(data->temp), 0);
 	ft_bzero(data->temp, ft_strlen(data->temp)); //not sure if its needed!
 	if (!result)
 		return (0);

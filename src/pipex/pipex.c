@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/06 19:14:26 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:14:38 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ int	pipex(t_total_info *total)
 			restore_parent_stdio(total);
 			return (free_datas(data), exit);
 		}
-		else if (!total->cmds->argv[0])
+		if (!total->cmds->argv[0])
 			return (free_datas(data), exit);
 	}
 	return (execute_loop(data, total), pid_wait_and_free(data));

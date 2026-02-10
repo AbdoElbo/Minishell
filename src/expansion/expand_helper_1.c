@@ -39,8 +39,8 @@ static int	treat_invalid_variable(t_total_info *total, t_expand *data)
 		|| (data->str[data->i + 1] == '"'
 			&& data->state == DQUOTE))
 		ft_memcpy(data->temp + ft_strlen(data->temp), "$", 1);
-	else
-		data->i += 1;
+	// else
+	// 	data->i += 1;
 	return (1);
 }
 

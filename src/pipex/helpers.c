@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/04 16:32:03 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/10 19:28:21 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	read_heredoc(t_redir *redir)
 		return (write(2, "Invalid delimiter", 17), 0);
 	if (pipe(pipefd) < 0)
 		return (perror("Pipe failed"), 0);
-	write(1, "heredoc> ", 9);
+	write(1, "> ", 2);
 	s = get_next_line(0);
 	if (!s)
 		return (close_pipefd(pipefd), write(2, "GNL Fail", 8), 0);
@@ -33,7 +33,7 @@ int	read_heredoc(t_redir *redir)
 	{
 		write(pipefd[1], s, ft_strlen(s));
 		free(s);
-		write(1, "heredoc> ", 9);
+		write(1, "> ", 2);
 		s = get_next_line(0);
 		if (!s)
 			break ;
