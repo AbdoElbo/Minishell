@@ -3,160 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/12 14:46:02 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/12 21:04:53 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
 #include <errno.h>
 #include <stdio.h>
 #include "../include/builtins.h"
-
-//I NEED TO FIX THE ISSUE OF NOT EXITING WHEN THE FILE DOESNT EXIST.
-static int	file_open(char *filename, enum e_in_out in_out)
-{
-	int	fd;
-
-	fd = -1;
-	if (in_out == IN)
-		fd = open(filename, O_RDONLY);
-	else if (in_out == OUT)
-		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	else if (in_out == APPEND)
-		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	// if (fd == -1)
-	// {
-	// 	perror(filename);
-	// 	fd = open("/dev/null", O_RDONLY);
-	// 	if (fd == -1)
-	// 		return (perror("Failed to open /dev/null"), -1);
-	// }
-	return (fd);
-}
-
-static int	handle_redir_parent(t_data *data)//Needs to be smaller!!!
-{
-	t_redir	*temp;
-	int		input;
-	int		output;
-
-	input = data->input_fd;
-	output = data->output_fd;
-	temp = data->cmds->redir;
-	while (temp)
-	{
-		if (temp->type == REDIR_APPEND)
-		{
-			if (data->output_fd != 1)
-				close(data->output_fd);
-			temp->fd = file_open(temp->file, APPEND);
-			if (temp->fd == -1)
-				return (perror(temp->file), EXIT_FAILURE);
-			data->output_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_OUT)
-		{
-			if (data->output_fd != 1)
-				close(data->output_fd);
-			temp->fd = file_open(temp->file, OUT);
-			if (temp->fd == -1)
-				return (perror(temp->file), EXIT_FAILURE);
-			data->output_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_IN)
-		{
-			if (data->input_fd != 0)
-				close(data->input_fd);
-			temp->fd = file_open(temp->file, IN);
-			if (temp->fd == -1)
-				return (perror(temp->file), EXIT_FAILURE);
-			data->input_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_HEREDOC)
-		{
-			if (data->input_fd != 0)
-				close(data->input_fd);
-			data->input_fd = temp->fd;
-		}
-		temp = temp->next;
-	}
-	if (input != data->input_fd)
-	{
-		if (dup2(data->input_fd, STDIN_FILENO) == -1)
-			return (perror("Dup2 for STDIN failed"), EXIT_FAILURE);
-		close(data->input_fd);
-	}
-	if (output != data->output_fd)
-	{
-		if (dup2(data->output_fd, STDOUT_FILENO) == -1)
-			return (perror("Dup2 for STDOUT failed"), EXIT_FAILURE);
-		close(data->output_fd);
-	}
-	return (0);
-}
-
-static void	handle_redirections(t_data *data)//Needs to be smaller!!!
-{
-	t_redir	*temp;
-	int		input;
-	int		output;
-
-	input = data->input_fd;
-	output = data->output_fd;
-	temp = data->cmds->redir;
-	while (temp)
-	{
-		if (temp->type == REDIR_APPEND)
-		{
-			if (data->output_fd != 1)
-				close(data->output_fd);
-			temp->fd = file_open(temp->file, APPEND);
-			if (temp->fd == -1)
-				(perror(temp->file), _exit(EXIT_FAILURE));
-			data->output_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_OUT)
-		{
-			if (data->output_fd != 1)
-				close(data->output_fd);
-			temp->fd = file_open(temp->file, OUT);
-			if (temp->fd == -1)
-				(perror(temp->file), _exit(EXIT_FAILURE));
-			data->output_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_IN)
-		{
-			if (data->input_fd != 0)
-				close(data->input_fd);
-			temp->fd = file_open(temp->file, IN);
-			if (temp->fd == -1)
-				(perror(temp->file), _exit(EXIT_FAILURE));
-			data->input_fd = temp->fd;
-		}
-		else if (temp->type == REDIR_HEREDOC)
-		{
-			if (data->input_fd != 0)
-				close(data->input_fd);
-			data->input_fd = temp->fd;
-		}
-		temp = temp->next;
-	}
-	if (input != data->input_fd)
-	{
-		if (dup2(data->input_fd, STDIN_FILENO) == -1)
-			(perror("Dup2 for STDIN failed"), _exit(EXIT_FAILURE));
-		close(data->input_fd);
-	}
-	if (output != data->output_fd)
-	{
-		if (dup2(data->output_fd, STDOUT_FILENO) == -1)
-			(perror("Dup2 for STDOUT failed"), _exit(EXIT_FAILURE));
-		close(data->output_fd);
-	}
-}
 
 static void	handle_parent(t_data *data)
 {
@@ -206,20 +62,7 @@ static void	child_proccess(t_data *data, t_total_info *total)
 	_exit(EXIT_SUCCESS);
 }
 
-static int	restore_parent_stdio(t_total_info *total)
-{
-	if (!total)
-		return (1);
-	if (total->stdin != -1)
-		if (dup2(total->stdin, STDIN_FILENO) == -1)
-			return (perror("Dup2 for STDIN failed"), 1);
-	if (total->stdout != -1)
-		if (dup2(total->stdout, STDOUT_FILENO) == -1)
-			return (perror("Dup2 for STDOUT failed"), 1);
-	return (0);
-}
-
-static int	execute_loop(t_data *data, t_total_info *total) //need to make it 25 lines
+static int	execute_loop(t_data *data, t_total_info *total)
 {
 	int		i;
 
@@ -259,7 +102,6 @@ static int	handle_heredocs(t_cmds *cmds)
 	}
 	return (1);
 }
-
 
 int	pipex(t_total_info *total)
 {

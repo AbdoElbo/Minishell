@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:58:46 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/12/18 19:48:21 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 19:50:19 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,3 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 		}
 	}
 }
-

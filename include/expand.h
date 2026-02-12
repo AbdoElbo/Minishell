@@ -1,4 +1,3 @@
-
 #ifndef EXPAND_H
 # define EXPAND_H
 
@@ -7,8 +6,8 @@
 typedef enum e_state
 {
 	NORMAL,
-	SQUOTE, // >
-	DQUOTE, // >>
+	SQUOTE,
+	DQUOTE,
 }	t_state;
 
 typedef struct s_expand

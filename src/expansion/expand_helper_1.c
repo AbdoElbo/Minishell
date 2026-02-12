@@ -30,7 +30,8 @@ static int	treat_invalid_variable(t_total_info *total, t_expand *data)
 			if (!increase_buffer(&data->temp, &data->str_size, 0))
 				return (free(exit_code), 0);
 		}
-		ft_memcpy(data->temp + ft_strlen(data->temp), exit_code, ft_strlen(exit_code));
+		ft_memcpy(data->temp + ft_strlen(data->temp), exit_code,
+			ft_strlen(exit_code));
 		data->i += 1;
 		free(exit_code);
 	}
@@ -39,8 +40,6 @@ static int	treat_invalid_variable(t_total_info *total, t_expand *data)
 		|| (data->str[data->i + 1] == '"'
 			&& data->state == DQUOTE))
 		ft_memcpy(data->temp + ft_strlen(data->temp), "$", 1);
-	// else
-	// 	data->i += 1;
 	return (1);
 }
 

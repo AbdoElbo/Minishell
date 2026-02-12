@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 static void	is_quote_space(int *j_index, int *i_index, t_cmds *cmds, char *temp)
@@ -34,20 +33,19 @@ static int	fix_whole_command(t_cmds *cmds)
 	char	*temp;
 	int		i;
 	int		j;
-	char	*str;
 
-	str = cmds->whole_cmd;
-	temp = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	temp = ft_calloc(ft_strlen(cmds->whole_cmd) + 1, sizeof(char));
 	if (!temp)
 		return (0);
 	i = 0;
 	j = 0;
-	while ((str)[j])
+	while ((cmds->whole_cmd)[j])
 	{
-		if ((str[j] == '\'') || (str[j] == '"') || ft_isspace(str[j]))
+		if ((cmds->whole_cmd[j] == '\'') || (cmds->whole_cmd[j] == '"')
+			|| ft_isspace(cmds->whole_cmd[j]))
 			is_quote_space(&j, &i, cmds, temp);
 		else
-			temp[i++] = str[j++];
+			temp[i++] = cmds->whole_cmd[j++];
 	}
 	if (cmds->whole_cmd)
 		free((cmds->whole_cmd));
@@ -58,63 +56,6 @@ static int	fix_whole_command(t_cmds *cmds)
 		return (free(temp), 0);
 	return (free(temp), 1);
 }
-
-// static void	is_quote_space_redir(int *j_index, int *i_index, t_cmds *cmds, char *temp)
-// {
-// 	char	*str;
-// 	char	quote;
-// 	int		i;
-// 	int		j;
-
-// 	i = *i_index;
-// 	j = *j_index;
-// 	str = cmds->redir->file;
-// 	if (str[j] == '\'' || str[j] == '"')
-// 	{
-// 		quote = (str)[j];
-// 		temp[i++] = str[j++];
-// 		while (str[j] != quote)
-// 			temp[i++] = str[j++];
-// 		temp[i++] = str[j++];
-// 	}
-// 	else if (ft_isspace(str[j]))
-// 	{
-// 		temp[i++] = str[j++];
-// 		while (str[j] && ft_isspace(str[j]))
-// 			j++;
-// 	}
-// 	*i_index = i;
-// 	*j_index = j;
-// }
-
-// static int	fix_whole_command_redir(t_cmds *cmds)
-// {
-// 	char	*temp;
-// 	int		i;
-// 	int		j;
-// 	char	*str;
-
-// 	str = cmds->redir->file;
-// 	temp = ft_calloc(ft_strlen(str) + 1, sizeof(char));
-// 	if (!temp)
-// 		return (0);
-// 	i = 0;
-// 	j = 0;
-// 	while ((str)[j])
-// 	{
-// 		if ((str[j] == '\'') || (str[j] == '"') || ft_isspace(str[j]))
-// 			is_quote_space_redir(&j, &i, cmds, temp);
-// 		else
-// 			temp[i++] = str[j++];
-// 	}
-// 	free((cmds->redir->file));
-// 	if (temp[ft_strlen(temp) - 1] == ' ')
-// 		temp[ft_strlen(temp) - 1] = '\0';
-// 	cmds->redir->file = ft_strdup(temp);
-// 	if (!(cmds->redir->file))
-// 		return (free(temp), 0);
-// 	return (free(temp), 1);
-// }
 
 static t_expand	*init_data(char *whole_cmds)
 {
@@ -138,32 +79,42 @@ static t_expand	*init_data(char *whole_cmds)
 	return (data);
 }
 
+static int	expand_helper(t_total_info *total, t_cmds *cmds, t_expand *data)
+{
+	t_redir			*temp;
+
+	if (!fix_whole_command(cmds))
+		return (free_data(data), 0);
+	data = init_data(cmds->whole_cmd);
+	if (!data)
+		return (0);
+	expand_one_cmd(total, cmds, data);
+	temp = cmds->redir;
+	while (cmds->redir)
+	{
+		data->r_temp = ft_calloc(ft_strlen(cmds->redir->file) * 2 + 1,
+				sizeof(char));
+		if (!data->r_temp)
+			return (write(2, "memaloc fail in expand", 22), 0);
+		expand_one_redir(total, cmds, data);
+		cmds->redir = cmds->redir->next;
+		free(data->r_temp);
+	}
+	cmds->redir = temp;
+	return (1);
+}
+
 int	expand(t_total_info *total)
 {
 	t_cmds			*cmds;
-	t_redir			*temp;
 	t_expand		*data;
 
+	data = NULL;
 	cmds = total->cmds;
 	while (cmds)
 	{
-		if (!fix_whole_command(cmds))
-			return (free_data(data), 0);
-		data = init_data(cmds->whole_cmd);
-		if (!data)
+		if (!expand_helper(total, cmds, data))
 			return (0);
-		expand_one_cmd(total, cmds, data);
-		temp = cmds->redir;
-		while (cmds->redir)
-		{
-			data->r_temp = ft_calloc(ft_strlen(cmds->redir->file) * 2 + 1, sizeof(char));
-			if (!data->r_temp)
-				return (write(2, "memaloc fail in expand", 22), 0);
-			expand_one_redir(total, cmds, data);
-			cmds->redir = cmds->redir->next;
-			free(data->r_temp);
-		}
-		cmds->redir = temp;
 		cmds = cmds->next;
 		free_data(data);
 	}

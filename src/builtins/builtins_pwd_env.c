@@ -17,7 +17,7 @@ int	builtin_env(t_envp **env)
 	t_envp	*temp;
 
 	if (!env)
-		return (EXIT_SUCCESS); // apparently, bash retuns 0 (SUCCESS) even if env is empty
+		return (EXIT_SUCCESS);
 	temp = *env;
 	while (temp)
 	{
@@ -27,4 +27,3 @@ int	builtin_env(t_envp **env)
 	}
 	return (EXIT_SUCCESS);
 }
-

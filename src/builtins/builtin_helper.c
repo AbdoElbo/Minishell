@@ -70,3 +70,24 @@ t_envp	*find_env(t_envp *env, char *identifier)
 	return (NULL);
 }
 
+char	*get_envp_value(t_envp *env, char *str)
+{
+	char	*new_str;
+	int		len;
+
+	if (!env)
+		return (NULL);
+	len = ft_strlen(str);
+	while (env)
+	{
+		if (ft_strncmp(str, env->string, len) == 0)
+		{
+			new_str = ft_strdup(env->string);
+			if (!new_str)
+				return (NULL);
+			return (new_str);
+		}
+		env = env->next;
+	}
+	return (NULL);
+}
