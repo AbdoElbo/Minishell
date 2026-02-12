@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 17:12:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/31 22:11:32 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:45:53 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,17 @@ static int	parse_paths(t_data *data)
 	int		i;
 	char	*full_path;
 
-	if (data->envp == NULL)
+	if (data->envp_arr == NULL)
 		return (write(2, "envp is NULL", 12), 0);
 	i = 0;
-	while (data->envp[i])
+	while (data->envp_arr[i])
 	{
-		if (!ft_strncmp(data->envp[i], "PATH=", 5))
+		if (!ft_strncmp(data->envp_arr[i], "PATH=", 5))
 			break ;
 		else
 			i++;
 	}
-	full_path = ft_strjoin(data->envp[i], ":.");
+	full_path = ft_strjoin(data->envp_arr[i], ":.");
 	if (!full_path)
 		return (write(2, "ft_strjoin failed", 17), 0);
 	if (!ft_strncmp(full_path, "PATH=", 5))

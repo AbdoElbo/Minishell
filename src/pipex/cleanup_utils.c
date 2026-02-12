@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:55:03 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/06 13:16:46 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:44:42 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void	free_datas(t_data *data)
 			free_paths(data->paths);
 		if (data->pids)
 			free(data->pids);
-		if (data->envp)
-			free_arr(data->envp);
+		if (data->envp_arr)
+			free_arr(data->envp_arr);
 		free(data);
-		
+
 	}
 }

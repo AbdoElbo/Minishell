@@ -103,13 +103,18 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 {
 	char	*copy_old;
 	char	*copy_pwd;
+	char	*str;
 
-	if (!*env || argc != 2)
-		return (write(2, " too many arguments", 19), EXIT_FAILURE);
-	if (!argv[1])
-		argv[1] = getenv("HOME");
-	if (!argv[1])
-		return (write(2, "cd: HOME not set\n", 18), EXIT_FAILURE);
+	if (!*env || argc > 2)
+		return (write(2, "too many arguments\n", 19), EXIT_FAILURE);
+	if (argc == 1)
+	{
+		str = getenv("HOME");
+		if (!str)
+			return (write(2, "cd: HOME not set\n", 18), EXIT_FAILURE);
+	}
+	else
+		str = argv[1];
 	copy_old = get_envp_value(*env, "OLDPWD=");
 	if (!copy_old)
 		return (EXIT_FAILURE);
@@ -118,10 +123,10 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 		return (free(copy_old), EXIT_FAILURE);
 	if (change_old_path(env, copy_pwd) == EXIT_FAILURE)
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
-	if (chdir(argv[1]) != 0)
+	if (chdir(str) != 0)
 	{
 		write(2, "cd: ", 4);
-		write(2, argv[1], ft_strlen(argv[1]));
+		write(2, str, ft_strlen(str));
 		write(2, ": No such file or directory\n", 28);
 		return (rollback_env(env, &copy_old, &copy_pwd), EXIT_FAILURE);
 	}

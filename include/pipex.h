@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 13:15:03 by hariskon          #+#    #+#             */
-/*   Updated: 2026/01/30 12:25:45 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:44:01 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_data
 {
 	t_cmds	*cmds;
 	char	**paths;
-	char	**envp;
+	char	**envp_arr;
 	t_envp	*envp_list;
 	int		pipefd[2];
 	int		input_fd;

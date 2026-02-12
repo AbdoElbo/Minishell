@@ -63,7 +63,7 @@ static int	update_env(t_envp **env)
 	return (1);
 }
 
-static int	copy_envp(t_total_info *total, char **envp)
+int	copy_envp(t_total_info *total, char **envp)
 {
 	int		i;
 	t_envp	*new_envp;
@@ -75,18 +75,19 @@ static int	copy_envp(t_total_info *total, char **envp)
 	{
 		new_envp = new_envp_node(envp[i]);
 		if (!new_envp)
-			return (0);
+			return (ft_t_envp_clear(&new_envp), 0);
 		ft_t_envp_addback(&total->our_envp, new_envp);
 		i++;
 	}
 	if (!update_env(&total->our_envp))
-		return (0);
+		return (ft_t_envp_clear(&new_envp), 0);
 	return (1);
 }
 
 t_total_info	*init_total(char **envp, int exit)
 {
 	t_total_info	*total;
+	static int		count;
 
 	total = ft_calloc(1, sizeof(t_total_info));
 	if (!total)
@@ -102,5 +103,8 @@ t_total_info	*init_total(char **envp, int exit)
 	total->exit_code = exit;
 	if (!copy_envp(total, envp))
 		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
+	if (count > 0)
+		free_arr(envp);
+	count++;
 	return (total);
 }

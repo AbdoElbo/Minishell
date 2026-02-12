@@ -34,6 +34,7 @@ t_token			*new_node(char *str, int len);
 int				return_i(char *redir_file);
 void			print_lst(t_token *lst);
 int				is_operator(char c);
+int				copy_envp(t_total_info *total, char **envp);
 
 int				get_cmds(t_total_info *total, t_token *lst);
 void			check_our_envp(t_envp *our_envp, char **envp);

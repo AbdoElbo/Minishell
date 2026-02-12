@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:45:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/10 19:14:38 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:46:02 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ static void	child_proccess(t_data *data, t_total_info *total)
 	else if (data->cmds->argv[0])
 	{
 		path_check_one(data->cmds->argv, data->paths);
-		execve(data->cmds->argv[0], data->cmds->argv, data->envp);
+		execve(data->cmds->argv[0], data->cmds->argv, data->envp_arr);
 		child_exec_error(data);
 	}
 	_exit(EXIT_SUCCESS);

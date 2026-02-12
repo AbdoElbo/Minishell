@@ -72,12 +72,21 @@ static int	export_each_var(t_envp **env, char *str)
 		return (free(str_iden), free(str_value), EXIT_FAILURE);
 	temp = find_env(*env, str_iden);
 	if (temp)
+	{
 		update_node(temp, str_iden, str_value, has_value);
+		free(temp->string);
+		temp->string = ft_strdup(str);
+		if (!temp->string)
+			return (EXIT_FAILURE);
+	}
 	else
 	{
 		temp = create_node(env, str_iden, str_value, has_value);
 		if (!temp)
-			return (EXIT_FAILURE); // i free str_iden and str_value inside the create_node if something goes wrong
+			return (EXIT_FAILURE);
+		temp->string = ft_strdup(str);
+		if (!temp->string)
+			return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }

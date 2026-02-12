@@ -44,19 +44,21 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_total_info	*total;
 	char			*line;
+	char			**envp_a;
 	int				exit_code;
 
 	(void)argv;
 	(void)argc;
+	envp_a = envp;
 	exit_code = 0;
 	signal_setup();
 	while (1)
 	{
-		total = init_total(envp, exit_code);
+		total = init_total(envp_a, exit_code);
 		if (!total)
 			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
-		// line = readline(RED"Minishell$ "RESET); //this is our line 
+		// line = readline(RED"Minishell$ "RESET); //this is our line
 		//the code bellow is needed for the tester
 		if (isatty(STDIN_FILENO))
 			line = readline(RED"Minishell$ "RESET);
@@ -76,6 +78,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!handle_line(&total, line, &exit_code))
 			return (free_all(&total), exit_code);
 		// print_cmds(total->cmds);
+		envp_a = change_to_arr(total->our_envp);
 		free_all(&total);
 	}
 	return (exit_code);

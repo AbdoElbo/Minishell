@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/10 19:28:21 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:45:35 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,11 @@ t_data	*init_datas(t_total_info *total)
 	data->envp_list = total->our_envp;
 	data->input_fd = 0;
 	data->output_fd = 1;
-	data->envp = change_to_arr(data->envp_list);
-	if (!data->envp)
+	data->envp_arr = change_to_arr(data->envp_list);
+	if (!data->envp_arr)
 		return (free(data), NULL);
 	data->pids = ft_calloc(data->cmds_count + 1, sizeof(pid_t));
 	if (!data->pids)
-		return (free(data->envp), NULL);
+		return (NULL);
 	return (data);
 }

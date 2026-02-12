@@ -62,6 +62,7 @@ void	free_arr(char **arr)
 		i++;
 	}
 	free(arr);
+	arr = NULL;
 }
 
 void	free_data(t_expand *data)
