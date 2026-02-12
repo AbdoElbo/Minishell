@@ -5,11 +5,13 @@ volatile sig_atomic_t	g_signal;
 
 static void	sig_handler(int sig)
 {
-	(void)sig;
+	if (sig == SIGQUIT)
+		write(1, "\nQuit (core dumped)", 19);
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	rl_redisplay();
+	if (rl_done == 0)
+		rl_redisplay();
 }
 
 static void	signal_setup(void)
@@ -20,12 +22,15 @@ static void	signal_setup(void)
 	sa.sa_handler = sig_handler;
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 	rl_catch_signals = 0;
 }
 
 static int	handle_line(t_total_info **total, char *line, int *exit_code)
 {
-	if (!*line || g_signal)
+	if (!*line)
+		return (1);
+	if (g_signal)
 		return (free(line), 0);
 	add_history(line);
 	(*total)->token = parse_input(line);
