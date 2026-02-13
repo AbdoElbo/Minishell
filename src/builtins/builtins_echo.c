@@ -1,5 +1,8 @@
 #include "builtins.h"
 
+// returns 1 if the string is variation of :
+// -n or -nnnn or -nnnnnnnnn...
+// returns 0 if the string should be treated as a string (no newline)
 static int	newline_check(char *str)
 {
 	int	i;
@@ -27,8 +30,8 @@ static void	print_strings(char **argv, int no_nl, int i)
 	while (argv[i])
 	{
 		printf("%s", argv[i]);
-		if (argv[i + 1])
-			printf(" ");
+		if (argv[i + 1]) // there's another string after the one we printed a line ago
+			printf(" "); // we print one space
 		else if (!argv[i + 1] && !no_nl)
 			printf("\n");
 		i++;
@@ -45,8 +48,10 @@ int	builtin_echo(char **strings)
 	while (strings[i] && newline_check(strings[i]))
 	{
 		no_nl = 1;
-		i++;
+		i++; // im using the index i to start printing from it in the next func
 	}
 	print_strings(strings, no_nl, i);
 	return (EXIT_SUCCESS);
 }
+
+

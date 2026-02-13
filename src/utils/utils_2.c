@@ -1,110 +1,170 @@
 
 #include "minishell.h"
 
-char	*ft_strjoin_arg(char const *s1, char const *s2)
+int	is_operator(char c)
 {
-	char	*new_string;
-	size_t	total_len;
-	size_t	i;
+	if (c == '|' || c == '>' || c == '<')
+		return (1);
+	return (0);
+}
 
-	i = 0;
-	total_len = ft_strlen(s1) + ft_strlen(s2) +2;
-	new_string = malloc(total_len);
-	if (new_string == NULL)
+t_token	*new_node(char *str, int len)
+{
+	t_token	*new_node;
+
+	new_node = ft_calloc(1, sizeof(t_token));
+	if (new_node == NULL)
 		return (NULL);
-	if (s1)
-		while (*s1)
-			new_string[i++] = *s1++;
-	if (i != 0)
-		new_string[i++] = ' ';
-	if (s2)
-		while (*s2)
-			new_string[i++] = *s2++;
-	new_string[i] = '\0';
-	return (new_string);
-}
-
-t_envp	*new_envp_node(char *str)
-{
-	t_envp	*new_envp;
-
-	new_envp = ft_calloc(1, sizeof(t_envp));
-	if (!new_envp)
-		return (write(2, "Memaloc 2 fail new_envp", 23), NULL);
-	new_envp->string = ft_strdup(str);
-	if (!new_envp->string)
-		return (write(2, "Memaloc 2 fail new_envp", 23), free(new_envp), NULL);
-	new_envp->next = NULL;
-	return (new_envp);
-}
-
-static int	update_env(t_envp **env)
-{
-	t_envp	*temp;
-	char	*identifier;
-	char	*value;
-	int		has_value;
-
-	temp = *env;
-	while (temp)
+	new_node->value = malloc(len + 1);
+	if (!new_node->value)
+		return (0);
+	ft_strlcpy(new_node->value, str, len + 1);
+	if (str[0] == '|')
+		new_node->type = PIPE;
+	else if (str[0] == '>')
 	{
-		identifier = NULL;
-		value = NULL;
-		has_value = 0;
-		if (!get_identifier_and_value(temp->string, &identifier
-				, &value, &has_value))
-			return (free(identifier), free(value), 0);
-		temp->identifier = identifier;
-		temp->value = value;
-		temp->has_value = has_value;
-		temp->exported = 1;
-		temp = temp->next;
+		if (len == 2)
+			new_node->type = REDIR_APPEND;
+		else
+			new_node->type = REDIR_OUT;
 	}
-	return (1);
+	else if (str[0] == '<')
+	{
+		if (len == 2)
+			new_node->type = REDIR_HEREDOC;
+		else
+			new_node->type = REDIR_IN;
+	}
+	else
+		new_node->type = WORD;
+	new_node->next = NULL;
+	return (new_node);
 }
 
-int	copy_envp(t_total_info *total, char **envp)
+void	check_our_envp(t_envp *our_envp, char **envp)
 {
-	int		i;
-	t_envp	*new_envp;
+	int	i;
 
 	i = 0;
-	if (!envp)
-		return (0);
-	while (envp[i])
+	if (!our_envp)
+		return ;
+	printf("\n");
+	while (our_envp)
 	{
-		new_envp = new_envp_node(envp[i]);
-		if (!new_envp)
-			return (ft_t_envp_clear(&new_envp), 0);
-		ft_t_envp_addback(&total->our_envp, new_envp);
+		if (!strcmp(our_envp->string, envp[i]))
+			printf("OK, ");
+		else
+		{
+			printf(".\n");
+			printf("%s", our_envp->string);
+			printf("\n");
+			printf("%s", envp[i]);
+			printf(".\n");
+		}
+		i++;
+		our_envp = our_envp->next;
+	}
+	printf("DONE.\n");
+}
+
+int	return_i(char *redir_file)
+{
+	int	i;
+
+	i = 0;
+	while (redir_file[i])
+	{
+		if (redir_file[i] == '\'')
+		{
+			i++;
+			while (redir_file[i] != '\'')
+				i++;
+		}
+		else if (redir_file[i] == '"')
+		{
+			i++;
+			while (redir_file[i] != '"')
+				i++;
+		}
+		else if (ft_isspace(redir_file[i]))
+			break ;
 		i++;
 	}
-	if (!update_env(&total->our_envp))
-		return (ft_t_envp_clear(&new_envp), 0);
-	return (1);
+	return (i);
 }
 
-t_total_info	*init_total(char **envp, int exit)
+void	print_lst(t_token *lst)
 {
-	t_total_info	*total;
-	static int		count;
+	if (!lst)
+		return ;
+	printf("----------------LST---------------------\n");
+	while (lst)
+	{
+		printf("\nstring is : %s\n", lst->value);
+		if (lst->type == WORD)
+			printf("the type is WORD\n");
+		if (lst->type == REDIR_APPEND)
+			printf("the type is REDIR_APPEND\n");
+		if (lst->type == REDIR_HEREDOC)
+			printf("the type is REDIR_HEREDOC\n");
+		if (lst->type == REDIR_IN)
+			printf("the type is REDIR_IN\n");
+		if (lst->type == REDIR_OUT)
+			printf("the type is REDIR_OUT\n");
+		if (lst->type == PIPE)
+			printf("the type is PIPE\n");
+		lst = lst->next;
+	}
+	printf("----------------------------------------\n\n");
+}
 
-	total = ft_calloc(1, sizeof(t_total_info));
-	if (!total)
-		return (write(2, "1st Mem alloc in init total failed", 34), NULL);
-	total->stdin = dup(STDIN_FILENO);
-	if (total->stdin == -1)
-		return (close(total->stdin), perror("dup"), free(total), NULL);
-	total->stdout = dup(STDOUT_FILENO);
-	if (total->stdout == -1)
-		return (close(total->stdout), perror("dup"), free(total), NULL);
-	total->cmds = NULL;
-	total->token = NULL;
-	total->exit_code = exit;
-	if (!copy_envp(total, envp))
-		return (write(2, "2 Mem alloc in init_t fail", 26), free(total), NULL);
-	if (count > 0)
-		free_arr(envp);
-	count++;
-	return (total);
+void	print_cmds(t_cmds *cmds)
+{
+	int		i;
+	int		j;
+	int		k;
+	t_cmds	*temp;
+	t_redir	*temp2;
+
+	temp = cmds;
+	i = 0;
+	if (!temp)
+		return ;
+	printf("----------------CMDS---------------------");
+	while (temp)
+	{
+		printf("\nCommand block %i:\n", i + 1);
+		k = 0;
+		printf("Whole command is:%s.\n", temp->whole_cmd);
+		printf("Command %i is :", i + 1);
+		if (!temp->argv[k])
+			printf("'%s' ", temp->argv[k]);
+		while (temp->argv[k])
+		{
+			printf("'%s' ", temp->argv[k]);
+			k++;
+		}
+		printf("\n");
+		j = 0;
+		temp2 = temp->redir;
+		while (temp2)
+		{
+			printf("Redir block %i:\n", j + 1);
+			if (temp2->type == REDIR_APPEND)
+				printf("type: REDIR_APPEND, file:%s\n", temp2->file);
+			else if (temp2->type == REDIR_HEREDOC)
+				printf("type: REDIR_HEREDOC, file:%s\n", temp2->file);
+			else if (temp2->type == REDIR_IN)
+				printf("type: REDIR_IN, file:%s\n", temp2->file);
+			else if (temp2->type == REDIR_OUT)
+				printf("type: REDIR_OUT, file:%s\n", temp2->file);
+			printf("fd: %i\n", temp2->fd);
+			temp2 = temp2->next;
+			j++;
+		}
+		printf("\n");
+		temp = temp->next;
+		i++;
+	}
+	printf("-----------------------------------------\n");
 }

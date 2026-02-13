@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 17:12:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/12 19:45:13 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/12 14:45:53 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
+
+// static int	parse_argv(t_data *data)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	data->cmds = ft_calloc((data->cmds_count + 1), sizeof(char **));
+// 	if (data->cmds == NULL)
+// 		return (write(2, "ft_calloc in parse_argv failed", 30), 0);
+// 	while (i < data->cmds_count)
+// 	{
+// 		data->cmds[i] = ft_split(data->first_cmd[i], ' ');
+// 		if (!data->cmds[i])
+// 			return (write(2, "ft_split in parse_argv fail", 27), 0);
+// 		if (!data->cmds[i][0])
+// 		{
+// 			free(data->cmds[i]);
+// 			if (!build_empty_cmd(&data->cmds[i]))
+// 				return (write(2, "build_empty_cmd in parse_argv fail", 34), 0);
+// 		}
+// 		i++;
+// 	}
+// 	data->cmds[i] = NULL;
+// 	return (1);
+// }
 
 static int	parse_paths(t_data *data)
 {
@@ -61,6 +86,23 @@ int	path_check_one(char **cmds, char **paths)
 	}
 	return (1);
 }
+
+// static int	path_check(char ***cmds, char **paths, t_data *data)
+// {
+// 	int		j;
+
+// 	j = 0;
+// 	while (cmds[j])
+// 	{
+// 		if (data->cmds && data->cmds[0])
+// 		{
+// 			if (!path_check_one(cmds, j, paths))
+// 				return (0);
+// 		}
+// 		j++;
+// 	}
+// 	return (1);
+// }
 
 t_data	*setup_datas(t_total_info *total)
 {

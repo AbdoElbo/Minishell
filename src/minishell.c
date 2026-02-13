@@ -61,7 +61,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		total = init_total(envp_a, exit_code);
 		if (!total)
-			return (free_all(&total), errno);
+			return (free_all(&total), errno); //maybe returning 1 is the correct return!
 		g_signal = 0;
 		// line = readline(RED"Minishell$ "RESET); //this is our line
 		//the code bellow is needed for the tester
@@ -82,6 +82,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (!handle_line(&total, line, &exit_code))
 			return (free_all(&total), exit_code);
+		// print_cmds(total->cmds);
 		envp_a = change_to_arr(total->our_envp);
 		free_all(&total);
 	}

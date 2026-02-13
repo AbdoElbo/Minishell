@@ -1,4 +1,26 @@
-#include "builtins.h"
+# include "builtins.h"
+
+char	*get_envp_value(t_envp *env, char *str)
+{
+	char	*new_str;
+	int		len;
+
+	if (!env)
+		return (NULL);
+	len = ft_strlen(str);
+	while (env)
+	{
+		if (ft_strncmp(str, env->string, len) == 0)
+		{
+			new_str = ft_strdup(env->string);
+			if (!new_str)
+				return (NULL);
+			return (new_str);
+		}
+		env = env->next;
+	}
+	return (NULL);
+}
 
 static int	change_old_path(t_envp **env, char *current_pwd)
 {
@@ -9,7 +31,7 @@ static int	change_old_path(t_envp **env, char *current_pwd)
 	temp = *env;
 	while (temp)
 	{
-		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0)
+		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0) // ft_strncmp return 0 if there's no differnece between the two strings
 		{
 			free(temp->string);
 			temp->string = ft_strjoin("OLDPWD=", current_pwd);
@@ -35,7 +57,7 @@ static int	update_new_path(t_envp **env)
 		return (EXIT_FAILURE);
 	while (temp)
 	{
-		if (ft_strncmp("PWD=", temp->string, 4) == 0)
+		if (ft_strncmp("PWD=", temp->string, 4) == 0) // ftstrncmp retunr 0 if there's no differnece between the two strings
 		{
 			free(temp->string);
 			temp->string = ft_strjoin("PWD=", new_path);
@@ -77,31 +99,22 @@ static int	rollback_env(t_envp **env, char **old, char **pwd)
 	return (free(*old), free(*pwd), EXIT_SUCCESS);
 }
 
-static char	*get_cd_target(int argc, char **argv)
-{
-	char	*str;
-
-	if (argc > 2)
-		return (write(2, "too many arguments\n", 19), NULL);
-	if (argc == 1)
-	{
-		str = getenv("HOME");
-		if (!str)
-			return (write(2, "cd: HOME not set\n", 18), NULL);
-		return (str);
-	}
-	return (argv[1]);
-}
-
 int	builtin_cd(t_envp **env, int argc, char **argv)
 {
 	char	*copy_old;
 	char	*copy_pwd;
 	char	*str;
 
-	str = get_cd_target(argc, argv);
-	if (!str || !*env)
-		return (EXIT_FAILURE);
+	if (!*env || argc > 2)
+		return (write(2, "too many arguments\n", 19), EXIT_FAILURE);
+	if (argc == 1)
+	{
+		str = getenv("HOME");
+		if (!str)
+			return (write(2, "cd: HOME not set\n", 18), EXIT_FAILURE);
+	}
+	else
+		str = argv[1];
 	copy_old = get_envp_value(*env, "OLDPWD=");
 	if (!copy_old)
 		return (EXIT_FAILURE);

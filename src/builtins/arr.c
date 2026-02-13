@@ -15,6 +15,16 @@ int	env_size(t_envp *env)
 	return (i);
 }
 
+// void	free_arr(char **arr, int i)
+// {
+// 	while (i > 0)
+// 	{
+// 		i--;
+// 		free(arr[i]);
+// 	}
+// 	free(arr);
+// }
+
 char	**change_to_arr(t_envp *env)
 {
 	char	**arr;

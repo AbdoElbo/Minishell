@@ -25,28 +25,27 @@ int	is_builtin(t_data *data)
 
 int	call_builtins(t_data *data, t_total_info *total)
 {
-	int		status;
-	t_cmds	*cmds;
+	int	status;
 
-	cmds = data->cmds;
 	status = 0;
-	if (ft_strncmp(cmds->argv[0], "cd", 3) == 0)
-		status = builtin_cd(&total->our_envp, cmds->argc, cmds->argv);
-	else if (ft_strncmp(cmds->argv[0], "echo", 5) == 0)
-		status = builtin_echo(cmds->argv);
-	else if (ft_strncmp(cmds->argv[0], "exit", 5) == 0)
-		status = builtin_exit(cmds->argc, cmds->argv, total);
-	else if (ft_strncmp(cmds->argv[0], "export", 7) == 0)
-		status = builtin_export(&total->our_envp, cmds->argc, cmds->argv);
-	else if (ft_strncmp(cmds->argv[0], "pwd", 4) == 0)
+	if (ft_strncmp(data->cmds->argv[0], "cd", 3) == 0)
+		status = builtin_cd(&total->our_envp, data->cmds->argc, data->cmds->argv);
+	else if (ft_strncmp(data->cmds->argv[0], "echo", 5) == 0)
+		status = builtin_echo(data->cmds->argv);
+	else if (ft_strncmp(data->cmds->argv[0], "exit", 5) == 0)
+		status = builtin_exit(data->cmds->argc, data->cmds->argv, total);
+	else if (ft_strncmp(data->cmds->argv[0], "export", 7) == 0)
+		status = builtin_export(&total->our_envp, data->cmds->argc, data->cmds->argv);
+	else if (ft_strncmp(data->cmds->argv[0], "pwd", 4) == 0)
 		status = builtin_pwd();
-	else if (ft_strncmp(cmds->argv[0], "env", 4) == 0)
+	else if (ft_strncmp(data->cmds->argv[0], "env", 4) == 0)
 		status = builtin_env(&total->our_envp);
-	else if (ft_strncmp(cmds->argv[0], "unset", 6) == 0)
-		status = builtin_unset(&total->our_envp, cmds->argc, cmds->argv);
+	else if (ft_strncmp(data->cmds->argv[0], "unset", 6) == 0)
+		status = builtin_unset(&total->our_envp, data->cmds->argc, data->cmds->argv);
+	// printf("%s\n", total->our_envp->)
 	free_arr(data->envp_arr);
 	data->envp_arr = change_to_arr(total->our_envp);
 	if (!data->envp_arr)
-		return (write(2, "fail in call_builtins\n", 22), free(total), 1);
+		return (write(2, "2 Mem alloc in call_builtins fail 2", 35), free(total), 1);
 	return (status);
 }

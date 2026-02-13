@@ -1,8 +1,7 @@
 
 #include "builtins.h"
 
-t_envp	*create_node_sorted(char *iden, char *value, int has_value,
-			int exported)
+t_envp	*create_node_sorted(char *iden, char *value, int has_value, int exported)
 {
 	t_envp	*new_node;
 
@@ -28,12 +27,12 @@ t_envp	*create_node_sorted(char *iden, char *value, int has_value,
 
 int	create_sorted_env(t_envp **sorted, t_envp *env)
 {
-	t_envp	*new;
+	t_envp *new;
 
 	while (env)
 	{
 		new = create_node_sorted(env->identifier, env->value,
-				env->has_value, env->exported);
+			env->has_value, env->exported);
 		if (!new)
 			return (free_sorted_copy(*sorted), 0);
 		env_addback(sorted, new);
@@ -62,26 +61,26 @@ void	free_sorted_copy(t_envp *sorted)
 
 int	print_export_format(t_envp *env)
 {
-	t_envp	*s;
-	t_envp	*s_head;
+	t_envp	*sorted;
+	t_envp	*sorted_head;
 
-	s = NULL;
+	sorted = NULL;
 	if (!env)
 		return (EXIT_FAILURE);
-	if (!create_sorted_env(&s, env))
+	if (!create_sorted_env(&sorted, env))
 		return (EXIT_FAILURE);
-	s_head = s;
-	while (s)
+	sorted_head = sorted;
+	while (sorted)
 	{
-		if (s->exported)
+		if (sorted->exported)
 		{
-			if (!s->has_value)
-				printf("declare -x %s\n", s->identifier);
+			if (!sorted->has_value)
+				printf("declare -x %s\n", sorted->identifier);
 			else
-				printf("declare -x %s=\"%s\"\n", s->identifier, s->value);
+				printf("declare -x %s=\"%s\"\n", sorted->identifier, sorted->value);
 		}
-		s = s->next;
+		sorted = sorted->next;
 	}
-	free_sorted_copy(s_head);
+	free_sorted_copy(sorted_head);
 	return (EXIT_SUCCESS);
 }

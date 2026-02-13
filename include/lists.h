@@ -1,15 +1,17 @@
 
+
 #ifndef LISTS_H
 # define LISTS_H
+
 # include <stdlib.h>
 
 typedef enum e_type
 {
 	PIPE,
-	REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_IN,
-	REDIR_HEREDOC,
+	REDIR_OUT, // >
+	REDIR_APPEND, // >>
+	REDIR_IN, // <
+	REDIR_HEREDOC, // <<
 	WORD
 }	t_type;
 

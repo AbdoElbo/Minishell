@@ -56,7 +56,7 @@ int	expand_one_redir(t_total_info *total, t_cmds *cmds, t_expand *data)
 	data->redir_size = ft_strlen(data->r_temp) * 2 + 1;
 	while (cmds->redir->file[data->i_redir])
 	{
-		if (ft_strlen(data->r_temp) == data->redir_size - 1)
+		if (ft_strlen(data->r_temp) == data->redir_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
 			if (!increase_buffer(&data->r_temp, &data->redir_size, 0))
 				return (0);
 		if (data->state == NORMAL)
@@ -71,7 +71,7 @@ int	expand_one_redir(t_total_info *total, t_cmds *cmds, t_expand *data)
 	cmds->redir->file = ft_strdup(data->r_temp);
 	if (!cmds->redir->file)
 		return (write(2, "ft-strdup failed in expand_one_redir\n", 37), 0);
-	ft_bzero(data->r_temp, ft_strlen(data->r_temp));
+	ft_bzero(data->r_temp, ft_strlen(data->r_temp)); //not sure if its needed!
 	data->i_redir = 0;
 	if (!result)
 		return (0);

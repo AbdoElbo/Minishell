@@ -1,5 +1,44 @@
 #include "minishell.h"
 
+static size_t	count_words(char **a)
+{
+	size_t	i;
+
+	i = 0;
+	while (a[i])
+		i++;
+	return (i);
+}
+
+static int	finish_argv(int *arg_index, t_cmds *cmds, char *temp)
+{
+	char	**temp1;
+	int		i;
+
+	*arg_index = *arg_index + 1;
+	temp1 = ft_calloc(*arg_index + 1, sizeof(char *));
+	i = 0;
+	while (cmds->argv && cmds->argv[i])
+	{
+		temp1[i] = ft_strdup(cmds->argv[i]);
+		if (!temp1[i])
+			return (free_arr(temp1), 0);
+		i++;
+	}
+	if (ft_strlen(cmds->whole_cmd))
+	{
+		temp1[i] = ft_strdup(temp);
+		if (!temp1[i])
+			return (free_arr(temp1), 0);
+		free_arr(cmds->argv);
+		cmds->argv = temp1;
+	}
+	else
+		free_arr(temp1);
+	cmds->argc = count_words(cmds->argv);
+	return (1);
+}
+
 static int	split_command(t_total_info *total, t_expand *data)
 {
 	char	**temp;
@@ -11,10 +50,8 @@ static int	split_command(t_total_info *total, t_expand *data)
 	while (data->temp[i] && !ft_isspace(data->temp[i]))
 		i++;
 	if (!data->temp[i])
-		return (0);
+		return (1);
 	temp = ft_split(data->temp, ' ');
-	if (!temp)
-		return (0);
 	i = 0;
 	while (temp[i])
 		i++;
@@ -28,8 +65,11 @@ static int	split_command(t_total_info *total, t_expand *data)
 	}
 	i = 0;
 	while (temp[i])
-		if (!finish_argv(&data->arg_index, total->cmds, temp[i++]))
+	{
+		if (!finish_argv(&data->arg_index, total->cmds, temp[i]))
 			return (free(data->temp), free_arr(temp), free(last_str), 0);
+		i++;
+	}
 	ft_bzero(data->temp, ft_strlen(data->temp));
 	if (last_str && ft_strlen(last_str) > 0)
 		ft_memcpy(data->temp, last_str, ft_strlen(last_str));
@@ -48,7 +88,7 @@ static int	normal(t_total_info *total, t_expand *data, t_cmds *cmds)
 		if (!split_command(total, data))
 			return (free(data->temp), 0);
 		if (!ft_strlen(data->temp) && ft_isspace(data->str[data->i + 1]))
-			data->i++;
+			data->i++; //we added this condition to make sure that when var is null we dont create an argv.
 	}
 	else if (ft_isspace(cmds->whole_cmd[data->i]) && ft_strlen(data->temp))
 	{
@@ -89,7 +129,7 @@ int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 
 	while (data->str[data->i])
 	{
-		if (ft_strlen(data->temp) == data->str_size - 1)
+		if (ft_strlen(data->temp) == data->str_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
 			if (!increase_buffer(&data->temp, &data->str_size, 0))
 				return (0);
 		if (data->state == NORMAL)
@@ -100,9 +140,10 @@ int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 			result = dquote(total, data, cmds);
 		data->i++;
 	}
+	// if (ft_strlen(data->temp))
 	if (!finish_argv(&data->arg_index, cmds, data->temp))
 		return (free(data->temp), 0);
-	ft_bzero(data->temp, ft_strlen(data->temp));
+	ft_bzero(data->temp, ft_strlen(data->temp)); //not sure if its needed!
 	if (!result)
 		return (0);
 	return (1);

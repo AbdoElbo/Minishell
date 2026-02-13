@@ -27,9 +27,6 @@
 # define RED   "\001\033[1;31m\002"
 # define RESET "\001\033[0m\002"
 
-int				check_lst_type(t_token *lst);
-int				finish_argv(int *arg_index, t_cmds *cmds, char *temp);
-size_t			count_words(char **a);
 t_total_info	*init_total(char **envp, int exit);
 char			*ft_strjoin_arg(char const *s1, char const *s2);
 t_token			*parse_input(char *line);
