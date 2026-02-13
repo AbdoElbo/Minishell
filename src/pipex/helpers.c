@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 23:12:51 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/12 14:45:35 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:47:21 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include "../include/builtins.h"
+
+static void	read_heredoc_helper(int pipefd[2], char **s)
+{
+	write(pipefd[1], *s, ft_strlen(*s));
+	free(*s);
+	*s = NULL;
+	write(1, "> ", 2);
+	*s = get_next_line(0);
+}
 
 int	read_heredoc(t_redir *redir)
 {
@@ -31,31 +40,14 @@ int	read_heredoc(t_redir *redir)
 	while (ft_strncmp(s, delimiter, ft_strlen(delimiter)) != 0
 		|| s[ft_strlen(delimiter)] != '\n')
 	{
-		write(pipefd[1], s, ft_strlen(s));
-		free(s);
-		write(1, "> ", 2);
-		s = get_next_line(0);
+		read_heredoc_helper(pipefd, &s);
 		if (!s)
 			break ;
 	}
-	free (s);
+	free(s);
 	get_next_line(-1);
 	close(pipefd[1]);
 	redir->fd = pipefd[0];
-	return (1);
-}
-
-int	build_empty_cmd(char ***cmds)
-{
-	char	**array;
-
-	array = ft_calloc(2, sizeof(char *));
-	if (!array)
-		return (0);
-	array[0] = ft_strdup("");
-	if (!array[0])
-		return (free(array), 0);
-	*cmds = array;
 	return (1);
 }
 

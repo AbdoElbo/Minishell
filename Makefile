@@ -13,7 +13,8 @@ SRCS	:=  src/minishell.c src/builtins/arr.c src/builtins/builtin_helper.c \
 			src/expansion/expand_helper_1.c src/expansion/expand_helper_2.c \
 			src/expansion/expand_helper_3.c src/expansion/expand_redir_helper.c \
 			src/expansion/expand_redir.c src/expansion/expand.c \
-			src/pipex/cleanup_utils.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/pipex.c\
+			src/pipex/cleanup_utils.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/pipex.c \
+			src/pipex/redir_parent.c src/pipex/redir_child.c \
 			src/utils/free_functions.c src/utils/helper_cmds.c src/utils/helper_redir.c \
 			src/utils/helper_t_envp.c src/utils/helper_token.c \
 			src/utils/parse_input.c src/utils/utils_2.c src/utils/get_cmds.c src/utils/utils_4.c

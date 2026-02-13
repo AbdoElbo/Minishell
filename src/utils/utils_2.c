@@ -8,20 +8,9 @@ int	is_operator(char c)
 	return (0);
 }
 
-t_token	*new_node(char *str, int len)
+static void	new_node_helper(char *str, t_token *new_node, int len)
 {
-	t_token	*new_node;
-
-	new_node = ft_calloc(1, sizeof(t_token));
-	if (new_node == NULL)
-		return (NULL);
-	new_node->value = malloc(len + 1);
-	if (!new_node->value)
-		return (0);
-	ft_strlcpy(new_node->value, str, len + 1);
-	if (str[0] == '|')
-		new_node->type = PIPE;
-	else if (str[0] == '>')
+	if (str[0] == '>')
 	{
 		if (len == 2)
 			new_node->type = REDIR_APPEND;
@@ -35,6 +24,23 @@ t_token	*new_node(char *str, int len)
 		else
 			new_node->type = REDIR_IN;
 	}
+}
+
+t_token	*new_node(char *str, int len)
+{
+	t_token	*new_node;
+
+	new_node = ft_calloc(1, sizeof(t_token));
+	if (new_node == NULL)
+		return (NULL);
+	new_node->value = malloc(len + 1);
+	if (!new_node->value)
+		return (0);
+	ft_strlcpy(new_node->value, str, len + 1);
+	if (str[0] == '|')
+		new_node->type = PIPE;
+	else if (str[0] == '>' || str[0] == '<')
+		new_node_helper(str, new_node, len);
 	else
 		new_node->type = WORD;
 	new_node->next = NULL;

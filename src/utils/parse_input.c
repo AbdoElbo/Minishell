@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_input.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/13 17:15:28 by hkonstan          #+#    #+#             */
+/*   Updated: 2026/02/13 17:22:43 by hkonstan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -119,11 +130,12 @@ t_token	*parse_input(char *line)
 	{
 		str = get_next_word(line, &i);
 		if (!str)
-			return (ft_token_clear(&lst), NULL); // free lst func here later
+			return (ft_token_clear(&lst), NULL);
 		node = new_node(str, ft_strlen(str));
 		free (str);
 		if (!node)
-			return (write(2, "NEW_NODE failed", 15), ft_token_clear(&lst), NULL); // free lst func here later
+			return (write(2, "NEW_NODE failed", 15),
+				ft_token_clear(&lst), NULL);
 		ft_token_addback(&lst, node);
 		w_count++;
 	}

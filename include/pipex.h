@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 13:15:03 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/12 14:44:01 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/13 16:30:29 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
-enum	e_in_out
+typedef enum e_in_out
 {
 	IN,
 	OUT,
 	APPEND,
-};
+}	t_in_out;
 
 typedef struct s_data
 {
@@ -42,6 +42,10 @@ typedef struct s_data
 	pid_t	*pids;
 }	t_data;
 
+int		restore_parent_stdio(t_total_info *total);
+void	handle_redirections(t_data *data);
+int		file_open(char *filename, enum e_in_out in_out);
+int		handle_redir_parent(t_data *data);
 int		path_check_one(char **cmds, char **paths);
 int		pipex(t_total_info *total);
 int		read_heredoc(t_redir *redir);
@@ -51,7 +55,6 @@ int		build_empty_cmd(char ***cmds);
 char	*ft_strjoin_path(char const *s1, char const *s2);
 void	free_datas(t_data *data);
 void	close_pipefd(int pipefd[2]);
-int		argc_check(char **argv, int argc);
 int		pid_wait_and_free(t_data *data);
 void	child_exec_error(t_data *data);
 #endif

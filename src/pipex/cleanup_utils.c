@@ -3,15 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:55:03 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/12 14:44:42 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/13 16:13:10 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include "../include/builtins.h"
+
+int	file_open(char *filename, enum e_in_out in_out)
+{
+	int	fd;
+
+	fd = -1;
+	if (in_out == IN)
+		fd = open(filename, O_RDONLY);
+	else if (in_out == OUT)
+		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else if (in_out == APPEND)
+		fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	return (fd);
+}
 
 void	close_pipefd(int pipefd[2])
 {
@@ -58,28 +72,6 @@ static void	free_paths(char **paths)
 	paths = NULL;
 }
 
-// static void	free_cmds(char ***cmds)
-// {
-// 	int	i;
-// 	int	j;
-
-// 	i = 0;
-// 	if (!cmds)
-// 		return ;
-// 	while (cmds[i])
-// 	{
-// 		j = 0;
-// 		while (cmds[i][j])
-// 		{
-// 			free(cmds[i][j]);
-// 			j++;
-// 		}
-// 		free(cmds[i++]);
-// 	}
-// 	free(cmds);
-// 	cmds = NULL;
-// }
-
 void	free_datas(t_data *data)
 {
 	if (data)
@@ -91,6 +83,5 @@ void	free_datas(t_data *data)
 		if (data->envp_arr)
 			free_arr(data->envp_arr);
 		free(data);
-
 	}
 }
