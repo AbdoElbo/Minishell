@@ -12,13 +12,12 @@ int		word_count(char const *s);
 
 int		get_identifier_and_value(char *str, char **identifier,
 			char **value, int *has_value);
-// int		update_env(t_envp **env);
 t_envp	*find_env(t_envp *env, char *identifier);
 
-//for printing the sorted export format
 void	env_addback(t_envp **env, t_envp *new);
 t_envp	*env_last(t_envp *env);
-t_envp	*create_node_sorted(char *iden, char *value, int has_value, int exported);
+t_envp	*create_node_sorted(char *iden, char *value, int has_value,
+			int exported);
 void	swap_nodes(t_envp **sorted, t_envp **prev, t_envp **curr, int *swap);
 void	sort_list(t_envp **sorted);
 int		create_sorted_env(t_envp **sorted, t_envp *env);

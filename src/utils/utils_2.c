@@ -47,32 +47,6 @@ t_token	*new_node(char *str, int len)
 	return (new_node);
 }
 
-void	check_our_envp(t_envp *our_envp, char **envp)
-{
-	int	i;
-
-	i = 0;
-	if (!our_envp)
-		return ;
-	printf("\n");
-	while (our_envp)
-	{
-		if (!strcmp(our_envp->string, envp[i]))
-			printf("OK, ");
-		else
-		{
-			printf(".\n");
-			printf("%s", our_envp->string);
-			printf("\n");
-			printf("%s", envp[i]);
-			printf(".\n");
-		}
-		i++;
-		our_envp = our_envp->next;
-	}
-	printf("DONE.\n");
-}
-
 int	return_i(char *redir_file)
 {
 	int	i;
@@ -97,80 +71,4 @@ int	return_i(char *redir_file)
 		i++;
 	}
 	return (i);
-}
-
-void	print_lst(t_token *lst)
-{
-	if (!lst)
-		return ;
-	printf("----------------LST---------------------\n");
-	while (lst)
-	{
-		printf("\nstring is : %s\n", lst->value);
-		if (lst->type == WORD)
-			printf("the type is WORD\n");
-		if (lst->type == REDIR_APPEND)
-			printf("the type is REDIR_APPEND\n");
-		if (lst->type == REDIR_HEREDOC)
-			printf("the type is REDIR_HEREDOC\n");
-		if (lst->type == REDIR_IN)
-			printf("the type is REDIR_IN\n");
-		if (lst->type == REDIR_OUT)
-			printf("the type is REDIR_OUT\n");
-		if (lst->type == PIPE)
-			printf("the type is PIPE\n");
-		lst = lst->next;
-	}
-	printf("----------------------------------------\n\n");
-}
-
-void	print_cmds(t_cmds *cmds)
-{
-	int		i;
-	int		j;
-	int		k;
-	t_cmds	*temp;
-	t_redir	*temp2;
-
-	temp = cmds;
-	i = 0;
-	if (!temp)
-		return ;
-	printf("----------------CMDS---------------------");
-	while (temp)
-	{
-		printf("\nCommand block %i:\n", i + 1);
-		k = 0;
-		printf("Whole command is:%s.\n", temp->whole_cmd);
-		printf("Command %i is :", i + 1);
-		if (!temp->argv[k])
-			printf("'%s' ", temp->argv[k]);
-		while (temp->argv[k])
-		{
-			printf("'%s' ", temp->argv[k]);
-			k++;
-		}
-		printf("\n");
-		j = 0;
-		temp2 = temp->redir;
-		while (temp2)
-		{
-			printf("Redir block %i:\n", j + 1);
-			if (temp2->type == REDIR_APPEND)
-				printf("type: REDIR_APPEND, file:%s\n", temp2->file);
-			else if (temp2->type == REDIR_HEREDOC)
-				printf("type: REDIR_HEREDOC, file:%s\n", temp2->file);
-			else if (temp2->type == REDIR_IN)
-				printf("type: REDIR_IN, file:%s\n", temp2->file);
-			else if (temp2->type == REDIR_OUT)
-				printf("type: REDIR_OUT, file:%s\n", temp2->file);
-			printf("fd: %i\n", temp2->fd);
-			temp2 = temp2->next;
-			j++;
-		}
-		printf("\n");
-		temp = temp->next;
-		i++;
-	}
-	printf("-----------------------------------------\n");
 }

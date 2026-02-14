@@ -88,7 +88,7 @@ static int	normal(t_total_info *total, t_expand *data, t_cmds *cmds)
 		if (!split_command(total, data))
 			return (free(data->temp), 0);
 		if (!ft_strlen(data->temp) && ft_isspace(data->str[data->i + 1]))
-			data->i++; //we added this condition to make sure that when var is null we dont create an argv.
+			data->i++;
 	}
 	else if (ft_isspace(cmds->whole_cmd[data->i]) && ft_strlen(data->temp))
 	{
@@ -129,7 +129,7 @@ int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 
 	while (data->str[data->i])
 	{
-		if (ft_strlen(data->temp) == data->str_size - 1) // the 1 here is a bit random, we just indicate that we are starting to reach the end of the string
+		if (ft_strlen(data->temp) == data->str_size - 1)
 			if (!increase_buffer(&data->temp, &data->str_size, 0))
 				return (0);
 		if (data->state == NORMAL)
@@ -140,10 +140,9 @@ int	expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data)
 			result = dquote(total, data, cmds);
 		data->i++;
 	}
-	// if (ft_strlen(data->temp))
 	if (!finish_argv(&data->arg_index, cmds, data->temp))
 		return (free(data->temp), 0);
-	ft_bzero(data->temp, ft_strlen(data->temp)); //not sure if its needed!
+	ft_bzero(data->temp, ft_strlen(data->temp));
 	if (!result)
 		return (0);
 	return (1);

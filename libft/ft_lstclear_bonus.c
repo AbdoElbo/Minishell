@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstclear_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:58:46 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/12/18 19:48:21 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/14 16:05:55 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,3 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 		}
 	}
 }
-

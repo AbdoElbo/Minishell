@@ -105,7 +105,9 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 	char	*copy_pwd;
 	char	*str;
 
-	if (!*env || argc > 2)
+	if (!*env)
+		return (EXIT_FAILURE);
+	if (argc > 2)
 		return (write(2, "too many arguments\n", 19), EXIT_FAILURE);
 	if (argc == 1)
 	{

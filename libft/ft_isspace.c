@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 20:01:51 by hkonstan          #+#    #+#             */
-/*   Updated: 2025/12/04 20:02:18 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/14 16:05:48 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int ft_isspace(char c)
+int	ft_isspace(char c)
 {
-    if (c <= 32)
-        return (1);
-    return (0);
+	if (c <= 32)
+		return (1);
+	return (0);
 }
