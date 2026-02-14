@@ -12,12 +12,15 @@ int	builtin_pwd(void)
 	return (EXIT_SUCCESS);
 }
 
-int	builtin_env(t_envp **env)
+int	builtin_env(int argc, char **argv, t_envp **env)
 {
 	t_envp	*temp;
 
+	(void)argv;
 	if (!env)
-		return (EXIT_SUCCESS); // apparently, bash retuns 0 (SUCCESS) even if env is empty
+		return (EXIT_SUCCESS);
+	if (argc != 1)
+		return (127); // talk to harris about this (i hardcoded this)
 	temp = *env;
 	while (temp)
 	{
@@ -27,4 +30,3 @@ int	builtin_env(t_envp **env)
 	}
 	return (EXIT_SUCCESS);
 }
-

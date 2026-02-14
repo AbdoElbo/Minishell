@@ -30,7 +30,7 @@ int		builtin_echo(char **strings);
 int		builtin_exit(int argc, char **argv, t_total_info *total);
 int		builtin_export(t_envp **env, int argc, char **argv);
 int		builtin_pwd(void);
-int		builtin_env(t_envp **env);
+int		builtin_env(int argc, char **argv, t_envp **env);
 int		builtin_unset(t_envp **env, int argc, char **argv);
 
 int		is_builtin(t_data *data);

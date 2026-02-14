@@ -69,4 +69,3 @@ t_envp	*find_env(t_envp *env, char *identifier)
 	}
 	return (NULL);
 }
-

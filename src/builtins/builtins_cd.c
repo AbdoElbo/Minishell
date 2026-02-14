@@ -1,4 +1,4 @@
-# include "builtins.h"
+#include "builtins.h"
 
 char	*get_envp_value(t_envp *env, char *str)
 {
@@ -31,7 +31,7 @@ static int	change_old_path(t_envp **env, char *current_pwd)
 	temp = *env;
 	while (temp)
 	{
-		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0) // ft_strncmp return 0 if there's no differnece between the two strings
+		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0)
 		{
 			free(temp->string);
 			temp->string = ft_strjoin("OLDPWD=", current_pwd);
@@ -57,7 +57,7 @@ static int	update_new_path(t_envp **env)
 		return (EXIT_FAILURE);
 	while (temp)
 	{
-		if (ft_strncmp("PWD=", temp->string, 4) == 0) // ftstrncmp retunr 0 if there's no differnece between the two strings
+		if (ft_strncmp("PWD=", temp->string, 4) == 0)
 		{
 			free(temp->string);
 			temp->string = ft_strjoin("PWD=", new_path);

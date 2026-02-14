@@ -1,4 +1,4 @@
-# include "builtins.h"
+#include "builtins.h"
 
 static int	is_export_valid_identifier(char *str)
 {
@@ -28,7 +28,8 @@ static int	is_export_valid_identifier(char *str)
 	return (1);
 }
 
-static void	update_node(t_envp *temp, char *str_iden, char *str_value, int has_value)
+static void	update_node(t_envp *temp, char *str_iden,
+	char *str_value, int has_value)
 {
 	temp->exported = 1;
 	if (has_value)
@@ -43,7 +44,8 @@ static void	update_node(t_envp *temp, char *str_iden, char *str_value, int has_v
 	free(str_iden);
 }
 
-static t_envp	*create_node(t_envp **env, char *str_iden, char *str_value, int has_value)
+static t_envp	*create_node(t_envp **env, char *str_iden,
+	char *str_value, int has_value)
 {
 	t_envp	*temp;
 
@@ -75,19 +77,16 @@ static int	export_each_var(t_envp **env, char *str)
 	{
 		update_node(temp, str_iden, str_value, has_value);
 		free(temp->string);
-		temp->string = ft_strdup(str);
-		if (!temp->string)
-			return (EXIT_FAILURE);
 	}
 	else
 	{
 		temp = create_node(env, str_iden, str_value, has_value);
 		if (!temp)
 			return (EXIT_FAILURE);
-		temp->string = ft_strdup(str);
-		if (!temp->string)
-			return (EXIT_FAILURE);
 	}
+	temp->string = ft_strdup(str);
+	if (!temp->string)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -100,8 +99,9 @@ int	builtin_export(t_envp **env, int argc, char **argv)
 	state = EXIT_SUCCESS;
 	if (argc == 1)
 	{
-		if (!print_export_format(*env))
+		if (print_export_format(*env) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	}
 	while (i < argc)
 	{
