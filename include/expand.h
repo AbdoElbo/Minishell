@@ -31,6 +31,10 @@ void	char_append(char *temp, char c);
 int		increase_buffer(char **temp, int *size, int var_len);
 int		expand_one_cmd(t_total_info *total, t_cmds *cmds, t_expand *data);
 int		expand(t_total_info *total);
+int		split_handle_isspace(char **last_str, t_expand *data,
+			char **temp, int i);
+int		finish_argv(int *arg_index, t_cmds *cmds, char *temp);
+size_t	count_words(char **a);
 
 int		expand_var_redir(t_total_info *total, t_expand *data);
 #endif

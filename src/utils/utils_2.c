@@ -1,5 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_2.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 15:23:01 by hariskon          #+#    #+#             */
+/*   Updated: 2026/02/16 15:36:00 by hariskon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
+
+int	type_checker(t_type curr_type, t_type next_type, t_token *lst)
+{
+	t_token	*tmp;
+
+	if (curr_type == next_type)
+		return (write(2, "Syntax Error\n", 13), 0);
+	else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
+		return (write(2, "Syntax Error\n", 13), 0);
+	else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
+		return (write(2, "Syntax Error\n", 13), 0);
+	else if (curr_type == REDIR_OUT && next_type == PIPE)
+	{
+		tmp = lst->next->next;
+		ft_token_delone(lst->next);
+		lst->next = tmp;
+	}
+	else if ((curr_type != WORD && curr_type != PIPE) && next_type != WORD)
+		return (write(2, "Syntax Error\n", 13), 0);
+	return (1);
+}
 
 int	is_operator(char c)
 {

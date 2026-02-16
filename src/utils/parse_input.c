@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:15:28 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/13 17:22:43 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/16 15:35:49 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static int	check_lst_syntax(t_token *lst)
 {
 	t_type	curr_type;
 	t_type	next_type;
-	t_token	*tmp;
 
 	if (lst->type == PIPE)
 		return (write(2, "Syntax Error\n", 13), 0);
@@ -24,20 +23,8 @@ static int	check_lst_syntax(t_token *lst)
 	{
 		curr_type = lst->type;
 		next_type = lst->next->type;
-		if (curr_type == next_type)
-			return (write(2, "Syntax Error\n", 13), 0);
-		else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
-			return (write(2, "Syntax Error\n", 13), 0);
-		else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
-			return (write(2, "Syntax Error\n", 13), 0);
-		else if (curr_type == REDIR_OUT && next_type == PIPE)
-		{
-			tmp = lst->next->next;
-			ft_token_delone(lst->next);
-			lst->next = tmp;
-		}
-		else if ((curr_type != WORD && curr_type != PIPE) && next_type != WORD)
-			return (write(2, "Syntax Error\n", 13), 0);
+		if (!type_checker(curr_type, next_type, lst))
+			return (0);
 		lst = lst->next;
 	}
 	if (lst->value[0] == '\0')

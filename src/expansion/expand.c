@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 15:15:43 by hariskon          #+#    #+#             */
+/*   Updated: 2026/02/16 15:21:39 by hariskon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -80,6 +91,18 @@ static t_expand	*init_data(char *whole_cmds)
 	return (data);
 }
 
+static int	expand_redir_handle(t_total_info *total, t_expand *data,
+		t_cmds *cmds)
+{
+	data->r_temp = ft_calloc(ft_strlen(cmds->redir->file) * 2 + 1,
+			sizeof(char));
+	if (!data->r_temp)
+		return (write(2, "memaloc fail in expand", 22), 0);
+	expand_one_redir(total, cmds, data);
+	free(data->r_temp);
+	return (1);
+}
+
 int	expand(t_total_info *total)
 {
 	t_cmds			*cmds;
@@ -98,12 +121,9 @@ int	expand(t_total_info *total)
 		temp = cmds->redir;
 		while (cmds->redir)
 		{
-			data->r_temp = ft_calloc(ft_strlen(cmds->redir->file) * 2 + 1, sizeof(char));
-			if (!data->r_temp)
-				return (write(2, "memaloc fail in expand", 22), 0);
-			expand_one_redir(total, cmds, data);
+			if (!expand_redir_handle(total, data, cmds))
+				return (free_data(data), 0);
 			cmds->redir = cmds->redir->next;
-			free(data->r_temp);
 		}
 		cmds->redir = temp;
 		cmds = cmds->next;

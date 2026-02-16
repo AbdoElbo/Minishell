@@ -11,7 +11,8 @@ SRCS	:=  src/minishell.c src/builtins/arr.c src/builtins/builtin_helper.c \
 			src/builtins/builtins_pwd_env.c src/builtins/builtins_unset.c \
 			src/builtins/call_builtins.c \
 			src/expansion/expand_helper_1.c src/expansion/expand_helper_2.c \
-			src/expansion/expand_helper_3.c src/expansion/expand_redir_helper.c \
+			src/expansion/expand_helper_3.c src/expansion/expand_helper_4.c \
+			src/expansion/expand_redir_helper.c \
 			src/expansion/expand_redir.c src/expansion/expand.c \
 			src/pipex/cleanup_utils.c src/pipex/helpers.c src/pipex/parsing.c src/pipex/pipex.c \
 			src/pipex/redir_parent.c src/pipex/redir_child.c \
