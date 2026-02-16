@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:40:47 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:50:31 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:55:14 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	builtin_env(int argc, char **argv, t_envp **env)
 	if (!env)
 		return (EXIT_SUCCESS);
 	if (argc != 1)
-		return (127); // talk to harris about this (i hardcoded this) "My name has only one r"
+		return (127);
 	temp = *env;
 	while (temp)
 	{

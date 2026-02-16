@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:49:14 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 16:39:45 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:53:55 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ t_token			*new_node(char *str, int len);
 int				return_i(char *redir_file);
 int				copy_envp(t_total_info *total, char **envp);
 int				treat_empty_envp(t_total_info *total);
-
 
 int				get_cmds(t_total_info *total, t_token *lst);
 

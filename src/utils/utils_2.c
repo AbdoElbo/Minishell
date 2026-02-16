@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:15:40 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/16 16:45:16 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:54:47 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ int	treat_empty_envp(t_total_info *total)
 	if (!new_envp)
 		return (ft_t_envp_clear(&new_envp), 0);
 	ft_t_envp_addback(&total->our_envp, new_envp);
-
 	if (!update_env(&total->our_envp))
 		return (ft_t_envp_clear(&new_envp), 0);
 	return (1);

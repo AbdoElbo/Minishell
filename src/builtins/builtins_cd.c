@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:39:49 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 16:38:27 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:52:32 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,18 +117,8 @@ int	builtin_cd(t_envp **env, int argc, char **argv)
 	char	*copy_pwd;
 	char	*str;
 
-	if (!*env)
+	if (!cd_argc_check(argc, argv, env, &str))
 		return (EXIT_FAILURE);
-	if (argc > 2)
-		return (write(2, "too many arguments\n", 19), EXIT_FAILURE);
-	if (argc == 1)
-	{
-		str = getenv("HOME");
-		if (!str)
-			return (write(2, "cd: HOME not set\n", 18), EXIT_FAILURE);
-	}
-	else
-		str = argv[1];
 	copy_old = get_envp_value(*env, "OLDPWD=");
 	if (!copy_old)
 		return (EXIT_FAILURE);

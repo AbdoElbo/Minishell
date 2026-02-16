@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:40:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:40:07 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:54:06 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,21 @@ t_envp	*find_env(t_envp *env, char *identifier)
 		env = env->next;
 	}
 	return (NULL);
+}
+
+int	cd_argc_check(int argc, char **argv, t_envp **env, char **str)
+{
+	if (!*env)
+		return (0);
+	if (argc > 2)
+		return (write(2, "too many arguments\n", 19), 0);
+	if (argc == 1)
+	{
+		*str = getenv("HOME");
+		if (!*str)
+			return (write(2, "cd: HOME not set\n", 18), 0);
+	}
+	else
+		*str = argv[1];
+	return (1);
 }

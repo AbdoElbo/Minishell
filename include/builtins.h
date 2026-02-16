@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:49:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:49:46 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:50:27 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	sort_list(t_envp **sorted);
 int		create_sorted_env(t_envp **sorted, t_envp *env);
 void	free_sorted_copy(t_envp *sorted);
 int		print_export_format(t_envp *env);
+int		cd_argc_check(int argc, char **argv, t_envp **env, char **str);
 
 int		builtin_cd(t_envp **env, int argc, char **argv);
 int		builtin_echo(char **strings);
