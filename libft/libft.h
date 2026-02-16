@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:20:16 by hariskon          #+#    #+#             */
-/*   Updated: 2025/12/18 20:07:32 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:41:02 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
+int		is_operator(char c);
 int		ft_isspace(char c);
 int		ft_isalpha(int a);
 int		ft_isdigit(int a);

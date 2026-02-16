@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:39:49 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:39:52 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/16 16:38:27 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-char	*get_envp_value(t_envp *env, char *str)
+static char	*get_envp_value(t_envp *env, char *str)
 {
 	char	*new_str;
 	int		len;

@@ -3,104 +3,117 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/16 15:23:01 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:36:00 by hariskon         ###   ########.fr       */
+/*   Created: 2026/02/13 17:15:40 by hkonstan          #+#    #+#             */
+/*   Updated: 2026/02/16 16:45:16 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	type_checker(t_type curr_type, t_type next_type, t_token *lst)
+char	*ft_strjoin_arg(char const *s1, char const *s2)
 {
-	t_token	*tmp;
+	char	*new_string;
+	size_t	total_len;
+	size_t	i;
 
-	if (curr_type == next_type)
-		return (write(2, "Syntax Error\n", 13), 0);
-	else if (curr_type == REDIR_OUT && next_type == REDIR_IN)
-		return (write(2, "Syntax Error\n", 13), 0);
-	else if (curr_type == REDIR_IN && next_type == REDIR_OUT)
-		return (write(2, "Syntax Error\n", 13), 0);
-	else if (curr_type == REDIR_OUT && next_type == PIPE)
+	i = 0;
+	total_len = ft_strlen(s1) + ft_strlen(s2) +2;
+	new_string = malloc(total_len);
+	if (new_string == NULL)
+		return (NULL);
+	if (s1)
+		while (*s1)
+			new_string[i++] = *s1++;
+	if (i != 0)
+		new_string[i++] = ' ';
+	if (s2)
+		while (*s2)
+			new_string[i++] = *s2++;
+	new_string[i] = '\0';
+	return (new_string);
+}
+
+t_envp	*new_envp_node(char *str)
+{
+	t_envp	*new_envp;
+
+	new_envp = ft_calloc(1, sizeof(t_envp));
+	if (!new_envp)
+		return (write(2, "Memaloc 2 fail new_envp", 23), NULL);
+	new_envp->string = ft_strdup(str);
+	if (!new_envp->string)
+		return (write(2, "Memaloc 2 fail new_envp", 23), free(new_envp), NULL);
+	new_envp->next = NULL;
+	return (new_envp);
+}
+
+static int	update_env(t_envp **env)
+{
+	t_envp	*temp;
+	char	*identifier;
+	char	*value;
+	int		has_value;
+
+	temp = *env;
+	while (temp)
 	{
-		tmp = lst->next->next;
-		ft_token_delone(lst->next);
-		lst->next = tmp;
+		identifier = NULL;
+		value = NULL;
+		has_value = 0;
+		if (!get_identifier_and_value(temp->string, &identifier
+				, &value, &has_value))
+			return (free(identifier), free(value), 0);
+		temp->identifier = identifier;
+		temp->value = value;
+		temp->has_value = has_value;
+		temp->exported = 1;
+		temp = temp->next;
 	}
-	else if ((curr_type != WORD && curr_type != PIPE) && next_type != WORD)
-		return (write(2, "Syntax Error\n", 13), 0);
 	return (1);
 }
 
-int	is_operator(char c)
+int	treat_empty_envp(t_total_info *total)
 {
-	if (c == '|' || c == '>' || c == '<')
-		return (1);
-	return (0);
-}
+	char	*path;
+	char	*temp;
+	t_envp	*new_envp;
 
-static void	new_node_helper(char *str, t_token *new_node, int len)
-{
-	if (str[0] == '>')
-	{
-		if (len == 2)
-			new_node->type = REDIR_APPEND;
-		else
-			new_node->type = REDIR_OUT;
-	}
-	else if (str[0] == '<')
-	{
-		if (len == 2)
-			new_node->type = REDIR_HEREDOC;
-		else
-			new_node->type = REDIR_IN;
-	}
-}
-
-t_token	*new_node(char *str, int len)
-{
-	t_token	*new_node;
-
-	new_node = ft_calloc(1, sizeof(t_token));
-	if (new_node == NULL)
-		return (NULL);
-	new_node->value = malloc(len + 1);
-	if (!new_node->value)
+	temp = getcwd(NULL, 0);
+	if (!temp)
 		return (0);
-	ft_strlcpy(new_node->value, str, len + 1);
-	if (str[0] == '|')
-		new_node->type = PIPE;
-	else if (str[0] == '>' || str[0] == '<')
-		new_node_helper(str, new_node, len);
-	else
-		new_node->type = WORD;
-	new_node->next = NULL;
-	return (new_node);
+	path = ft_strjoin("PWD=", temp);
+	if (!path)
+		return (free(temp), 0);
+	free(temp);
+	new_envp = new_envp_node(path);
+	if (!new_envp)
+		return (ft_t_envp_clear(&new_envp), 0);
+	ft_t_envp_addback(&total->our_envp, new_envp);
+
+	if (!update_env(&total->our_envp))
+		return (ft_t_envp_clear(&new_envp), 0);
+	return (1);
 }
 
-int	return_i(char *redir_file)
+int	copy_envp(t_total_info *total, char **envp)
 {
-	int	i;
+	int		i;
+	t_envp	*new_envp;
 
 	i = 0;
-	while (redir_file[i])
+	if (!envp)
+		return (0);
+	while (envp[i])
 	{
-		if (redir_file[i] == '\'')
-		{
-			i++;
-			while (redir_file[i] != '\'')
-				i++;
-		}
-		else if (redir_file[i] == '"')
-		{
-			i++;
-			while (redir_file[i] != '"')
-				i++;
-		}
-		else if (ft_isspace(redir_file[i]))
-			break ;
+		new_envp = new_envp_node(envp[i]);
+		if (!new_envp)
+			return (ft_t_envp_clear(&new_envp), 0);
+		ft_t_envp_addback(&total->our_envp, new_envp);
 		i++;
 	}
-	return (i);
+	if (!update_env(&total->our_envp))
+		return (ft_t_envp_clear(&new_envp), 0);
+	return (1);
 }
