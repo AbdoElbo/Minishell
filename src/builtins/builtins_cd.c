@@ -102,7 +102,7 @@ static int	rollback_env(t_envp **env, char **old, char **pwd)
 		else if (ft_strncmp("PWD=", temp->string, 4) == 0)
 		{
 			free(temp->string);
-			temp->string = ft_strrjoin("PWD=", *pwd);
+			temp->string = ft_strjoin("PWD=", *pwd);
 			if (!temp->string)
 				return (free(*old), free(*pwd), EXIT_FAILURE);
 		}
