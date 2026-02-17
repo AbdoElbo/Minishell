@@ -6,7 +6,7 @@
 /*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:51:12 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/17 13:34:29 by aelbouaz         ###   ########.fr       */
+/*   Updated: 2026/02/17 14:47:30 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,28 +72,13 @@ int	main(int argc, char **argv, char **envp)
 	{
 		total = init_total(envp_a, exit_code);
 		if (!total)
-			return (free_all(&total), errno); //maybe returning 1 is the correct return!
+			return (free_all(&total), errno);
 		g_signal = 0;
-		// line = readline(RED"Minishell$ "RESET); //this is our line
-		//the code bellow is needed for the tester
-		if (isatty(STDIN_FILENO))
-			line = readline(RED"Minishell$ "RESET);
-		else
-		{
-			line = get_next_line(STDIN_FILENO);
-			if (line)
-			{
-				char *tmp = ft_strtrim(line, "\n");
-				free(line);
-				line = tmp;
-			}
-		}
-		//the code above is needed for the tester.
+		line = readline(RED"Minishell$ "RESET);
 		if (!line)
 			break ;
 		if (!handle_line(&total, line, &exit_code))
 			return (free_all(&total), exit_code);
-		// print_cmds(total->cmds);
 		envp_a = change_to_arr(total->our_envp);
 		free_all(&total);
 	}

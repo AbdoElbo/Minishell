@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_parent.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 16:01:54 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/13 16:57:29 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/17 14:33:58 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ static int	handle_stds(int input, int output, t_data *data)
 {
 	if (input != data->input_fd)
 	{
-		if (dup2(data->input_fd, STDIN_FILENO) == -1)
+		if (dup2(input, STDIN_FILENO) == -1)
 			return (perror("Dup2 for STDIN failed"), EXIT_FAILURE);
-		close(data->input_fd);
+		close(input);
 	}
 	if (output != data->output_fd)
 	{
-		if (dup2(data->output_fd, STDOUT_FILENO) == -1)
+		if (dup2(output, STDOUT_FILENO) == -1)
 			return (perror("Dup2 for STDOUT failed"), EXIT_FAILURE);
-		close(data->output_fd);
+		close(output);
 	}
 	return (0);
 }
@@ -37,7 +37,7 @@ static int	file_open_handle(int *fd, t_redir *temp, t_in_out type)
 	if (temp->fd == -1)
 		return (perror(temp->file), EXIT_FAILURE);
 	*fd = temp->fd;
-	return (1);
+	return (0);
 }
 
 static	void	handle_heredoc_case(t_data *data, t_redir *temp)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_pwd_env.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:40:47 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 16:55:14 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/17 14:04:09 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,9 @@ int	builtin_env(int argc, char **argv, t_envp **env)
 	t_envp	*temp;
 
 	(void)argv;
+	(void)argc;
 	if (!env)
 		return (EXIT_SUCCESS);
-	if (argc != 1)
-		return (127);
 	temp = *env;
 	while (temp)
 	{
