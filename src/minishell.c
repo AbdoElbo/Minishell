@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:51:12 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 15:51:14 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/17 13:34:29 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ volatile sig_atomic_t	g_signal;
 static void	sig_handler(int sig)
 {
 	if (sig == SIGQUIT)
-		write(1, "\nQuit (core dumped)", 19);
+		return ;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);

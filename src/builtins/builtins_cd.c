@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:39:49 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 16:52:32 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/17 13:45:19 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*get_envp_value(t_envp *env, char *str)
 	{
 		if (ft_strncmp(str, env->string, len) == 0)
 		{
-			new_str = ft_strdup(env->string);
+			new_str = ft_strdup(env->value);
 			if (!new_str)
 				return (NULL);
 			return (new_str);

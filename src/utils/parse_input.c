@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:15:28 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/16 15:35:49 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/17 13:23:02 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ static int	check_lst_syntax(t_token *lst)
 			return (0);
 		lst = lst->next;
 	}
+	if (ft_token_size(lst) == 1 && lst->value[0] == '\0')
+		return (1);
 	if (lst->value[0] == '\0')
-		return (write(2, "Syntax Error:\nNo redirection File\n", 35), 0);
+		return (write(2, "Syntax Error:\nNo redirection File1\n", 36), 0);
 	if (lst->type != WORD)
-		return (write(2, "Syntax Error:\nNo redirection File\n", 35), 0);
+		return (write(2, "Syntax Error:\nNo redirection File2\n", 36), 0);
 	return (1);
 }
 

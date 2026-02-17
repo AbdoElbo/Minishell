@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_helper.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aelbouaz <aelbouaz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 15:40:04 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/16 16:54:06 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/17 13:54:15 by aelbouaz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	cd_argc_check(int argc, char **argv, t_envp **env, char **str)
 		return (0);
 	if (argc > 2)
 		return (write(2, "too many arguments\n", 19), 0);
-	if (argc == 1)
+	if (argc == 1 || (argc == 2 && argv[1][0] == '~' && !argv[1][1]))
 	{
 		*str = getenv("HOME");
 		if (!*str)
