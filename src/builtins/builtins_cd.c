@@ -95,14 +95,14 @@ static int	rollback_env(t_envp **env, char **old, char **pwd)
 		if (ft_strncmp("OLDPWD=", temp->string, 7) == 0)
 		{
 			free(temp->string);
-			temp->string = ft_strdup(*old);
+			temp->string = ft_strjoin("OLDPWD=", *old);
 			if (!temp->string)
 				return (free(*old), free(*pwd), EXIT_FAILURE);
 		}
 		else if (ft_strncmp("PWD=", temp->string, 4) == 0)
 		{
 			free(temp->string);
-			temp->string = ft_strdup(*pwd);
+			temp->string = ft_strrjoin("PWD=", *pwd);
 			if (!temp->string)
 				return (free(*old), free(*pwd), EXIT_FAILURE);
 		}
